@@ -421,4 +421,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'গোপনীয়তা নীতি';
+
+  @override
+  String get company => 'কোম্পানি';
 }

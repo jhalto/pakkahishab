@@ -39,7 +39,7 @@ class MyApp extends ConsumerWidget {
           centerTitle: true, // Optional: center the title
         ),
         scaffoldBackgroundColor: AppColors.whiteColor,
-        textTheme: TextTheme(bodyMedium: bodyMedium),
+        textTheme: TextTheme(bodyMedium: bodyMedium(context)),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       initialRoute: AppRoutes.login,

@@ -142,5 +142,8 @@
   "passwordRecoveryInstruction": "আপনার পাসওয়ার্ড পেতে নিচে আপনার নিবন্ধিত ইমেইল দিন",
   "enterRegisteredEmail": "নিবন্ধিত ইমেইল লিখুন",
   "getPassword": "পাসওয়ার্ড নিন",
-  "privacyPolicy": "গোপনীয়তা নীতি"
+  "privacyPolicy": "গোপনীয়তা নীতি",
+
+  
+  "company": "কোম্পানি"
 }

@@ -1,132 +1,127 @@
 import 'package:flutter/material.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 
+double getResponsiveFontSize(BuildContext context, double baseFontSize) {
+  double screenWidth = MediaQuery.of(context).size.width;
+  // Example: scale font size based on 375px width (iPhone 11/12 baseline)
+  return baseFontSize * (screenWidth / 375);
+}
 
-// Headlines
-const TextStyle headline1 = TextStyle(
-
+TextStyle headline1(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w700,
-  fontSize: 32,
+  fontSize: getResponsiveFontSize(context, 32),
   height: 1.2,
 );
 
-const TextStyle headline2 = TextStyle(
-
+TextStyle headline2(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w600,
-  fontSize: 28,
+  fontSize: getResponsiveFontSize(context, 28),
   height: 1.2,
 );
 
-const TextStyle headline3 = TextStyle(
-
+TextStyle headline3(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w600,
-  fontSize: 24,
+  fontSize: getResponsiveFontSize(context, 24),
   height: 1.2,
 );
-// extra large
-const TextStyle titleExtraLarge = TextStyle(
 
+// Extra large title
+TextStyle titleExtraLarge(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w600,
-  fontSize: 22,
+  fontSize: getResponsiveFontSize(context, 22),
   height: 1.2,
 );
+
 // Titles
-const TextStyle titleLarge = TextStyle(
-
+TextStyle titleLarge(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w600,
-  fontSize: 20,
+  fontSize: getResponsiveFontSize(context, 20),
   height: 1.2,
 );
 
-const TextStyle titleMedium = TextStyle(
-  fontFamily: 'Roboto',
+TextStyle titleMedium(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w600,
-  fontSize: 18,
+  fontSize: getResponsiveFontSize(context, 18),
   height: 1.2,
 );
 
-const TextStyle titleSmall = TextStyle(
-
+TextStyle titleSmall(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w600,
-  fontSize: 16,
+  fontSize: getResponsiveFontSize(context, 16),
   height: 1.2,
 );
 
 // Body
- const TextStyle bodyLarge = TextStyle(
+TextStyle bodyLarge(BuildContext context) => TextStyle(
   color: Colors.black87,
   fontWeight: FontWeight.w400,
-  fontSize: 16,
+  fontSize: getResponsiveFontSize(context, 16),
   height: 1.2,
 );
-const TextStyle bodySlideBold = TextStyle(
-  fontFamily: 'Roboto',
+
+TextStyle bodySlideBold(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w500,
-  fontSize: 14,
+  fontSize: getResponsiveFontSize(context, 14),
   height: 1.2,
 );
-const TextStyle bodyMedium = TextStyle(
- 
+
+TextStyle bodyMedium(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w400,
-  fontSize: 14,
+  fontSize: getResponsiveFontSize(context, 14),
   color: Colors.black87,
   height: 1.2,
 );
-const TextStyle bodyMediumWhite = TextStyle(
- 
+
+TextStyle bodyMediumWhite(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w400,
-  fontSize: 14,
+  fontSize: getResponsiveFontSize(context, 14),
   color: AppColors.whiteColor,
   height: 1.2,
 );
-const TextStyle bodyMediumSecondary = TextStyle(
- 
+
+TextStyle bodyMediumSecondary(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w400,
-  fontSize: 14,
+  fontSize: getResponsiveFontSize(context, 14),
   color: Colors.black54,
   height: 1.2,
 );
-const TextStyle buttonTextStyle = TextStyle(
- 
+
+TextStyle buttonTextStyle(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w500,
-  fontSize: 16,
+  fontSize: getResponsiveFontSize(context, 16),
   color: Colors.white,
 );
-const TextStyle bodySmall = TextStyle(
 
+TextStyle bodySmall(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w400,
-  fontSize: 12,
+  fontSize: getResponsiveFontSize(context, 12),
+  color: Colors.black54,
   height: 1.2,
-  color: Colors.black54
 );
 
 // Labels & Buttons
-const TextStyle labelLarge = TextStyle(
-
+TextStyle labelLarge(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w500,
-  fontSize: 14,
+  fontSize: getResponsiveFontSize(context, 14),
   height: 1.2,
 );
 
-const TextStyle labelMedium = TextStyle(
+TextStyle labelMedium(BuildContext context) => TextStyle(
+  fontWeight: FontWeight.w500,
+  fontSize: getResponsiveFontSize(context, 12),
   color: Colors.black54,
-
-  fontWeight: FontWeight.w500,
-  fontSize: 12,
   height: 1.2,
 );
 
-const TextStyle labelSmall = TextStyle(
-
+TextStyle labelSmall(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w500,
-  fontSize: 10,
+  fontSize: getResponsiveFontSize(context, 10),
   height: 1.2,
 );
 
-// Captions or Footnotes
-const TextStyle caption = TextStyle(
-
+// Captions / Footnotes
+TextStyle caption(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w300,
-  fontSize: 12,
-  color: Color(0xFF757575),
+  fontSize: getResponsiveFontSize(context, 12),
+  color: const Color(0xFF757575),
 );

@@ -9,6 +9,12 @@ class Validation {
     }
     return null;
   }
+  static String? validateCompany(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Company name is required';
+    }
+    return null;
+  }
 
   static String? validateEmail(String? value) {
     if (value == null || value.trim().isEmpty) {

@@ -139,5 +139,8 @@
   "passwordRecoveryInstruction": "Please enter your registered email below to receive your password",
   "enterRegisteredEmail": "Enter your registered email",
   "getPassword": "Get Password",
-  "privacyPolicy": "Privacy Policy"
+  "privacyPolicy": "Privacy Policy",
+  
+  
+  "company": "Company"
 }

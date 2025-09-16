@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/di/translation_provider.dart';
+import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/features/auth/viewmodel/login_viewmodel.dart';
 import 'package:pakkahishab/features/auth/widgets/custom_text_field.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
@@ -9,7 +11,6 @@ import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/shared/global_widgets/custom_fullwidth_button.dart';
 
 import '../../../core/const/app_colors.dart';
-
 
 class LoginView extends ConsumerWidget {
   const LoginView({super.key});
@@ -21,6 +22,7 @@ class LoginView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         actions: [
           Padding(
             padding: EdgeInsetsGeometry.only(right: 10),
@@ -45,7 +47,7 @@ class LoginView extends ConsumerWidget {
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.languageType,
-                  style: bodyMediumWhite,
+                  style: bodyMediumWhite(context),
                 ),
               ),
             ),
@@ -55,23 +57,33 @@ class LoginView extends ConsumerWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 100,
-            ),
-          
             CustomTextField(
-              prefixIcon: Icon(Icons.phone),
+              prefixIcon: Icon(Icons.phone, color: AppColors.primaryColor),
               hint: AppLocalizations.of(context)!.phone,
-              onChanged: (val) => vm.updatePhone(val),
+              onChanged: vm.updatePhone,
             ),
+            SizedBox(height: 2),
+            if (vm.phoneError.isNotEmpty)
+              Text(
+                vm.phoneError,
+                style: TextStyle(color: AppColors.errorTextColor),
+              ),
             const SizedBox(height: 20),
+            
             CustomTextField(
+              isPassword: true,
               prefixIcon: Icon(Icons.password),
               hint: AppLocalizations.of(context)!.password,
               onChanged: (val) => vm.updatePassword(val),
             ),
+            SizedBox(height: 2),
+            if (vm.passwordError.isNotEmpty)
+              Text(
+                vm.passwordError,
+                style: TextStyle(color: AppColors.errorTextColor),
+              ),
 
             const SizedBox(height: 20),
 
@@ -92,11 +104,13 @@ class LoginView extends ConsumerWidget {
                     },
               title: vm.isLoading
                   ? SizedBox(
-                      height: 17,
-                      width: 17,
-                      child: const CircularProgressIndicator(),
+                      height: 23,
+                      width: 23,
+                      child: const CircularProgressIndicator(
+                        color: AppColors.primaryColor4,
+                      ),
                     )
-                  : const Text("Login", style: buttonTextStyle,),
+                  : Text("Login", style: buttonTextStyle(context)),
             ),
             const SizedBox(height: 10),
             Divider(color: AppColors.primaryColor),
@@ -105,9 +119,8 @@ class LoginView extends ConsumerWidget {
               onTap: () async {
                 Navigator.pushNamed(context, '/signup');
               },
-              title: Text("SignUp",style: buttonTextStyle,),
+              title: Text("SignUp", style: buttonTextStyle(context)),
             ),
-           
           ],
         ),
       ),

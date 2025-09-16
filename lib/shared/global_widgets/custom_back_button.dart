@@ -13,13 +13,13 @@ class CustomBackButton extends StatelessWidget {
         Navigator.pop(context);
       },
       customBorder: const CircleBorder(), // Match the shape
-      splashColor: AppColors.whiteColor.withValues(alpha: .2),
-      highlightColor: AppColors.whiteColor.withValues(alpha: .2),
+      splashColor: AppColors.blackColor.withAlpha(2),
+      
       child: Padding(
         padding: const EdgeInsets.all(6.0), // Increase tap area
         child: Icon(
           CupertinoIcons.back,
-          color: AppColors.whiteColor,
+          color: AppColors.blackColor,
         ),
       ),
     );
