@@ -425,4 +425,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get company => 'Company';
+
+  @override
+  String get nameRequired => 'Name is required';
+
+  @override
+  String get nameTooShort => 'Name can\'t be less than 3 characters';
+
+  @override
+  String get companyRequired => 'Company name is required';
+
+  @override
+  String get emailRequired => 'Email is required';
+
+  @override
+  String get invalidEmail => 'Enter a valid email address';
+
+  @override
+  String get phoneRequired => 'Phone is required';
+
+  @override
+  String get invalidPhone => 'Enter a valid phone number';
+
+  @override
+  String get passwordRequired => 'Password is required';
+
+  @override
+  String get passwordTooShort => 'Password must be at least 8 characters long';
+
+  @override
+  String get invalidPassword =>
+      'Password must contain uppercase, lowercase, number, and special character';
 }

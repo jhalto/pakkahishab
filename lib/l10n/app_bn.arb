@@ -145,5 +145,15 @@
   "privacyPolicy": "গোপনীয়তা নীতি",
 
   
-  "company": "কোম্পানি"
+  "company": "কোম্পানি",
+  "nameRequired": "নাম আবশ্যক",
+  "nameTooShort": "নাম ৩ অক্ষরের কম হতে পারবে না",
+  "companyRequired": "কোম্পানির নাম আবশ্যক",
+  "emailRequired": "ইমেইল আবশ্যক",
+  "invalidEmail": "সঠিক ইমেইল ঠিকানা দিন",
+  "phoneRequired": "ফোন নম্বর আবশ্যক",
+  "invalidPhone": "সঠিক ফোন নম্বর দিন",
+  "passwordRequired": "পাসওয়ার্ড আবশ্যক",
+  "passwordTooShort": "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে",
+  "invalidPassword": "পাসওয়ার্ডে বড় হাতের অক্ষর, ছোট হাতের অক্ষর, সংখ্যা ও বিশেষ চিহ্ন থাকতে হবে"
 }

@@ -42,8 +42,8 @@ class MyApp extends ConsumerWidget {
         textTheme: TextTheme(bodyMedium: bodyMedium(context)),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      initialRoute: AppRoutes.login,
-      onGenerateRoute: AppRoutes.generateRoute,
+      initialRoute: Routes.login,
+      onGenerateRoute: Routes.generateRoute,
     );
   }
 }

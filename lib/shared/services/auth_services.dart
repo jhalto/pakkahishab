@@ -3,31 +3,31 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pakkahishab/core/const/urls.dart';
+import 'package:pakkahishab/core/utils/show_snackbar.dart';
 
 final authServiceProvider = Provider<AuthService>((ref) {
   return AuthService();
 });
 
 class AuthService {
-  Future<void> register({
+  Future<Map<String, dynamic>> register({
     required String username,
     required String password,
     required String companyName,
     required String mobile,
     required String email,
   }) async {
-    final url = Uri.parse(
-      "http://202.0.94.62:8081/ords/dev/PakkahisabApp/registration/",
-    );
+    final url = Uri.parse("${Urls.baseUrl}/registration/");
 
     final body = {
       "USERNAME": username,
       "PASSWORD": password,
       "COMPANY_NAME": companyName,
-      "PRESENT_STATUS": "Y", // default value
+      "PRESENT_STATUS": "Y",
       "MOBILE": mobile,
       "EMAIL": email,
-      "OTP_CODE": 123212, // default value
+      "OTP_CODE": 123212,
     };
 
     try {
@@ -37,25 +37,67 @@ class AuthService {
         body: jsonEncode(body),
       );
 
-      if (response.statusCode == 200) {
-        print("✅ Registration successful: ${response.body}");
+      // Initialize default values
+      Map<String, dynamic> data = {};
+      bool success = false;
+      String message = "Unknown error occurred";
+
+      // Check if response is JSON
+      if ((response.headers['content-type'] ?? '').contains(
+        'application/json',
+      )) {
+        if (response.body.isNotEmpty) {
+          data = jsonDecode(response.body);
+        }
       } else {
-        print(
-          "❌ Registration failed: ${response.statusCode}, ${response.body}",
-        );
-        throw Exception("Failed to register user");
+        // Not JSON (HTML page or error page)
+        print("⚠️ Response is not JSON: ${response.body}");
+        message = "Server returned unexpected response";
       }
+
+      if (response.statusCode == 200) {
+        success = true;
+        message = data['message'] ?? "Registration successful";
+      } else {
+        message =
+            data['message'] ??
+            "Registration failed with status ${response.statusCode}";
+      }
+
+      print(success ? "✅ $message" : "❌ $message");
+
+      return {"success": success, "message": message};
     } catch (e) {
       print("⚠️ Error during registration: $e");
-      rethrow;
+      return {"success": false, "message": "Error: $e"};
     }
   }
 
-  Future<void> login(String phone, String password) async {
-    await Future.delayed(const Duration(seconds: 2)); // simulate network
-    if (phone != "1234567890" || password != "password") {
-      throw Exception("Invalid credentials");
+  Future<Map<String, dynamic>> login({
+  required String username,
+  required String password,
+}) async {
+  final url = Uri.parse("${Urls.baseUrl}/login/");
+
+  final body = {
+    "username": username,
+    "password": password,
+  };
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(body),
+    );
+
+    if (response.body.isNotEmpty) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      return {"status": "error", "message": "Empty response from server"};
     }
-    print("User logged in: $phone");
+  } catch (e) {
+    return {"status": "error", "message": "Error: $e"};
   }
+}
 }

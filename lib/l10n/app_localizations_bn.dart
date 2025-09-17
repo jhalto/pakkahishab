@@ -424,4 +424,35 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get company => 'কোম্পানি';
+
+  @override
+  String get nameRequired => 'নাম আবশ্যক';
+
+  @override
+  String get nameTooShort => 'নাম ৩ অক্ষরের কম হতে পারবে না';
+
+  @override
+  String get companyRequired => 'কোম্পানির নাম আবশ্যক';
+
+  @override
+  String get emailRequired => 'ইমেইল আবশ্যক';
+
+  @override
+  String get invalidEmail => 'সঠিক ইমেইল ঠিকানা দিন';
+
+  @override
+  String get phoneRequired => 'ফোন নম্বর আবশ্যক';
+
+  @override
+  String get invalidPhone => 'সঠিক ফোন নম্বর দিন';
+
+  @override
+  String get passwordRequired => 'পাসওয়ার্ড আবশ্যক';
+
+  @override
+  String get passwordTooShort => 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে';
+
+  @override
+  String get invalidPassword =>
+      'পাসওয়ার্ডে বড় হাতের অক্ষর, ছোট হাতের অক্ষর, সংখ্যা ও বিশেষ চিহ্ন থাকতে হবে';
 }

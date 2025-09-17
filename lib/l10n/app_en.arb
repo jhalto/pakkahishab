@@ -142,5 +142,15 @@
   "privacyPolicy": "Privacy Policy",
   
   
-  "company": "Company"
+  "company": "Company",
+  "nameRequired": "Name is required",
+  "nameTooShort": "Name can't be less than 3 characters",
+  "companyRequired": "Company name is required",
+  "emailRequired": "Email is required",
+  "invalidEmail": "Enter a valid email address",
+  "phoneRequired": "Phone is required",
+  "invalidPhone": "Enter a valid phone number",
+  "passwordRequired": "Password is required",
+  "passwordTooShort": "Password must be at least 8 characters long",
+  "invalidPassword": "Password must contain uppercase, lowercase, number, and special character"
 }

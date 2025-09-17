@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 enum SnackBarType { success, error }
 
 class ShowSnackbar {
- static void showDefaultSnackBar(
+  static void showDefaultSnackBar(
     BuildContext context,
     String message, {
     SnackBarType type = SnackBarType.error,
@@ -41,81 +42,6 @@ class ShowSnackbar {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  static void showCustomSnackBar(
-    BuildContext context,
-    String message, {
-    SnackBarType type = SnackBarType.error,
-    Duration duration = const Duration(seconds: 3),
-  }) {
-    Color bgColor;
-    String title = type == SnackBarType.success ? 'Success' : 'Error';
-    Icon icon = type == SnackBarType.success
-        ? const Icon(Icons.done, color: Colors.white, size: 28)
-        : const Icon(Icons.error_outline, color: Colors.white, size: 28);
-
-    switch (type) {
-      case SnackBarType.success:
-        bgColor = Colors.black87;
-        break;
-      case SnackBarType.error:
-        bgColor = Colors.red;
-        break;
-    }
-
-    final snackBar = SnackBar(
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: bgColor,
-      margin: const EdgeInsets.fromLTRB(
-        10,
-        10,
-        10,
-        0,
-      ), // top-positioned floating
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      duration: duration,
-      content: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          icon,
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    height: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  message,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-  
-
-
-
-
-
   static void show(
     BuildContext context,
     String message, {
@@ -137,13 +63,10 @@ class ShowSnackbar {
       duration: const Duration(milliseconds: 300),
     );
 
-    final animation = Tween<Offset>(
-      begin: const Offset(0, -1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Curves.easeOut,
-    ));
+    final animation =
+        Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero).animate(
+          CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+        );
 
     final overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
@@ -159,7 +82,9 @@ class ShowSnackbar {
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 14),
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                   decoration: BoxDecoration(
                     color: bgColor,
                     borderRadius: BorderRadius.circular(10),
@@ -168,7 +93,7 @@ class ShowSnackbar {
                         color: Colors.black38,
                         blurRadius: 10,
                         offset: Offset(0, 3),
-                      )
+                      ),
                     ],
                   ),
                   child: Row(
@@ -192,7 +117,9 @@ class ShowSnackbar {
                             Text(
                               message,
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 16),
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
                             ),
                           ],
                         ),
@@ -219,11 +146,104 @@ class ShowSnackbar {
       animationController.dispose();
     });
   }
-
-
 }
+
 const snackBar = SnackBar(content: Text('Yay! A SnackBar!'));
 
 // Find the ScaffoldMessenger in the widget tree
 // and use it to show a SnackBar.
 // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+void showCustomSnackBar(
+  BuildContext context,
+  String message, {
+  SnackBarType type = SnackBarType.error,
+  Duration duration = const Duration(seconds: 3),
+}) {
+  Color bgColor;
+  String title = type == SnackBarType.success ? 'Success' : 'Error';
+  Icon icon = type == SnackBarType.success
+      ? const Icon(Icons.done, color: Colors.white, size: 28)
+      : const Icon(Icons.error_outline, color: Colors.white, size: 28);
+
+  switch (type) {
+    case SnackBarType.success:
+      bgColor = Colors.black87;
+      break;
+    case SnackBarType.error:
+      bgColor = Colors.red;
+      break;
+  }
+
+  // Create the overlay entry
+  final overlay = OverlayEntry(
+    builder: (context) => Positioned(
+      top: 50, // distance from the top
+      left: 10,
+      right: 10,
+      child: Material(
+        color: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 6,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              icon,
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      message,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+
+  // Insert overlay
+  Overlay.of(context).insert(overlay);
+
+  // Remove after duration
+  Future.delayed(duration, () {
+    overlay.remove();
+  });
+}
+
+showToast(String msg) {
+  return Fluttertoast.showToast(
+    msg: msg, 
+  );
+}

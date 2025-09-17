@@ -14,7 +14,7 @@ class AuthRepository {
 
   AuthRepository(this._service);
 
-    Future<void> registerUser({
+    Future<Map<String ,dynamic>> registerUser({
     required String companyName,
     required String name,
     required String phone,
@@ -29,7 +29,7 @@ class AuthRepository {
       mobile: phone,
     );
   }
-   Future<void> loginUser(String phone, String password) {
-    return _service.login(phone, password);
+   Future<Map<String, dynamic>> login({required String username,required String password}) {
+    return _service.login(username: username, password: password);
   }
 }

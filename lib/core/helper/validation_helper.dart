@@ -1,32 +1,37 @@
+import 'package:flutter/material.dart';
+import 'package:pakkahishab/l10n/app_localizations.dart';
 
 class Validation {
-  static String? validateName(String? value) {
+  static String? validateName(String? value, BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return 'Name is required';
+      return loc.nameRequired;
     }
     if (value.trim().length < 3) {
-      return "Name can't be less than 3 character";
-    }
-    return null;
-  }
-  static String? validateCompany(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Company name is required';
+      return loc.nameTooShort;
     }
     return null;
   }
 
-  static String? validateEmail(String? value) {
+  static String? validateCompany(String? value, BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return 'Email is required';
+      return loc.companyRequired;
+    }
+    return null;
+  }
+
+  static String? validateEmail(String? value, BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    if (value == null || value.trim().isEmpty) {
+      return loc.emailRequired;
     }
 
-    // Improved regex
     const pattern = r'^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$';
     final regex = RegExp(pattern);
 
     if (!regex.hasMatch(value.trim())) {
-      return 'Enter a valid email address';
+      return loc.invalidEmail;
     }
 
     return null;
@@ -37,31 +42,33 @@ class Validation {
     return pattern.hasMatch(phone);
   }
 
-  static String? validatePhone(String? value) {
+  static String? validatePhone(String? value, BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     if (value == null || value.trim().isEmpty) {
-      return 'Phone is required';
+      return loc.phoneRequired;
     }
     if (!isValidBangladeshiPhone(value.trim())) {
-      return 'Enter a valid phone number';
+      return loc.invalidPhone;
     }
     return null;
   }
 
-   static String? validatePassword(String? value) {
+  static String? validatePassword(String? value, BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     if (value == null || value.isEmpty) {
-      return 'Password is required';
+      return loc.passwordRequired;
     }
 
     if (value.length < 8) {
-      return 'Password must be at least 8 characters long';
+      return loc.passwordTooShort;
     }
 
-    // At least one uppercase, one lowercase, one number, one special char
-    const pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
+    const pattern =
+        r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
     final regex = RegExp(pattern);
 
     if (!regex.hasMatch(value)) {
-      return 'Password must contain uppercase, lowercase, number, and special character';
+      return loc.invalidPassword;
     }
     return null;
   }

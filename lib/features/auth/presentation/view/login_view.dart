@@ -4,13 +4,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/di/translation_provider.dart';
 import 'package:pakkahishab/core/helper/validation_helper.dart';
-import 'package:pakkahishab/features/auth/viewmodel/login_viewmodel.dart';
-import 'package:pakkahishab/features/auth/widgets/custom_text_field.dart';
+import 'package:pakkahishab/features/auth/presentation/viewmodel/login_viewmodel.dart';
+import 'package:pakkahishab/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
+import 'package:pakkahishab/routes/app_routes.dart';
 
 import 'package:pakkahishab/shared/global_widgets/custom_fullwidth_button.dart';
 
-import '../../../core/const/app_colors.dart';
+import '../../../../core/const/app_colors.dart';
 
 class LoginView extends ConsumerWidget {
   const LoginView({super.key});
@@ -19,7 +20,7 @@ class LoginView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final vm = ref.watch(loginViewModelProvider);
     final translation = ref.watch(translationProvider);
-
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -59,10 +60,18 @@ class LoginView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Align(
+              alignment: Alignment.center,
+              child: Image.asset(
+                "assets/logo/pakkahishab_logo.png",
+                width: screenWidth * .52,
+              ),
+            ),
+            SizedBox(height: 50),
             CustomTextField(
               prefixIcon: Icon(Icons.phone, color: AppColors.primaryColor),
               hint: AppLocalizations.of(context)!.phone,
-              onChanged: vm.updatePhone,
+              onChanged: (val) => vm.updateName(val, context),
             ),
             SizedBox(height: 2),
             if (vm.phoneError.isNotEmpty)
@@ -71,12 +80,12 @@ class LoginView extends ConsumerWidget {
                 style: TextStyle(color: AppColors.errorTextColor),
               ),
             const SizedBox(height: 20),
-            
+
             CustomTextField(
               isPassword: true,
               prefixIcon: Icon(Icons.password),
               hint: AppLocalizations.of(context)!.password,
-              onChanged: (val) => vm.updatePassword(val),
+              onChanged: (val) => vm.updatePassword(val, context),
             ),
             SizedBox(height: 2),
             if (vm.passwordError.isNotEmpty)
@@ -88,38 +97,20 @@ class LoginView extends ConsumerWidget {
             const SizedBox(height: 20),
 
             CustomFullwidthButton(
-              onTap: vm.isLoading
-                  ? null
-                  : () async {
-                      final success = await vm.login();
-                      if (success && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Login Successful")),
-                        );
-                      } else if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Invalid credentials")),
-                        );
-                      }
-                    },
-              title: vm.isLoading
-                  ? SizedBox(
-                      height: 23,
-                      width: 23,
-                      child: const CircularProgressIndicator(
-                        color: AppColors.primaryColor4,
-                      ),
-                    )
-                  : Text("Login", style: buttonTextStyle(context)),
+              onTap: () async{
+                await vm.login(context);
+              },
+              title: "Login",
+              isLoading: vm.isLoading,
             ),
             const SizedBox(height: 10),
             Divider(color: AppColors.primaryColor),
             const SizedBox(height: 10),
             CustomFullwidthButton(
               onTap: () async {
-                Navigator.pushNamed(context, '/signup');
+                Navigator.pushNamed(context, Routes.signup);
               },
-              title: Text("SignUp", style: buttonTextStyle(context)),
+              title: "SignUp",
             ),
           ],
         ),
