@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pakkahishab/features/auth/presentation/view/login_view.dart';
 import 'package:pakkahishab/features/auth/presentation/view/signup_view.dart';
 import 'package:pakkahishab/features/home/presentation/views/home_view.dart';
-import 'package:pakkahishab/home.dart';
+
 
 class Routes {
   static const String home = '/home';

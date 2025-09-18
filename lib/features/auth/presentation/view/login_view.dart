@@ -13,13 +13,11 @@ import 'package:pakkahishab/shared/global_widgets/custom_fullwidth_button.dart';
 
 import '../../../../core/const/app_colors.dart';
 
-class LoginView extends ConsumerWidget {
+class LoginView extends StatelessWidget {
   const LoginView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final vm = ref.watch(loginViewModelProvider);
-    final translation = ref.watch(translationProvider);
+  Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
@@ -27,30 +25,35 @@ class LoginView extends ConsumerWidget {
         actions: [
           Padding(
             padding: EdgeInsetsGeometry.only(right: 10),
-            child: InkWell(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              onTap: () {
-                if (translation.appLocale.languageCode == 'en') {
-                  ref
-                      .read(translationProvider)
-                      .changeLanguage(const Locale('bn'));
-                } else {
-                  ref
-                      .read(translationProvider)
-                      .changeLanguage(const Locale('en'));
-                }
+            child: Consumer(
+              builder: (context, ref, child) {
+                final translation = ref.watch(translationProvider);
+                return InkWell(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  onTap: () {
+                    if (translation.appLocale.languageCode == 'en') {
+                      ref
+                          .read(translationProvider)
+                          .changeLanguage(const Locale('bn'));
+                    } else {
+                      ref
+                          .read(translationProvider)
+                          .changeLanguage(const Locale('en'));
+                    }
+                  },
+                  child: Ink(
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: AppColors.primaryColor,
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.languageType,
+                      style: bodyMediumWhite(context),
+                    ),
+                  ),
+                );
               },
-              child: Ink(
-                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: AppColors.primaryColor,
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.languageType,
-                  style: bodyMediumWhite(context),
-                ),
-              ),
             ),
           ),
         ],
@@ -68,41 +71,90 @@ class LoginView extends ConsumerWidget {
               ),
             ),
             SizedBox(height: 50),
-            CustomTextField(
-              prefixIcon: Icon(Icons.phone, color: AppColors.primaryColor),
-              hint: AppLocalizations.of(context)!.phone,
-              onChanged: (val) => vm.updateName(val, context),
-            ),
-            SizedBox(height: 2),
-            if (vm.phoneError.isNotEmpty)
-              Text(
-                vm.phoneError,
-                style: TextStyle(color: AppColors.errorTextColor),
-              ),
-            const SizedBox(height: 20),
-
-            CustomTextField(
-              isPassword: true,
-              prefixIcon: Icon(Icons.password),
-              hint: AppLocalizations.of(context)!.password,
-              onChanged: (val) => vm.updatePassword(val, context),
-            ),
-            SizedBox(height: 2),
-            if (vm.passwordError.isNotEmpty)
-              Text(
-                vm.passwordError,
-                style: TextStyle(color: AppColors.errorTextColor),
-              ),
-
-            const SizedBox(height: 20),
-
-            CustomFullwidthButton(
-              onTap: () async{
-                await vm.login(context);
+            Consumer(
+              builder: (context, ref, child) {
+                print("name build");
+                final nameError = ref.watch(
+                  loginViewModelProvider.select((vm) => vm.nameError),
+                );
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomTextField(
+                      prefixIcon: const Icon(
+                        Icons.person_2,
+                        color: AppColors.primaryColor,
+                      ),
+                      hint: AppLocalizations.of(context)!.name,
+                      onChanged: (value) => ref
+                          .read(loginViewModelProvider)
+                          .updateName(value, context),
+                      textInputAction: TextInputAction.next,
+                    ),
+                    SizedBox(height: 2),
+                    if (nameError.isNotEmpty)
+                      Text(
+                        nameError,
+                        style: const TextStyle(color: AppColors.errorTextColor),
+                      ),
+                  ],
+                );
               },
-              title: "Login",
-              isLoading: vm.isLoading,
             ),
+
+            const SizedBox(height: 20),
+
+            Consumer(
+              builder: (context, ref, child) {
+                final passwordError = ref.watch(
+                  loginViewModelProvider.select((vm) => vm.passwordError),
+                );
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomTextField(
+                      isPassword: true,
+                      prefixIcon: const Icon(
+                        Icons.lock,
+                        color: AppColors.primaryColor,
+                      ),
+                      hint: AppLocalizations.of(context)!.password,
+                      onChanged: (value) => ref
+                          .read(loginViewModelProvider)
+                          .updatePassword(value, context),
+                      onDone: () async {
+                        await ref.read(loginViewModelProvider).login(context);
+                      },
+                      textInputAction: TextInputAction.done,
+                    ),
+                    if (passwordError.isNotEmpty)
+                      Text(
+                        passwordError,
+                        style: const TextStyle(color: AppColors.errorTextColor),
+                      ),
+                  ],
+                );
+              },
+            ),
+
+            const SizedBox(height: 20),
+            Consumer(
+              builder: (context, ref, child) {
+                final isLoading = ref.watch(
+                  loginViewModelProvider.select((vm) => vm.isLoading),
+                );
+                
+                return CustomFullwidthButton(
+                  onTap: () async {
+                    print("df");
+                    await ref.read(loginViewModelProvider).login(context);
+                  },
+                  title: "Login",
+                  isLoading: isLoading,
+                );
+              },
+            ),
+
             const SizedBox(height: 10),
             Divider(color: AppColors.primaryColor),
             const SizedBox(height: 10),

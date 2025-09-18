@@ -49,7 +49,6 @@ class ShowSnackbar {
     Duration duration = const Duration(seconds: 3),
   }) {
     final overlay = Overlay.of(context);
-    if (overlay == null) return;
 
     final bgColor = type == SnackBarType.success ? Colors.green : Colors.red;
     final icon = type == SnackBarType.success

@@ -20,4 +20,5 @@ class AppColors {
   static const Color fillColor = Color.fromARGB(255, 237, 247, 250);
   static const Color blackColor = Color(0xff000000);
   static const Color navUnSelectedColor = Color(0xff868686);
+  static const Color koraNeel = Color(0xff001469);
 }

@@ -31,10 +31,22 @@ TextStyle titleExtraLarge(BuildContext context) => TextStyle(
   fontSize: getResponsiveFontSize(context, 22),
   height: 1.2,
 );
+TextStyle titleExtraLargeWhite(BuildContext context) => TextStyle(
+  fontWeight: FontWeight.w600,
+  fontSize: getResponsiveFontSize(context, 22),
+  height: 1.2,
+);
 
 // Titles
 TextStyle titleLarge(BuildContext context) => TextStyle(
   fontWeight: FontWeight.w600,
+  color: AppColors.whiteColor,
+  fontSize: getResponsiveFontSize(context, 20),
+  height: 1.2,
+);
+TextStyle titleLargeWhite(BuildContext context) => TextStyle(
+  fontWeight: FontWeight.w600,
+  color: AppColors.whiteColor,
   fontSize: getResponsiveFontSize(context, 20),
   height: 1.2,
 );
