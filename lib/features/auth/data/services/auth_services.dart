@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/urls.dart';
-import 'package:pakkahishab/core/utils/show_snackbar.dart';
 
 final authServiceProvider = Provider<AuthService>((ref) {
   return AuthService();

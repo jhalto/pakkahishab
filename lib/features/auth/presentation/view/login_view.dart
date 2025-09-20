@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/di/translation_provider.dart';
-import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/features/auth/presentation/viewmodel/login_viewmodel.dart';
 import 'package:pakkahishab/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
@@ -49,7 +47,7 @@ class LoginView extends StatelessWidget {
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.languageType,
-                      style: bodyMediumWhite(context),
+                      style: bodyMediumWhite,
                     ),
                   ),
                 );

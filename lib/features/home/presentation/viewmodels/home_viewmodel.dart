@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
+import 'package:pakkahishab/routes/app_routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 final homeViewModelProvider = ChangeNotifierProvider((ref) => HomeViewmodel(),);
@@ -17,6 +19,21 @@ class HomeViewmodel extends ChangeNotifier {
   String _company = '';
   String _email = '';
   String _phone = '';
+  
+  final items = [
+      "Purchase",
+      "Sales",
+      "Supplier Due",
+      "Customer Due",
+      "Expenses",
+      "Income",
+      "Cash",
+      "Bank",
+      "Mobile Banking",
+      "Stock",
+      "Advance",
+      "Loan",
+    ];
 
   loadUserData() async {
       final results = await Future.wait([
@@ -39,5 +56,12 @@ class HomeViewmodel extends ChangeNotifier {
    String get email => _email;
    String get phone => _phone;
    String get company => _company;
-
+  
+  void logout(BuildContext context)async{
+    SharedPreferences sp = await SharedPreferences.getInstance(); 
+    
+    await sp.clear();
+    if(!context.mounted)return;
+    Navigator.pushNamedAndRemoveUntil(context, Routes.login, (route) => false,); 
+  }
 }

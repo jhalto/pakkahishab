@@ -92,7 +92,7 @@ class CustomFormFieldState extends State<CustomFormField> {
                 });
                 return result;
               },
-              style: bodyLarge(context),
+              style: bodyLarge,
               onEditingComplete: widget.onComplete,
               textInputAction: widget.textInputAction,
               controller: widget.controller,
@@ -117,7 +117,7 @@ class CustomFormFieldState extends State<CustomFormField> {
                 prefixIconConstraints: BoxConstraints(minWidth: 50),
                 prefixIcon: widget.prefixIcon,
                 hintText: widget.hint,
-                hintStyle: bodyMediumSecondary(context),
+                hintStyle: bodyMediumSecondary,
                 filled: true,
 
                 fillColor: _errorText.value == null

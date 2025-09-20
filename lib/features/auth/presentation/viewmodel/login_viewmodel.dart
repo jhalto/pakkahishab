@@ -17,9 +17,9 @@ class LoginViewModel extends ChangeNotifier {
 
   LoginViewModel(this._repo);
 
-  String _phone = '';
+  final String _phone = '';
   String _name = '';
-  String _phoneError = '';
+  final String _phoneError = '';
   String _nameError = '';
   String _password = '';
   String _passwordError = '';
