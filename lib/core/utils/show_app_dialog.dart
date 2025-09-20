@@ -26,11 +26,11 @@ static void showSuccessDialog(BuildContext context) {
               child: Icon(Icons.done, size: 30, color: Colors.white),
             ),
             const SizedBox(height: 18),
-            Text("Success !", style: titleExtraLarge),
+            Text("Success !", style: titleExtraLarge()),
             SizedBox(height: 5),
-            Text("Your payment was successful.", style: bodyMedium),
-            Text("A receipt for this purchase has", style: bodyMedium),
-            Text("been sent to your email", style: bodyMedium),
+            Text("Your payment was successful.", style: bodyMedium()),
+            Text("A receipt for this purchase has", style: bodyMedium()),
+            Text("been sent to your email", style: bodyMedium()),
             const SizedBox(height: 30),
             CustomButton(
               paddingVertical: 10,
@@ -75,18 +75,18 @@ void showErrorDialog(
               ),
             ),
             const SizedBox(height: 18),
-            Text("Error !", style: titleExtraLarge),
+            Text("Error !", style: titleExtraLarge()),
             SizedBox(height: 5),
             if (body1 != null)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Text(
                   body1,
-                  style: bodyMedium,
+                  style: bodyMedium(),
                   textAlign: TextAlign.center,
                 ),
               ),
-            if (body2 != null) Text(body2, style: bodyMedium),
+            if (body2 != null) Text(body2, style: bodyMedium()),
 
             const SizedBox(height: 30),
             Row(

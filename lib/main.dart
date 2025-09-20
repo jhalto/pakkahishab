@@ -24,6 +24,7 @@ class MyApp extends ConsumerWidget {
       builder: (context, child) {
         return MaterialApp(
           title: 'PakkaHishab',
+          
           locale: translation.appLocale,
           localizationsDelegates: [
             AppLocalizations.delegate,
@@ -43,7 +44,7 @@ class MyApp extends ConsumerWidget {
               centerTitle: true, // Optional: center the title
             ),
             scaffoldBackgroundColor: AppColors.whiteColor,
-            textTheme: TextTheme(bodyMedium: bodyMedium),
+            textTheme: TextTheme(bodyMedium: bodyMedium()),
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           ),
           initialRoute: Routes.login,

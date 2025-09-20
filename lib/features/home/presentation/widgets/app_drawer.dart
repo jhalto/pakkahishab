@@ -27,9 +27,9 @@ class AppDrawer extends StatelessWidget {
                   width: double.infinity,
                   child: Column(
                     children: [
-                      Text(vm.company, style: bodyMediumWhite),
+                      Text(vm.company, style: bodyMediumWhite()),
 
-                      Text(vm.name, style: bodyMediumWhite),
+                      Text(vm.name, style: bodyMediumWhite()),
                     ],
                   ),
                 ),
@@ -61,7 +61,7 @@ class AppDrawer extends StatelessWidget {
                 children: [
                   ExpansionTile(
                     leading: const Icon(Icons.shopping_cart), // 🛒 Purchase
-                    title: Text("Purchase", style: bodyLarge),
+                    title: Text("Purchase", style: bodyLarge()),
                     children: [
                       ListTile(
                         title: Text("New Purchase"),
@@ -76,7 +76,7 @@ class AppDrawer extends StatelessWidget {
 
                   ExpansionTile(
                     leading: const Icon(Icons.point_of_sale), // 💰 Sales
-                    title: Text("Sales", style: bodyLarge),
+                    title: Text("Sales", style: bodyLarge()),
                     children: [
                       ListTile(
                         title: Text("New Sales"),
@@ -91,7 +91,7 @@ class AppDrawer extends StatelessWidget {
 
                   ExpansionTile(
                     leading: const Icon(Icons.money_off), // 💸 Expenses
-                    title: Text("Expenses", style: bodyLarge),
+                    title: Text("Expenses", style: bodyLarge()),
                     children: [
                       ListTile(
                         title: Text("Head"),
@@ -110,7 +110,7 @@ class AppDrawer extends StatelessWidget {
 
                   ExpansionTile(
                     leading: const Icon(Icons.attach_money), // 💵 Income
-                    title: Text("Income", style: bodyLarge),
+                    title: Text("Income", style: bodyLarge()),
                     children: [
                       ListTile(
                         title: Text("Head"),
@@ -129,7 +129,7 @@ class AppDrawer extends StatelessWidget {
 
                   ExpansionTile(
                     leading: const Icon(Icons.payment), // 📑 Due
-                    title: Text("Due", style: bodyLarge),
+                    title: Text("Due", style: bodyLarge()),
                     children: [
                       ListTile(
                         title: Text("Supplier Due"),
@@ -144,7 +144,7 @@ class AppDrawer extends StatelessWidget {
 
                   ExpansionTile(
                     leading: const Icon(Icons.savings), // 💳 Advance
-                    title: Text("Advance", style: bodyLarge),
+                    title: Text("Advance", style: bodyLarge()),
                     children: [
                       ListTile(
                         title: Text("Head"),
@@ -167,7 +167,7 @@ class AppDrawer extends StatelessWidget {
 
                   ExpansionTile(
                     leading: const Icon(Icons.account_balance), // 🏦 Loan
-                    title: Text("Loan", style: bodyLarge),
+                    title: Text("Loan", style: bodyLarge()),
                     children: [
                       ListTile(
                         title: Text("Head"),
@@ -190,7 +190,7 @@ class AppDrawer extends StatelessWidget {
 
                   ExpansionTile(
                     leading: const Icon(Icons.insert_chart), // 📊 Reports
-                    title: Text("Reports", style: bodyLarge),
+                    title: Text("Reports", style: bodyLarge()),
                     children: [
                       ListTile(
                         title: Text("Transaction Reports"),
@@ -205,7 +205,7 @@ class AppDrawer extends StatelessWidget {
 
                   ExpansionTile(
                     leading: const Icon(Icons.settings), // ⚙️ Settings
-                    title: Text("Settings", style: bodyLarge),
+                    title: Text("Settings", style: bodyLarge()),
                     children: [
                       ListTile(
                         title: Text("Company Info"),
