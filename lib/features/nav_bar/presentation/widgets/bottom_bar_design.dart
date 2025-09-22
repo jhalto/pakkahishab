@@ -1,0 +1,102 @@
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pakkahishab/core/const/app_colors.dart';
+import 'package:pakkahishab/features/purchase/presentation/views/purchase_view.dart';
+import 'package:pakkahishab/features/sales/presentation/views/sale_view.dart';
+
+class BottomBarDesign extends StatelessWidget {
+  const BottomBarDesign({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+        child: BottomAppBar(
+          clipBehavior: Clip.antiAlias,
+          shape: const CircularNotchedRectangle(),
+          notchMargin: 10,
+          elevation: 10,
+          color: AppColors.borderColor,
+          child: SizedBox(
+            child: Row(
+              children: [
+                // Left side icons
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PurchaseView()),
+                      );
+                    },
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor3,
+                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.moneyCheck,
+                            color: AppColors.whiteColor,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "Purchase",
+                            style: TextStyle(color: AppColors.whiteColor),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Spacer for FAB
+                Expanded(child: const SizedBox()),
+
+                // Right side icons
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SaleView()),
+                      );
+                    },
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor2,
+                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.bangladeshiTakaSign,
+                            color: AppColors.whiteColor,
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            "Sales",
+                            style: TextStyle(color: AppColors.whiteColor),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+  }
+}

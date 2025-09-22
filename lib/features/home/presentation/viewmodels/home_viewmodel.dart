@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
+import 'package:pakkahishab/routes/app_routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-
-final homeViewModelProvider = ChangeNotifierProvider((ref) => HomeViewmodel(),);
+final homeViewModelProvider = ChangeNotifierProvider((ref) => HomeViewmodel());
 
 class HomeViewmodel extends ChangeNotifier {
-
-  HomeViewmodel(){
-     loadUserData();
+  HomeViewmodel() {
+    loadUserData();
   }
 
   String _name = '';
@@ -18,8 +18,23 @@ class HomeViewmodel extends ChangeNotifier {
   String _email = '';
   String _phone = '';
 
+  final items = [
+
+    "Expenses",
+    "Income",
+    "Stock",
+   
+  ];
+  final icons = [
+   // Customer Due
+    Icons.money_off, // Expenses
+    Icons.trending_up, // Income
+    Icons.inventory, // Stock
+
+  ];
+
   loadUserData() async {
-      final results = await Future.wait([
+    final results = await Future.wait([
       SharedPreferencesHelper.getString('name'),
       SharedPreferencesHelper.getString('email'),
       SharedPreferencesHelper.getString('phone'),
@@ -34,10 +49,17 @@ class HomeViewmodel extends ChangeNotifier {
 
     notifyListeners(); // 🔔 Update UI
   }
-  
-   String get name => _name;
-   String get email => _email;
-   String get phone => _phone;
-   String get company => _company;
 
+  String get name => _name;
+  String get email => _email;
+  String get phone => _phone;
+  String get company => _company;
+
+  void logout(BuildContext context) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+
+    await sp.clear();
+    if (!context.mounted) return;
+    Navigator.pushNamedAndRemoveUntil(context, Routes.login, (route) => false);
+  }
 }

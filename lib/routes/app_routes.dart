@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:pakkahishab/features/auth/presentation/view/login_view.dart';
 import 'package:pakkahishab/features/auth/presentation/view/signup_view.dart';
 import 'package:pakkahishab/features/home/presentation/views/home_view.dart';
+import 'package:pakkahishab/features/nav_bar/presentation/view/navbar_view.dart';
 
 
 class Routes {
   static const String home = '/home';
   static const String signup = '/signup';
   static const String login = '/login';
+  static const String navbar = '/navbar';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -17,6 +19,8 @@ class Routes {
         return MaterialPageRoute(builder: (_) => const LoginView(),);  
       case signup:
         return MaterialPageRoute(builder: (_) => const SignupView());
+      case navbar:
+        return MaterialPageRoute(builder: (_) => const NavbarView());
       default:
         return MaterialPageRoute(
             builder: (_) => const Scaffold(

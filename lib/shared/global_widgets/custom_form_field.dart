@@ -1,10 +1,7 @@
-
-
 import 'package:flutter/material.dart';
 
 import '../../core/const/app_colors.dart';
 import '../../core/const/app_text_style.dart';
-
 
 class CustomFormField extends StatefulWidget {
   final String? hint;
@@ -37,6 +34,7 @@ class CustomFormFieldState extends State<CustomFormField> {
   void resetError() {
     _errorText.value = null;
   }
+
   @override
   void initState() {
     super.initState();
@@ -92,7 +90,7 @@ class CustomFormFieldState extends State<CustomFormField> {
                 });
                 return result;
               },
-              style: bodyLarge(context),
+              style: AppTextStyle.bodyLarge,
               onEditingComplete: widget.onComplete,
               textInputAction: widget.textInputAction,
               controller: widget.controller,
@@ -117,7 +115,7 @@ class CustomFormFieldState extends State<CustomFormField> {
                 prefixIconConstraints: BoxConstraints(minWidth: 50),
                 prefixIcon: widget.prefixIcon,
                 hintText: widget.hint,
-                hintStyle: bodyMediumSecondary(context),
+                hintStyle: AppTextStyle.bodyMediumSecondary,
                 filled: true,
 
                 fillColor: _errorText.value == null

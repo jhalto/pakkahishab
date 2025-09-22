@@ -62,7 +62,7 @@ class CustomFullwidthButton extends StatelessWidget {
                 )
               : Text(
                   title,
-                  style: buttonTextStyle(context),
+                  style:AppTextStyle.buttonTextStyle,
                   textAlign: TextAlign.center,
                 ),
         ),

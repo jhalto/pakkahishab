@@ -37,7 +37,7 @@ class CustomField extends StatelessWidget {
         prefixIconConstraints: BoxConstraints(minWidth: 50),
         prefixIcon: prefixIcon,
         hintText: hint,
-        hintStyle: bodyMediumSecondary(context),
+        hintStyle:AppTextStyle. bodyMediumSecondary,
         filled: true,
         fillColor: AppColors.fillColor,
         contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 19),

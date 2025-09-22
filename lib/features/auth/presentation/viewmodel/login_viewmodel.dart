@@ -17,9 +17,9 @@ class LoginViewModel extends ChangeNotifier {
 
   LoginViewModel(this._repo);
 
-  String _phone = '';
+  final String _phone = '';
   String _name = '';
-  String _phoneError = '';
+  final String _phoneError = '';
   String _nameError = '';
   String _password = '';
   String _passwordError = '';
@@ -80,8 +80,8 @@ class LoginViewModel extends ChangeNotifier {
       // Navigate to home
       Navigator.pushNamedAndRemoveUntil(
         context,
-        Routes.home,
-        (Route<dynamic> route) => false,
+        Routes.navbar,
+        ( route) => false,
       );
 
       showCustomSnackBar(

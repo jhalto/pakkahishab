@@ -20,15 +20,15 @@ class SignupViewModel extends ChangeNotifier {
   String _userEmail = '';
   String _phone = '';
   String _password = '';
-  String _confirmPassword = '';
+  final String _confirmPassword = '';
 
   String _nameError = '';
-  String _error = '';
+  final String _error = '';
   String _companyError = '';
   String _emailError = '';
   String _phoneError = '';
   String _passwordError = '';
-  String _confirmPasswordError = '';
+  final String _confirmPasswordError = '';
   
   String? _errorMessage;
   String? _successMessage;
