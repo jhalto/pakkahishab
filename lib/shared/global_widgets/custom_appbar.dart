@@ -14,10 +14,11 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: false,
       automaticallyImplyLeading: false,
       leading: InkWell(
+        borderRadius:const BorderRadius.all(Radius.circular(50)),
         onTap: () {
           Scaffold.of(context).openDrawer();
         },
-        child: Icon(Icons.menu, color: AppColors.whiteColor,)),
+        child:const Icon(Icons.menu, color: AppColors.whiteColor,)),
       
       title: Text(
         title,

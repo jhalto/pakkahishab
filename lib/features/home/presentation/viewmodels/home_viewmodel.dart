@@ -19,32 +19,18 @@ class HomeViewmodel extends ChangeNotifier {
   String _phone = '';
 
   final items = [
-    "Purchase",
-    "Sales",
-    "Supplier Due",
-    "Customer Due",
+
     "Expenses",
     "Income",
-    "Cash",
-    "Bank",
-    "Mobile Banking",
     "Stock",
-    "Advance",
-    "Loan",
+   
   ];
   final icons = [
-    Icons.shopping_cart, // Purchase
-    Icons.attach_money, // Sales
-    Icons.account_balance, // Supplier Due
-    Icons.people, // Customer Due
+   // Customer Due
     Icons.money_off, // Expenses
     Icons.trending_up, // Income
-    Icons.account_balance_wallet, // Cash
-    Icons.account_balance, // Bank
-    Icons.phone_iphone, // Mobile Banking
     Icons.inventory, // Stock
-    Icons.payment, // Advance
-    Icons.account_balance_outlined, // Loan
+
   ];
 
   loadUserData() async {

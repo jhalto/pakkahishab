@@ -47,7 +47,7 @@ class LoginView extends StatelessWidget {
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.languageType,
-                      style: bodyMediumWhite(),
+                      style:AppTextStyle.bodyMediumWhite,
                     ),
                   ),
                 );

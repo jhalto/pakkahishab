@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/features/auth/presentation/view/signup_view.dart';
+import 'package:pakkahishab/features/home/presentation/views/home_view.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/app_drawer.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/viewmodel/navbar_viewmodel.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/widgets/bottom_bar_design.dart';
@@ -19,7 +20,7 @@ class NavbarView extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppbar(title: "PakkaHishab"),
       drawer: const AppDrawer(),
-      
+      body: HomeView(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         shape: RoundedRectangleBorder(

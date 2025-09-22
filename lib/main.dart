@@ -33,8 +33,8 @@ class MyApp extends ConsumerWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: [
-            Locale('en'), // English
-            Locale('bn'), // Spanish
+            Locale('en'),
+            Locale('bn'), 
           ],
           
           theme: ThemeData(
@@ -45,7 +45,7 @@ class MyApp extends ConsumerWidget {
               centerTitle: true, // Optional: center the title
             ),
             scaffoldBackgroundColor: AppColors.whiteColor,
-            textTheme: TextTheme(bodyMedium: bodyMedium()),
+            textTheme: TextTheme(bodyMedium:AppTextStyle.bodyMedium),
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           ),
           initialRoute: Routes.login,

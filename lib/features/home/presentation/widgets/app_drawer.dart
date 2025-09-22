@@ -12,7 +12,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: MediaQuery.of(context).size.width *.85,
+      width: MediaQuery.of(context).size.width * .85,
       backgroundColor: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,9 +28,9 @@ class AppDrawer extends StatelessWidget {
                   width: double.infinity,
                   child: Column(
                     children: [
-                      Text(vm.company, style: bodyMediumWhite()),
+                      Text(vm.company, style: AppTextStyle.bodyMediumWhite),
 
-                      Text(vm.name, style: bodyMediumWhite()),
+                      Text(vm.name, style: AppTextStyle.bodyMediumWhite),
                     ],
                   ),
                 ),
@@ -62,195 +62,194 @@ class AppDrawer extends StatelessWidget {
                 children: [
                   ExpansionTile(
                     leading: const Icon(Icons.shopping_cart), // 🛒 Purchase
-                    title: Text("Purchase", style: bodyLarge()),
+                    title: Text("Purchase", style:AppTextStyle. bodyLarge),
                     children: [
                       ListTile(
                         title: Text("New Purchase"),
-                        leading: Icon(FontAwesomeIcons.cartShopping),
+                        leading:const Icon(FontAwesomeIcons.cartShopping),
                       ),
                       ListTile(
                         title: Text("Purchase Return"),
-                        leading: Icon(FontAwesomeIcons.arrowRotateLeft),
+                        leading:const Icon(FontAwesomeIcons.arrowRotateLeft),
                       ),
                     ],
                   ),
 
                   ExpansionTile(
                     leading: const Icon(Icons.point_of_sale), // 💰 Sales
-                    title: Text("Sales", style: bodyLarge()),
+                    title: Text("Sales", style:AppTextStyle.bodyLarge),
                     children: [
                       ListTile(
                         title: Text("New Sales"),
-                        leading: Icon(FontAwesomeIcons.cashRegister),
+                        leading:const Icon(FontAwesomeIcons.cashRegister),
                       ),
                       ListTile(
                         title: Text("Sales Return"),
-                        leading: Icon(FontAwesomeIcons.arrowRotateLeft),
+                        leading:const Icon(FontAwesomeIcons.arrowRotateLeft),
                       ),
                     ],
                   ),
 
                   ExpansionTile(
                     leading: const Icon(Icons.money_off), // 💸 Expenses
-                    title: Text("Expenses", style: bodyLarge()),
+                    title: Text("Expenses", style:AppTextStyle. bodyLarge),
                     children: [
                       ListTile(
                         title: Text("Head"),
-                        leading: Icon(Icons.category),
+                        leading:const Icon(Icons.category),
                       ),
                       ListTile(
                         title: Text("Add Expenses"),
-                        leading: Icon(Icons.add_circle_outline),
+                        leading:const Icon(Icons.add_circle_outline),
                       ),
                       ListTile(
                         title: Text("Edit Expenses"),
-                        leading: Icon(Icons.edit),
+                        leading:const Icon(Icons.edit),
                       ),
                     ],
                   ),
 
                   ExpansionTile(
                     leading: const Icon(Icons.attach_money), // 💵 Income
-                    title: Text("Income", style: bodyLarge()),
+                    title: Text("Income", style:AppTextStyle.bodyLarge),
                     children: [
                       ListTile(
                         title: Text("Head"),
-                        leading: Icon(Icons.category),
+                        leading:const Icon(Icons.category),
                       ),
                       ListTile(
                         title: Text("Add Income"),
-                        leading: Icon(Icons.add_circle_outline),
+                        leading:const Icon(Icons.add_circle_outline),
                       ),
                       ListTile(
                         title: Text("Edit Income"),
-                        leading: Icon(Icons.edit),
+                        leading:const Icon(Icons.edit),
                       ),
                     ],
                   ),
 
                   ExpansionTile(
                     leading: const Icon(Icons.payment), // 📑 Due
-                    title: Text("Due", style: bodyLarge()),
+                    title: Text("Due", style:AppTextStyle.bodyLarge),
                     children: [
                       ListTile(
                         title: Text("Supplier Due"),
-                        leading: Icon(Icons.store),
+                        leading:const Icon(Icons.store),
                       ),
                       ListTile(
                         title: Text("Customer Due"),
-                        leading: Icon(Icons.person),
+                        leading:const Icon(Icons.person),
                       ),
                     ],
                   ),
 
                   ExpansionTile(
                     leading: const Icon(Icons.savings), // 💳 Advance
-                    title: Text("Advance", style: bodyLarge()),
+                    title: Text("Advance", style:AppTextStyle.bodyLarge),
                     children: [
                       ListTile(
                         title: Text("Head"),
-                        leading: Icon(Icons.category),
+                        leading:const Icon(Icons.category),
                       ),
                       ListTile(
                         title: Text("Add Advance"),
-                        leading: Icon(Icons.add_circle_outline),
+                        leading:const Icon(Icons.add_circle_outline),
                       ),
                       ListTile(
                         title: Text("Edit Advance"),
-                        leading: Icon(Icons.edit),
+                        leading:const Icon(Icons.edit),
                       ),
                       ListTile(
                         title: Text("Advance Refund"),
-                        leading: Icon(Icons.undo),
+                        leading:const Icon(Icons.undo),
                       ),
                     ],
                   ),
 
                   ExpansionTile(
                     leading: const Icon(Icons.account_balance), // 🏦 Loan
-                    title: Text("Loan", style: bodyLarge()),
+                    title: Text("Loan", style:AppTextStyle.bodyLarge),
                     children: [
                       ListTile(
                         title: Text("Head"),
-                        leading: Icon(Icons.category),
+                        leading:const Icon(Icons.category),
                       ),
                       ListTile(
                         title: Text("Add Loan"),
-                        leading: Icon(Icons.add_circle_outline),
+                        leading:const Icon(Icons.add_circle_outline),
                       ),
                       ListTile(
                         title: Text("Edit Loan"),
-                        leading: Icon(Icons.edit),
+                        leading:const Icon(Icons.edit),
                       ),
                       ListTile(
                         title: Text("Loan Pay"),
-                        leading: Icon(Icons.payments),
+                        leading:const Icon(Icons.payments),
                       ),
                     ],
                   ),
 
                   ExpansionTile(
                     leading: const Icon(Icons.insert_chart), // 📊 Reports
-                    title: Text("Reports", style: bodyLarge()),
+                    title: Text("Reports", style:AppTextStyle.bodyLarge),
                     children: [
                       ListTile(
                         title: Text("Transaction Reports"),
-                        leading: Icon(Icons.receipt_long),
+                        leading:const Icon(Icons.receipt_long),
                       ),
                       ListTile(
                         title: Text("Stock Reports"),
-                        leading: Icon(Icons.inventory),
+                        leading:const Icon(Icons.inventory),
                       ),
                     ],
                   ),
 
                   ExpansionTile(
                     leading: const Icon(Icons.settings), // ⚙️ Settings
-                    title: Text("Settings", style: bodyLarge()),
+                    title: Text("Settings", style:AppTextStyle.bodyLarge),
                     children: [
                       ListTile(
                         title: Text("Company Info"),
-                        leading: Icon(Icons.business),
+                        leading:const Icon(Icons.business),
                       ),
                       ListTile(
                         title: Text("Chart of Accounts"),
-                        leading: Icon(Icons.account_tree),
+                        leading:const Icon(Icons.account_tree),
                       ),
                       ListTile(
                         title: Text("Supplier"),
-                        leading: Icon(Icons.store),
+                        leading:const Icon(Icons.store),
                       ),
                       ListTile(
                         title: Text("Customer"),
-                        leading: Icon(Icons.people),
+                        leading:const Icon(Icons.people),
                       ),
                       ListTile(
                         title: Text("Product"),
-                        leading: Icon(Icons.shopping_bag),
+                        leading:const Icon(Icons.shopping_bag),
                       ),
                       ListTile(
                         title: Text("Edit Profile"),
-                        leading: Icon(Icons.edit),
+                        leading:const Icon(Icons.edit),
                       ),
                       ListTile(
                         title: Text("Opening Balance"),
-                        leading: Icon(Icons.account_balance_wallet),
+                        leading:const Icon(Icons.account_balance_wallet),
                       ),
                       ListTile(
                         title: Text("Supplier Opening Balance"),
-                        leading: Icon(Icons.store_mall_directory),
+                        leading:const Icon(Icons.store_mall_directory),
                       ),
                       ListTile(
                         title: Text("Customer Opening Balance"),
-                        leading: Icon(Icons.people_alt),
+                        leading:const Icon(Icons.people_alt),
                       ),
                     ],
                   ),
                   Consumer(
                     builder: (context, ref, child) {
                       final vm = ref.read(homeViewModelProvider);
-                    
-                      
+
                       return ListTile(
                         leading: Icon(Icons.logout),
                         title: Text("Logout"),

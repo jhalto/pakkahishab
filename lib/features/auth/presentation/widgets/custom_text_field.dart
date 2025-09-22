@@ -54,7 +54,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         prefixIconConstraints: const BoxConstraints(minWidth: 50),
         prefixIcon: widget.prefixIcon,
         label: Text(widget.hint ?? ""),
-        hintStyle: bodyMediumSecondary(),
+        hintStyle:AppTextStyle.bodyMediumSecondary,
         filled: true,
         fillColor: AppColors.fillColor,
         contentPadding: const EdgeInsets.symmetric(
