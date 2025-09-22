@@ -11,7 +11,13 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      centerTitle: false,
       automaticallyImplyLeading: false,
+      leading: InkWell(
+        onTap: () {
+          Scaffold.of(context).openDrawer();
+        },
+        child: Icon(Icons.menu, color: AppColors.whiteColor,)),
       
       title: Text(
         title,

@@ -46,6 +46,8 @@ dependencies:
   fluttertoast: ^8.2.12
   font_awesome_flutter: ^10.10.0
   flutter_screenutil: ^5.9.3
+  animated_bottom_navigation_bar: ^1.4.0
+  circle_nav_bar: ^2.2.0
 
 dev_dependencies:
   flutter_test:

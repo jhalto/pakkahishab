@@ -52,7 +52,7 @@ class HomeView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.widgets, // you can map different icons later
+                            vm.icons[index], // you can map different icons later
                             size: 28,
                             color: AppColors.primaryColor,
                           ),

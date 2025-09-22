@@ -12,6 +12,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      width: MediaQuery.of(context).size.width *.85,
       backgroundColor: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,7 +23,7 @@ class AppDrawer extends StatelessWidget {
               return DrawerHeader(
                 // currentAccountPictureSize: Size(70, 70),
                 margin: EdgeInsets.only(bottom: 0),
-                decoration: BoxDecoration(color: AppColors.fillColor2),
+                decoration: BoxDecoration(color: AppColors.primaryColor),
                 child: SizedBox(
                   width: double.infinity,
                   child: Column(

@@ -80,8 +80,8 @@ class LoginViewModel extends ChangeNotifier {
       // Navigate to home
       Navigator.pushNamedAndRemoveUntil(
         context,
-        Routes.home,
-        (Route<dynamic> route) => false,
+        Routes.navbar,
+        ( route) => false,
       );
 
       showCustomSnackBar(

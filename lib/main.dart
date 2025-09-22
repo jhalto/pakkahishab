@@ -36,6 +36,7 @@ class MyApp extends ConsumerWidget {
             Locale('en'), // English
             Locale('bn'), // Spanish
           ],
+          
           theme: ThemeData(
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.white, // AppBar background
