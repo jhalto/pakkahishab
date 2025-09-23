@@ -123,7 +123,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountService => 'Account settings';
 
   @override
-  String get editProfile => 'Edit profile';
+  String get editProfile => 'Edit Profile';
 
   @override
   String get changePassword => 'Change password';
@@ -456,4 +456,139 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get invalidPassword =>
       'Password must contain uppercase, lowercase, number, and special character';
+
+  @override
+  String get cashInHand => 'Cash in Hand';
+
+  @override
+  String get cashAtBank => 'Cash at Bank';
+
+  @override
+  String get totalPurchase => 'Total Purchase';
+
+  @override
+  String get totalSales => 'Total Sales';
+
+  @override
+  String get totalPayable => 'Total Payable';
+
+  @override
+  String get totalReceivable => 'Total Receivable';
+
+  @override
+  String get expenses => 'Expenses';
+
+  @override
+  String get income => 'Income';
+
+  @override
+  String get stock => 'Stock';
+
+  @override
+  String get advance => 'Advance';
+
+  @override
+  String get loan => 'Loan';
+
+  @override
+  String get cash => 'Cash';
+
+  @override
+  String get purchase => 'Purchase';
+
+  @override
+  String get newPurchase => 'New Purchase';
+
+  @override
+  String get purchaseReturn => 'Purchase Return';
+
+  @override
+  String get sales => 'Sales';
+
+  @override
+  String get newSales => 'New Sales';
+
+  @override
+  String get salesReturn => 'Sales Return';
+
+  @override
+  String get head => 'Head';
+
+  @override
+  String get addExpenses => 'Add Expenses';
+
+  @override
+  String get editExpenses => 'Edit Expenses';
+
+  @override
+  String get addIncome => 'Add Income';
+
+  @override
+  String get editIncome => 'Edit Income';
+
+  @override
+  String get due => 'Due';
+
+  @override
+  String get supplierDue => 'Supplier Due';
+
+  @override
+  String get customerDue => 'Customer Due';
+
+  @override
+  String get addAdvance => 'Add Advance';
+
+  @override
+  String get editAdvance => 'Edit Advance';
+
+  @override
+  String get advanceRefund => 'Advance Refund';
+
+  @override
+  String get addLoan => 'Add Loan';
+
+  @override
+  String get editLoan => 'Edit Loan';
+
+  @override
+  String get loanPay => 'Loan Pay';
+
+  @override
+  String get reports => 'Reports';
+
+  @override
+  String get transactionReports => 'Transaction Reports';
+
+  @override
+  String get stockReports => 'Stock Reports';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get companyInfo => 'Company Info';
+
+  @override
+  String get chartOfAccounts => 'Chart of Accounts';
+
+  @override
+  String get supplier => 'Supplier';
+
+  @override
+  String get customer => 'Customer';
+
+  @override
+  String get product => 'Product';
+
+  @override
+  String get openingBalance => 'Opening Balance';
+
+  @override
+  String get supplierOpeningBalance => 'Supplier Opening Balance';
+
+  @override
+  String get customerOpeningBalance => 'Customer Opening Balance';
+
+  @override
+  String get appName => 'PakkaHishab';
 }

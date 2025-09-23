@@ -20,9 +20,9 @@ class Home extends ConsumerWidget {
             onPressed: () {
               // toggle between English and Bangla
               if (translation.appLocale.languageCode == 'en') {
-                ref.read(translationProvider).changeLanguage(const Locale('bn'));
+                ref.read(translationProvider.notifier).changeLanguage(const Locale('bn'));
               } else {
-                ref.read(translationProvider).changeLanguage(const Locale('en'));
+                ref.read(translationProvider.notifier).changeLanguage(const Locale('en'));
               }
             },
           ),

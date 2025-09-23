@@ -14,17 +14,7 @@ class NavbarViewmodel extends ChangeNotifier {
     PurchaseView(),
     SaleView(),
   ];
-
-  // For AnimatedBottomNavigationBar we provide just Icons
-  final icons = const [
-    Icons.shopping_cart,
-    Icons.attach_money,
-  ];
-
-  final labels = const [
-    "Purchases",
-    "Sales",
-  ];
+  
 
   void changeIndex(int index) {
     currentIndex = index;

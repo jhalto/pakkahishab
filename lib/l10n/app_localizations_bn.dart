@@ -455,4 +455,139 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get invalidPassword =>
       'পাসওয়ার্ডে বড় হাতের অক্ষর, ছোট হাতের অক্ষর, সংখ্যা ও বিশেষ চিহ্ন থাকতে হবে';
+
+  @override
+  String get cashInHand => 'হাতে নগদ';
+
+  @override
+  String get cashAtBank => 'ব্যাংকে নগদ';
+
+  @override
+  String get totalPurchase => 'মোট ক্রয়';
+
+  @override
+  String get totalSales => 'মোট বিক্রয়';
+
+  @override
+  String get totalPayable => 'মোট প্রদেয়';
+
+  @override
+  String get totalReceivable => 'মোট প্রাপ্য';
+
+  @override
+  String get expenses => 'খরচ';
+
+  @override
+  String get income => 'আয়';
+
+  @override
+  String get stock => 'স্টক';
+
+  @override
+  String get advance => 'অগ্রিম';
+
+  @override
+  String get loan => 'ঋণ';
+
+  @override
+  String get cash => 'নগদ';
+
+  @override
+  String get purchase => 'ক্রয়';
+
+  @override
+  String get newPurchase => 'নতুন ক্রয়';
+
+  @override
+  String get purchaseReturn => 'ক্রয় ফেরত';
+
+  @override
+  String get sales => 'বিক্রয়';
+
+  @override
+  String get newSales => 'নতুন বিক্রয়';
+
+  @override
+  String get salesReturn => 'বিক্রয় ফেরত';
+
+  @override
+  String get head => 'শিরোনাম';
+
+  @override
+  String get addExpenses => 'খরচ যোগ করুন';
+
+  @override
+  String get editExpenses => 'খরচ সম্পাদনা করুন';
+
+  @override
+  String get addIncome => 'আয় যোগ করুন';
+
+  @override
+  String get editIncome => 'আয় সম্পাদনা করুন';
+
+  @override
+  String get due => 'বকেয়া';
+
+  @override
+  String get supplierDue => 'সরবরাহকারী বকেয়া';
+
+  @override
+  String get customerDue => 'গ্রাহক বকেয়া';
+
+  @override
+  String get addAdvance => 'অগ্রিম যোগ করুন';
+
+  @override
+  String get editAdvance => 'অগ্রিম সম্পাদনা করুন';
+
+  @override
+  String get advanceRefund => 'অগ্রিম ফেরত';
+
+  @override
+  String get addLoan => 'ঋণ যোগ করুন';
+
+  @override
+  String get editLoan => 'ঋণ সম্পাদনা করুন';
+
+  @override
+  String get loanPay => 'ঋণ পরিশোধ';
+
+  @override
+  String get reports => 'রিপোর্ট';
+
+  @override
+  String get transactionReports => 'লেনদেন রিপোর্ট';
+
+  @override
+  String get stockReports => 'স্টক রিপোর্ট';
+
+  @override
+  String get settings => 'সেটিংস';
+
+  @override
+  String get companyInfo => 'কোম্পানির তথ্য';
+
+  @override
+  String get chartOfAccounts => 'হিসাবের চার্ট';
+
+  @override
+  String get supplier => 'সরবরাহকারী';
+
+  @override
+  String get customer => 'গ্রাহক';
+
+  @override
+  String get product => 'পণ্য';
+
+  @override
+  String get openingBalance => 'প্রারম্ভিক ব্যালান্স';
+
+  @override
+  String get supplierOpeningBalance => 'সরবরাহকারীর প্রারম্ভিক ব্যালান্স';
+
+  @override
+  String get customerOpeningBalance => 'গ্রাহকের প্রারম্ভিক ব্যালান্স';
+
+  @override
+  String get appName => 'পাক্কাহিসাব';
 }

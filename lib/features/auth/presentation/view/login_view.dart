@@ -31,11 +31,11 @@ class LoginView extends StatelessWidget {
                   onTap: () {
                     if (translation.appLocale.languageCode == 'en') {
                       ref
-                          .read(translationProvider)
+                          .read(translationProvider.notifier)
                           .changeLanguage(const Locale('bn'));
                     } else {
                       ref
-                          .read(translationProvider)
+                          .read(translationProvider.notifier)
                           .changeLanguage(const Locale('en'));
                     }
                   },
@@ -73,7 +73,7 @@ class LoginView extends StatelessWidget {
               builder: (context, ref, child) {
                 print("name build");
                 final nameError = ref.watch(
-                  loginViewModelProvider.select((vm) => vm.nameError),
+                  loginNotifierProvider.select((vm) => vm.nameError),
                 );
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +85,7 @@ class LoginView extends StatelessWidget {
                       ),
                       hint: AppLocalizations.of(context)!.name,
                       onChanged: (value) => ref
-                          .read(loginViewModelProvider)
+                          .read(loginNotifierProvider.notifier)
                           .updateName(value, context),
                       textInputAction: TextInputAction.next,
                     ),
@@ -105,7 +105,7 @@ class LoginView extends StatelessWidget {
             Consumer(
               builder: (context, ref, child) {
                 final passwordError = ref.watch(
-                  loginViewModelProvider.select((vm) => vm.passwordError),
+                  loginNotifierProvider.select((vm) => vm.passwordError),
                 );
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,10 +118,10 @@ class LoginView extends StatelessWidget {
                       ),
                       hint: AppLocalizations.of(context)!.password,
                       onChanged: (value) => ref
-                          .read(loginViewModelProvider)
+                          .read(loginNotifierProvider.notifier)
                           .updatePassword(value, context),
                       onDone: () async {
-                        await ref.read(loginViewModelProvider).login(context);
+                        await ref.read(loginNotifierProvider.notifier).login(context);
                       },
                       textInputAction: TextInputAction.done,
                     ),
@@ -139,13 +139,13 @@ class LoginView extends StatelessWidget {
             Consumer(
               builder: (context, ref, child) {
                 final isLoading = ref.watch(
-                  loginViewModelProvider.select((vm) => vm.isLoading),
+                  loginNotifierProvider.select((vm) => vm.isLoading),
                 );
                 
                 return CustomFullwidthButton(
                   onTap: () async {
                     print("df");
-                    await ref.read(loginViewModelProvider).login(context);
+                    await ref.read(loginNotifierProvider.notifier).login(context);
                   },
                   title: "Login",
                   isLoading: isLoading,
