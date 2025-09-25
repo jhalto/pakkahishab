@@ -469,10 +469,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get totalSales => 'মোট বিক্রয়';
 
   @override
-  String get totalPayable => 'মোট প্রদেয়';
+  String get totalPayable => 'মোট দেনা';
 
   @override
-  String get totalReceivable => 'মোট প্রাপ্য';
+  String get totalReceivable => 'মোট পাওনা';
 
   @override
   String get expenses => 'খরচ';

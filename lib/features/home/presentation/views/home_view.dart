@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/features/home/data/services/home_services.dart';
 import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
 import 'package:pakkahishab/l10n/app_localization_extension.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
+import 'package:pakkahishab/shared/global_widgets/custom_button.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -188,6 +190,9 @@ class HomeView extends StatelessWidget {
                 final vm = ref.watch(
                   homeProvider,
                 ); // use watch instead of read
+                final notifier = ref.watch(
+                  homeProvider.notifier,
+                ); 
                 return GridView.builder(
 
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 2.5,crossAxisSpacing: 10),
@@ -243,6 +248,10 @@ class HomeView extends StatelessWidget {
             ),
           ),
         ),
+        
+        CustomButton(onTap: (){
+          HomeServices().getDashboardCount();
+        }, title: "get")
       ],
     );
   }
