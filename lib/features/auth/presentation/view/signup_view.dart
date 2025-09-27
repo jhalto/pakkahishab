@@ -19,7 +19,9 @@ class SignupView extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
+          child: Consumer(builder: (context, ref, child) {
+            return ref.watch(signupNotifierProvider.notifier).isNumberCheck == true ? 
+            Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const CustomBackButton(),
@@ -221,7 +223,11 @@ class SignupView extends StatelessWidget {
                 },
               ),
             ],
-          ),
+          ):Column(children: [
+               Text("Hello")
+          ],);
+          
+          },) 
         ),
       ),
     );

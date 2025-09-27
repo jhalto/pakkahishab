@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/di/translation_provider.dart';
 import 'package:pakkahishab/features/auth/presentation/viewmodel/login_viewmodel.dart';
@@ -135,7 +136,7 @@ class LoginView extends StatelessWidget {
               },
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 50),
             Consumer(
               builder: (context, ref, child) {
                 final isLoading = ref.watch(
@@ -157,6 +158,7 @@ class LoginView extends StatelessWidget {
             Divider(color: AppColors.primaryColor),
             const SizedBox(height: 10),
             CustomFullwidthButton(
+              
               onTap: () async {
                 Navigator.pushNamed(context, Routes.signup);
               },

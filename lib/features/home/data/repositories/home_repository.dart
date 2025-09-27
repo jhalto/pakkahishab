@@ -13,10 +13,10 @@ class HomeRepository {
 
   HomeRepository(this.homeServices);
 
-  Future<DashboardResponse?> fetchDashBoard() async {
+  Future<DashboardResponse?> fetchDashBoard(String filter) async {
      
      try{
-      final response =await homeServices.getDashboardCount();
+      final response =await homeServices.getDashboardCount(filter);
       return DashboardResponse.fromJson(response); 
 
      }catch(e){

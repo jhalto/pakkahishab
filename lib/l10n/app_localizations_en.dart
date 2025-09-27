@@ -591,4 +591,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appName => 'PakkaHishab';
+
+  @override
+  String get mobileBanking => 'M-Banking';
 }

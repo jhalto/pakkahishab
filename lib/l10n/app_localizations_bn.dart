@@ -590,4 +590,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get appName => 'পাক্কাহিসাব';
+
+  @override
+  String get mobileBanking => 'এম-ব্যাংকিং';
 }

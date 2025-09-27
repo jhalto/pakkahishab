@@ -202,5 +202,6 @@
   "openingBalance": "Opening Balance",
   "supplierOpeningBalance": "Supplier Opening Balance",
   "customerOpeningBalance": "Customer Opening Balance",
-  "appName": "PakkaHishab"
+  "appName": "PakkaHishab",
+  "mobileBanking": "M-Banking"
 }

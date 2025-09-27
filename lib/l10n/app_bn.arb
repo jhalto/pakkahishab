@@ -205,5 +205,6 @@
   "openingBalance": "প্রারম্ভিক ব্যালান্স",
   "supplierOpeningBalance": "সরবরাহকারীর প্রারম্ভিক ব্যালান্স",
   "customerOpeningBalance": "গ্রাহকের প্রারম্ভিক ব্যালান্স",
-  "appName": "পাক্কাহিসাব"
+  "appName": "পাক্কাহিসাব",
+  "mobileBanking": "এম-ব্যাংকিং"
 }

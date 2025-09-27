@@ -1249,6 +1249,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PakkaHishab'**
   String get appName;
+
+  /// No description provided for @mobileBanking.
+  ///
+  /// In en, this message translates to:
+  /// **'M-Banking'**
+  String get mobileBanking;
 }
 
 class _AppLocalizationsDelegate

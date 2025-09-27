@@ -1,3 +1,5 @@
+import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,6 +17,7 @@ final signupNotifierProvider = NotifierProvider<SignupNotifier, SignupState>(
 );
 
 class SignupState {
+  final bool isNumberCheck;
   final String name;
   final String companyName;
   final String email;
@@ -28,6 +31,7 @@ class SignupState {
   final bool isLoading;
 
   const SignupState({
+    this.isNumberCheck = false,
     this.name = '',
     this.companyName = '',
     this.email = '',
@@ -42,6 +46,7 @@ class SignupState {
   });
 
   SignupState copyWith({
+    bool? isNumberCheck,
     String? name,
     String? companyName,
     String? email,
@@ -54,6 +59,7 @@ class SignupState {
     String? passwordError,
     bool? isLoading,
   }) => SignupState(
+    isNumberCheck: isNumberCheck ?? this.isNumberCheck,
     name: name ?? this.name,
     companyName: companyName ?? this.companyName,
     email: email ?? this.email,
@@ -75,6 +81,8 @@ class SignupNotifier extends Notifier<SignupState> {
     _repo = ref.read(authRepositoryProvider);
     return const SignupState();
   }
+
+  bool isNumberCheck = false;
 
   void updateCompany(String value, BuildContext context) {
     final error = Validation.validateCompany(value, context) ?? '';
