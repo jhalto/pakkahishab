@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/di/translation_provider.dart';
+import 'package:pakkahishab/features/auth/presentation/view/number_verification_view.dart';
 import 'package:pakkahishab/features/auth/presentation/viewmodel/login_viewmodel.dart';
 import 'package:pakkahishab/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
@@ -31,11 +33,11 @@ class LoginView extends StatelessWidget {
                   onTap: () {
                     if (translation.appLocale.languageCode == 'en') {
                       ref
-                          .read(translationProvider)
+                          .read(translationProvider.notifier)
                           .changeLanguage(const Locale('bn'));
                     } else {
                       ref
-                          .read(translationProvider)
+                          .read(translationProvider.notifier)
                           .changeLanguage(const Locale('en'));
                     }
                   },
@@ -73,7 +75,7 @@ class LoginView extends StatelessWidget {
               builder: (context, ref, child) {
                 print("name build");
                 final nameError = ref.watch(
-                  loginViewModelProvider.select((vm) => vm.nameError),
+                  loginNotifierProvider.select((vm) => vm.nameError),
                 );
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +87,7 @@ class LoginView extends StatelessWidget {
                       ),
                       hint: AppLocalizations.of(context)!.name,
                       onChanged: (value) => ref
-                          .read(loginViewModelProvider)
+                          .read(loginNotifierProvider.notifier)
                           .updateName(value, context),
                       textInputAction: TextInputAction.next,
                     ),
@@ -105,7 +107,7 @@ class LoginView extends StatelessWidget {
             Consumer(
               builder: (context, ref, child) {
                 final passwordError = ref.watch(
-                  loginViewModelProvider.select((vm) => vm.passwordError),
+                  loginNotifierProvider.select((vm) => vm.passwordError),
                 );
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,10 +120,10 @@ class LoginView extends StatelessWidget {
                       ),
                       hint: AppLocalizations.of(context)!.password,
                       onChanged: (value) => ref
-                          .read(loginViewModelProvider)
+                          .read(loginNotifierProvider.notifier)
                           .updatePassword(value, context),
                       onDone: () async {
-                        await ref.read(loginViewModelProvider).login(context);
+                        await ref.read(loginNotifierProvider.notifier).login(context);
                       },
                       textInputAction: TextInputAction.done,
                     ),
@@ -135,17 +137,17 @@ class LoginView extends StatelessWidget {
               },
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 50),
             Consumer(
               builder: (context, ref, child) {
                 final isLoading = ref.watch(
-                  loginViewModelProvider.select((vm) => vm.isLoading),
+                  loginNotifierProvider.select((vm) => vm.isLoading),
                 );
                 
                 return CustomFullwidthButton(
                   onTap: () async {
                     print("df");
-                    await ref.read(loginViewModelProvider).login(context);
+                    await ref.read(loginNotifierProvider.notifier).login(context);
                   },
                   title: "Login",
                   isLoading: isLoading,
@@ -157,8 +159,10 @@ class LoginView extends StatelessWidget {
             Divider(color: AppColors.primaryColor),
             const SizedBox(height: 10),
             CustomFullwidthButton(
+              
               onTap: () async {
                 Navigator.pushNamed(context, Routes.signup);
+                // Navigator.push(context, MaterialPageRoute(builder: (context) => NumberVerificationView(),));
               },
               title: "SignUp",
             ),

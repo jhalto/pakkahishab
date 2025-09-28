@@ -17,6 +17,8 @@ class CustomFullwidthButton extends StatelessWidget {
     this.width,
     this.fontColor,
     this.paddingHorizontal,
+    this.border,
+    this.style,
   });
 
   final Future<void> Function()? onTap;
@@ -31,6 +33,8 @@ class CustomFullwidthButton extends StatelessWidget {
   final Gradient? gradient;
   final double? width;
   final double? paddingHorizontal;
+  final Border? border;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +45,16 @@ class CustomFullwidthButton extends StatelessWidget {
         width: width ?? double.infinity,
         padding: EdgeInsets.symmetric(vertical: paddingVertical ?? 16),
         decoration: BoxDecoration(
-          color: gradient == null ? (color ?? AppColors.primaryColor) : null,
-          gradient: gradient ??
-              LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [AppColors.primaryColor2, AppColors.primaryColor],
-              ),
+          border:border,
+          color: color,
+          gradient: color == null
+              ? gradient ??
+                    LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [AppColors.primaryColor2, AppColors.primaryColor],
+                    )
+              : null,
           borderRadius: BorderRadius.circular(radius ?? 10),
         ),
         child: Center(
@@ -62,8 +69,9 @@ class CustomFullwidthButton extends StatelessWidget {
                 )
               : Text(
                   title,
-                  style:AppTextStyle.buttonTextStyle,
+                  style:style?? AppTextStyle.buttonTextStyle,
                   textAlign: TextAlign.center,
+                  
                 ),
         ),
       ),

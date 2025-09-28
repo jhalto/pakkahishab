@@ -17,7 +17,7 @@ class AuthService {
     required String mobile,
     required String email,
   }) async {
-    final url = Uri.parse("${Urls.baseUrl}/registration/");
+    final url = Uri.parse("${Urls.baseUrl}registration/");
 
     final body = {
       "USERNAME": username,
@@ -73,30 +73,66 @@ class AuthService {
   }
 
   Future<Map<String, dynamic>> login({
-  required String username,
-  required String password,
-}) async {
-  final url = Uri.parse("${Urls.baseUrl}/login/");
+    required String username,
+    required String password,
+  }) async {
+    final url = Uri.parse("${Urls.baseUrl}login/");
 
-  final body = {
-    "username": username,
-    "password": password,
-  };
+    final body = {"username": username, "password": password};
 
-  try {
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(body),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(body),
+      );
 
-    if (response.body.isNotEmpty) {
-      return jsonDecode(response.body) as Map<String, dynamic>;
-    } else {
-      return {"status": "error", "message": "Empty response from server"};
+      if (response.body.isNotEmpty) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      } else {
+        return {"status": "error", "message": "Empty response from server"};
+      }
+    } catch (e) {
+      return {"status": "error", "message": "Error: $e"};
     }
-  } catch (e) {
-    return {"status": "error", "message": "Error: $e"};
   }
-}
+
+  Future<Map<String, dynamic>> verifyNumber({required String phone}) async {
+    final url = Uri.parse("${Urls.baseUrl}check_mobile_no/?MOBILE=$phone");
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {"Content-Type": "application/json"},
+      );
+
+      if (response.body.isNotEmpty) {
+        return jsonDecode(response.body);
+      } else {
+        return {"status": "error", "message": "Empty response from server"};
+      }
+    } catch (e) {
+      return {"status": "error", "message": "Error: $e"};
+    }
+  }
+
+  Future<Map<String, dynamic>> sendOtp({required String phone}) async {
+    final url = Uri.parse("${Urls.baseUrl2}/send-otp");
+
+    final body = {"auth_token": Urls.authToken, "phone": phone};
+
+    try {
+      final response = await http.post(url, body: body);
+
+      if (response.body.isNotEmpty) {
+        final responseData = jsonDecode(response.body);
+        return responseData;
+      } else {
+        return {"status": "error", "message": "response body is empty"};
+      }
+    } catch (e) {
+      print(e);
+      return {"status": "error", "message": "$e"};
+    }
+  }
 }

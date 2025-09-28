@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_view.dart';
 import 'package:pakkahishab/features/sales/presentation/views/sale_view.dart';
+import 'package:pakkahishab/l10n/app_localizations.dart';
 
 class BottomBarDesign extends StatelessWidget {
   const BottomBarDesign({super.key});
@@ -48,7 +49,7 @@ class BottomBarDesign extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            "Purchase",
+                            AppLocalizations.of(context)!.purchase,
                             style: TextStyle(color: AppColors.whiteColor),
                           ),
                         ],
@@ -85,7 +86,7 @@ class BottomBarDesign extends StatelessWidget {
                           ),
                           const SizedBox(width: 5),
                           Text(
-                            "Sales",
+                            AppLocalizations.of(context)!.sales,
                             style: TextStyle(color: AppColors.whiteColor),
                           ),
                         ],

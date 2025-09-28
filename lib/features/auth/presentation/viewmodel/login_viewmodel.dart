@@ -1,112 +1,119 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
 import 'package:pakkahishab/features/auth/data/repositories/auth_repository.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-final loginViewModelProvider = ChangeNotifierProvider<LoginViewModel>((ref) {
-  final repo = ref.read(authRepositoryProvider);
-  return LoginViewModel(repo);
+final loginNotifierProvider = NotifierProvider<LoginNotifier, LoginState>(() {
+  return LoginNotifier();
 });
 
-class LoginViewModel extends ChangeNotifier {
-  final AuthRepository _repo;
+class LoginState {
+  final String name;
+  final String password;
+  final String nameError;
+  final String passwordError;
+  final bool isLoading;
 
-  LoginViewModel(this._repo);
+  const LoginState({
+    this.name = '',
+    this.password = '',
+    this.nameError = '',
+    this.passwordError = '',
+    this.isLoading = false,
+  });
 
-  final String _phone = '';
-  String _name = '';
-  final String _phoneError = '';
-  String _nameError = '';
-  String _password = '';
-  String _passwordError = '';
-  bool _isLoading = false;
+  LoginState copyWith({
+    String? name,
+    String? password,
+    String? nameError,
+    String? passwordError,
+    bool? isLoading,
+  }) {
+    return LoginState(
+      name: name ?? this.name,
+      password: password ?? this.password,
+      nameError: nameError ?? this.nameError,
+      passwordError: passwordError ?? this.passwordError,
+      isLoading: isLoading ?? this.isLoading,
+    );
+  }
+}
 
-  bool get isLoading => _isLoading;
-  String get phoneError => _phoneError;
-  String get nameError => _nameError;
-  String get passwordError => _passwordError;
+class LoginNotifier extends Notifier<LoginState> {
+ late final AuthRepository _repo;
+
+
+
+  @override
+  LoginState build() {
+    _repo = ref.read(authRepositoryProvider);
+    return const LoginState();
+  }
 
   void updateName(String value, BuildContext context) {
-    _name = value;
-    _nameError = Validation.validateName(value, context) ?? '';
-    notifyListeners();
+    final error = Validation.validateName(value, context) ?? '';
+    state = state.copyWith(name: value, nameError: error);
   }
 
   void updatePassword(String value, BuildContext context) {
-    _password = value;
-    _passwordError = Validation.validatePassword(value, context) ?? '';
-    notifyListeners();
+    final error = Validation.validatePassword(value, context) ?? '';
+    state = state.copyWith(password: value, passwordError: error);
   }
 
- Future<void> login(BuildContext context) async {
-  // Run final validation
-  _nameError = Validation.validateName(_name, context) ?? '';
-  _passwordError = Validation.validatePassword(_password, context) ?? '';
-  notifyListeners();
+  Future<void> login(BuildContext context) async {
+    final nameError = Validation.validateName(state.name, context) ?? '';
+    final passwordError =
+        Validation.validatePassword(state.password, context) ?? '';
 
-  if (_nameError.isNotEmpty || _passwordError.isNotEmpty) {
-    return;
-  }
+    state = state.copyWith(nameError: nameError, passwordError: passwordError);
 
-  _isLoading = true;
-  notifyListeners();
+    if (nameError.isNotEmpty || passwordError.isNotEmpty) return;
 
-  try {
-    final response = await _repo.login(
-      username: _name,
-      password: _password,
-    );
-    print(_name);
-    print(_password);
-    print("📩 API Response: $response");
-    
-    if (response['status'] == 'success') {
-      
-     await Future.wait(
-      [
-      SharedPreferencesHelper.saveString('name', response['username']),
-      SharedPreferencesHelper.saveString('company', response['Company Name']),
-      SharedPreferencesHelper.saveString('phone', response['Mobile']),
-      SharedPreferencesHelper.saveString('email', response['Email'])
-      ]
-     ); 
-      
-      if (!context.mounted) return;
-       
-      // Navigate to home
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        Routes.navbar,
-        ( route) => false,
+    state = state.copyWith(isLoading: true);
+
+    try {
+      final response = await _repo.login(
+        username: state.name,
+        password: state.password,
       );
 
-      showCustomSnackBar(
-        context,
-        response['message'] ?? "Login successful",
-        type: SnackBarType.success,
-      );
-    } else {
+      if (response['status'] == 'success') {
+        await Future.wait([
+          SharedPreferencesHelper.saveString('name', response['username']),
+          SharedPreferencesHelper.saveString('company', response['Company Name']),
+          SharedPreferencesHelper.saveString('phone', response['Mobile']),
+          SharedPreferencesHelper.saveString('email', response['Email']),
+        ]);
+        state = state.copyWith(name: '', password: '');
+        if (!context.mounted) return;
+          
+        Navigator.pushNamedAndRemoveUntil(context, Routes.navbar, (route) => false);
+
+        showCustomSnackBar(
+          context,
+          response['message'] ?? "Login successful",
+          type: SnackBarType.success,
+        );
+      } else {
+        if (!context.mounted) return;
+        showCustomSnackBar(
+          context,
+          response['message'] ?? "Login failed",
+          type: SnackBarType.error,
+        );
+      }
+    } catch (e) {
       if (!context.mounted) return;
       showCustomSnackBar(
         context,
-        response['message'] ?? "Login failed",
+        "Something went wrong: $e",
         type: SnackBarType.error,
       );
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
-  } catch (e) {
-    if (!context.mounted) return;
-    showCustomSnackBar(
-      context,
-      "Something went wrong: $e",
-      type: SnackBarType.error,
-    );
-  } finally {
-    _isLoading = false;
-    notifyListeners();
   }
-}
 }

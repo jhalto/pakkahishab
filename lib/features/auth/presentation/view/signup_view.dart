@@ -12,8 +12,6 @@ class SignupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("build");
-    
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
@@ -35,8 +33,8 @@ class SignupView extends StatelessWidget {
                 builder: (context, ref, child) {
                   print("company build");
 
-                  final vm = ref.watch(
-                    signupViewModelProvider.select((vm) => vm.companyError),
+                  final companyError = ref.watch(
+                    signupNotifierProvider.select((vm) => vm.companyNameError),
                   );
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,14 +46,14 @@ class SignupView extends StatelessWidget {
                         ),
                         hint: AppLocalizations.of(context)!.company,
                         onChanged: (value) => ref
-                            .read(signupViewModelProvider)
+                            .read(signupNotifierProvider.notifier)
                             .updateCompany(value, context),
                         textInputAction: TextInputAction.next,
                       ),
                       SizedBox(height: 2),
-                      if (vm.isNotEmpty)
+                      if (companyError.isNotEmpty)
                         Text(
-                          vm,
+                          companyError,
                           style: const TextStyle(
                             color: AppColors.errorTextColor,
                           ),
@@ -64,13 +62,12 @@ class SignupView extends StatelessWidget {
                   );
                 },
               ),
-
               const SizedBox(height: 20),
               Consumer(
                 builder: (context, ref, child) {
                   print("name build");
                   final nameError = ref.watch(
-                    signupViewModelProvider.select((vm) => vm.nameError),
+                    signupNotifierProvider.select((vm) => vm.nameError),
                   );
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +79,7 @@ class SignupView extends StatelessWidget {
                         ),
                         hint: AppLocalizations.of(context)!.name,
                         onChanged: (value) => ref
-                            .read(signupViewModelProvider)
+                            .read(signupNotifierProvider.notifier)
                             .updateName(value, context),
                         textInputAction: TextInputAction.next,
                       ),
@@ -103,7 +100,7 @@ class SignupView extends StatelessWidget {
                 builder: (context, ref, child) {
                   print("Phone build");
                   final phoneError = ref.watch(
-                    signupViewModelProvider.select((vm) => vm.phoneError),
+                    signupNotifierProvider.select((vm) => vm.phoneError),
                   );
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,7 +112,7 @@ class SignupView extends StatelessWidget {
                         ),
                         hint: AppLocalizations.of(context)!.phone,
                         onChanged: (value) => ref
-                            .read(signupViewModelProvider)
+                            .read(signupNotifierProvider.notifier)
                             .updatePhone(value, context),
                         textInputAction: TextInputAction.next,
                       ),
@@ -136,7 +133,7 @@ class SignupView extends StatelessWidget {
                 builder: (context, ref, child) {
                   print("email build");
                   final emailError = ref.watch(
-                    signupViewModelProvider.select((vm) => vm.emailError),
+                    signupNotifierProvider.select((vm) => vm.emailError),
                   );
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +145,7 @@ class SignupView extends StatelessWidget {
                         ),
                         hint: AppLocalizations.of(context)!.email,
                         onChanged: (value) => ref
-                            .read(signupViewModelProvider)
+                            .read(signupNotifierProvider.notifier)
                             .updateEmail(value, context),
                         textInputAction: TextInputAction.next,
                       ),
@@ -168,7 +165,7 @@ class SignupView extends StatelessWidget {
               Consumer(
                 builder: (context, ref, child) {
                   final passwordError = ref.watch(
-                    signupViewModelProvider.select((vm) => vm.passwordError),
+                    signupNotifierProvider.select((vm) => vm.passwordError),
                   );
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,12 +178,12 @@ class SignupView extends StatelessWidget {
                         ),
                         hint: AppLocalizations.of(context)!.password,
                         onChanged: (value) => ref
-                            .read(signupViewModelProvider)
+                            .read(signupNotifierProvider.notifier)
                             .updatePassword(value, context),
                         onDone: () async {
                           await ref
-                              .read(signupViewModelProvider)
-                              .register(context);
+                              .read(signupNotifierProvider.notifier)
+                              .verifyNumber(context);
                         },
                         textInputAction: TextInputAction.done,
                       ),
@@ -205,15 +202,15 @@ class SignupView extends StatelessWidget {
               Consumer(
                 builder: (context, ref, child) {
                   final isLoading = ref.watch(
-                    signupViewModelProvider.select((vm) => vm.isLoading),
+                    signupNotifierProvider.select((vm) => vm.isLoading),
                   );
                   return CustomFullwidthButton(
                     onTap: isLoading
                         ? null
                         : () async {
                             await ref
-                                .read(signupViewModelProvider)
-                                .register(context);
+                                .read(signupNotifierProvider.notifier)
+                                .verifyNumber(context);
                           },
                     title: "SignUp",
                     isLoading: isLoading,

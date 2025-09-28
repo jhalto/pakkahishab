@@ -1,9 +1,6 @@
 
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/translation_controller.dart';
 
 
-final translationProvider =
-    ChangeNotifierProvider<TranslationController>((ref) {
-  return TranslationController();
-});
+final translationProvider = NotifierProvider< TranslationNotifier , TranslationState>(TranslationNotifier.new);

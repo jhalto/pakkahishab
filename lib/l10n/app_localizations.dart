@@ -329,7 +329,7 @@ abstract class AppLocalizations {
   /// No description provided for @editProfile.
   ///
   /// In en, this message translates to:
-  /// **'Edit profile'**
+  /// **'Edit Profile'**
   String get editProfile;
 
   /// No description provided for @changePassword.
@@ -979,6 +979,330 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password must contain uppercase, lowercase, number, and special character'**
   String get invalidPassword;
+
+  /// No description provided for @cashInHand.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in Hand'**
+  String get cashInHand;
+
+  /// No description provided for @cashAtBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash at Bank'**
+  String get cashAtBank;
+
+  /// No description provided for @totalPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Purchase'**
+  String get totalPurchase;
+
+  /// No description provided for @totalSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Sales'**
+  String get totalSales;
+
+  /// No description provided for @totalPayable.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Payable'**
+  String get totalPayable;
+
+  /// No description provided for @totalReceivable.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Receivable'**
+  String get totalReceivable;
+
+  /// No description provided for @expenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get expenses;
+
+  /// No description provided for @income.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get income;
+
+  /// No description provided for @stock.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock'**
+  String get stock;
+
+  /// No description provided for @advance.
+  ///
+  /// In en, this message translates to:
+  /// **'Advance'**
+  String get advance;
+
+  /// No description provided for @loan.
+  ///
+  /// In en, this message translates to:
+  /// **'Loan'**
+  String get loan;
+
+  /// No description provided for @cash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get cash;
+
+  /// No description provided for @purchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase'**
+  String get purchase;
+
+  /// No description provided for @newPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'New Purchase'**
+  String get newPurchase;
+
+  /// No description provided for @purchaseReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Return'**
+  String get purchaseReturn;
+
+  /// No description provided for @sales.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get sales;
+
+  /// No description provided for @newSales.
+  ///
+  /// In en, this message translates to:
+  /// **'New Sales'**
+  String get newSales;
+
+  /// No description provided for @salesReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales Return'**
+  String get salesReturn;
+
+  /// No description provided for @head.
+  ///
+  /// In en, this message translates to:
+  /// **'Head'**
+  String get head;
+
+  /// No description provided for @addExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Expenses'**
+  String get addExpenses;
+
+  /// No description provided for @editExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Expenses'**
+  String get editExpenses;
+
+  /// No description provided for @addIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Income'**
+  String get addIncome;
+
+  /// No description provided for @editIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Income'**
+  String get editIncome;
+
+  /// No description provided for @due.
+  ///
+  /// In en, this message translates to:
+  /// **'Due'**
+  String get due;
+
+  /// No description provided for @supplierDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier Due'**
+  String get supplierDue;
+
+  /// No description provided for @customerDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer Due'**
+  String get customerDue;
+
+  /// No description provided for @addAdvance.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Advance'**
+  String get addAdvance;
+
+  /// No description provided for @editAdvance.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Advance'**
+  String get editAdvance;
+
+  /// No description provided for @advanceRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Advance Refund'**
+  String get advanceRefund;
+
+  /// No description provided for @addLoan.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Loan'**
+  String get addLoan;
+
+  /// No description provided for @editLoan.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Loan'**
+  String get editLoan;
+
+  /// No description provided for @loanPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Loan Pay'**
+  String get loanPay;
+
+  /// No description provided for @reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get reports;
+
+  /// No description provided for @transactionReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction Reports'**
+  String get transactionReports;
+
+  /// No description provided for @stockReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock Reports'**
+  String get stockReports;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @companyInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Info'**
+  String get companyInfo;
+
+  /// No description provided for @chartOfAccounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Chart of Accounts'**
+  String get chartOfAccounts;
+
+  /// No description provided for @supplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier'**
+  String get supplier;
+
+  /// No description provided for @customer.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer'**
+  String get customer;
+
+  /// No description provided for @product.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get product;
+
+  /// No description provided for @openingBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening Balance'**
+  String get openingBalance;
+
+  /// No description provided for @supplierOpeningBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier Opening Balance'**
+  String get supplierOpeningBalance;
+
+  /// No description provided for @customerOpeningBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer Opening Balance'**
+  String get customerOpeningBalance;
+
+  /// No description provided for @appName.
+  ///
+  /// In en, this message translates to:
+  /// **'PakkaHishab'**
+  String get appName;
+
+  /// No description provided for @mobileBanking.
+  ///
+  /// In en, this message translates to:
+  /// **'M-Banking'**
+  String get mobileBanking;
+
+  /// No description provided for @confirmOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm OTP'**
+  String get confirmOtp;
+
+  /// No description provided for @otpSentMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A 4-digit OTP has been sent to your mobile number'**
+  String get otpSentMessage;
+
+  /// No description provided for @enterOtpBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter OTP below'**
+  String get enterOtpBelow;
+
+  /// No description provided for @didntReceiveCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Didn’t receive the code?'**
+  String get didntReceiveCode;
+
+  /// No description provided for @sendAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Send again'**
+  String get sendAgain;
+
+  /// No description provided for @changeNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Number'**
+  String get changeNumber;
+
+  /// No description provided for @enterYourNumberBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your number below'**
+  String get enterYourNumberBelow;
+
+  /// No description provided for @enterPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter phone number'**
+  String get enterPhoneNumber;
 }
 
 class _AppLocalizationsDelegate

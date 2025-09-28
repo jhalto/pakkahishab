@@ -7,10 +7,12 @@ import 'package:pakkahishab/features/home/presentation/views/home_view.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/app_drawer.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/viewmodel/navbar_viewmodel.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/widgets/bottom_bar_design.dart';
+import 'package:pakkahishab/features/nav_bar/presentation/widgets/custom_appbar.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_view.dart';
 import 'package:pakkahishab/features/sales/presentation/views/sale_view.dart';
+import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
-import 'package:pakkahishab/shared/global_widgets/custom_appbar.dart';
+
 
 class NavbarView extends StatelessWidget {
   const NavbarView({super.key});
@@ -18,7 +20,7 @@ class NavbarView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbar(title: "PakkaHishab"),
+      appBar: CustomAppbar(title: AppLocalizations.of(context)!.appName),
       drawer: const AppDrawer(),
       body: HomeView(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
