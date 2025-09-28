@@ -31,4 +31,13 @@ class AuthRepository {
    Future<Map<String, dynamic>> login({required String username,required String password}) {
     return _service.login(username: username, password: password);
   }
+   
+   Future<Map<String, dynamic>> verifyNumber({required String phone})async{
+       return _service.verifyNumber(phone: phone);
+   }
+
+   Future<Map<String, dynamic>> sendOtp({required String phone})async {
+       return _service.sendOtp(phone: phone);
+     
+   }
 }

@@ -1,5 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -159,6 +157,47 @@ class SignupNotifier extends Notifier<SignupState> {
       "Something went wrong: $e";
     } finally {
       state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<void> verifyNumber(BuildContext context) async {
+    final nameError = Validation.validateName(state.name, context) ?? '';
+    final companyNameError =
+        Validation.validateCompany(state.companyName, context) ?? '';
+    final emailError = Validation.validateEmail(state.email, context) ?? '';
+    final passwordError =
+        Validation.validatePassword(state.password, context) ?? '';
+    final phoneError = Validation.validatePhone(state.phone, context) ?? '';
+    state = state.copyWith(
+      nameError: nameError,
+      companyNameError: companyNameError,
+      phoneError: phoneError,
+      emailError: emailError,
+      passwordError: passwordError,
+    );
+    if (companyNameError.isNotEmpty ||
+        nameError.isNotEmpty ||
+        phoneError.isNotEmpty ||
+        passwordError.isNotEmpty ||
+        emailError.isNotEmpty) {
+      return;
+    }
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await _repo.verifyNumber(phone: state.phone);
+      print(result);
+      if (result['status'] == 'success') {
+        if (!context.mounted) return;
+        state = state.copyWith(isLoading: false);
+        await register(context);
+      } else {
+        state = state.copyWith(isLoading: false);
+        if (!context.mounted) return;
+        showCustomSnackBar(context, "This mobile number is already registered");
+      }
+    } catch (e) {
+      state = state.copyWith(isLoading: false);
+      print(e);
     }
   }
 }

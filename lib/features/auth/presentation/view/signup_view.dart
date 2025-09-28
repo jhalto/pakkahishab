@@ -12,16 +12,12 @@ class SignupView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("build");
-    
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Consumer(builder: (context, ref, child) {
-            return ref.watch(signupNotifierProvider.notifier).isNumberCheck == true ? 
-            Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const CustomBackButton(),
@@ -66,7 +62,6 @@ class SignupView extends StatelessWidget {
                   );
                 },
               ),
-
               const SizedBox(height: 20),
               Consumer(
                 builder: (context, ref, child) {
@@ -188,7 +183,7 @@ class SignupView extends StatelessWidget {
                         onDone: () async {
                           await ref
                               .read(signupNotifierProvider.notifier)
-                              .register(context);
+                              .verifyNumber(context);
                         },
                         textInputAction: TextInputAction.done,
                       ),
@@ -215,7 +210,7 @@ class SignupView extends StatelessWidget {
                         : () async {
                             await ref
                                 .read(signupNotifierProvider.notifier)
-                                .register(context);
+                                .verifyNumber(context);
                           },
                     title: "SignUp",
                     isLoading: isLoading,
@@ -223,11 +218,7 @@ class SignupView extends StatelessWidget {
                 },
               ),
             ],
-          ):Column(children: [
-               Text("Hello")
-          ],);
-          
-          },) 
+          ),
         ),
       ),
     );

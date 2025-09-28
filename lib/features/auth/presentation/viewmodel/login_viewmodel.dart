@@ -87,9 +87,9 @@ class LoginNotifier extends Notifier<LoginState> {
           SharedPreferencesHelper.saveString('phone', response['Mobile']),
           SharedPreferencesHelper.saveString('email', response['Email']),
         ]);
-
+        state = state.copyWith(name: '', password: '');
         if (!context.mounted) return;
-
+          
         Navigator.pushNamedAndRemoveUntil(context, Routes.navbar, (route) => false);
 
         showCustomSnackBar(

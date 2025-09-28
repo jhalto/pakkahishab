@@ -593,4 +593,29 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get mobileBanking => 'এম-ব্যাংকিং';
+
+  @override
+  String get confirmOtp => 'ওটিপি নিশ্চিত করুন';
+
+  @override
+  String get otpSentMessage =>
+      'আপনার মোবাইল নম্বরে ৪ সংখ্যার ওটিপি পাঠানো হয়েছে';
+
+  @override
+  String get enterOtpBelow => 'নীচে ওটিপি লিখুন';
+
+  @override
+  String get didntReceiveCode => 'কোডটি পাননি?';
+
+  @override
+  String get sendAgain => 'পুনরায় পাঠান';
+
+  @override
+  String get changeNumber => 'নম্বর পরিবর্তন করুন';
+
+  @override
+  String get enterYourNumberBelow => 'নীচে আপনার নম্বর লিখুন';
+
+  @override
+  String get enterPhoneNumber => 'ফোন নম্বর লিখুন';
 }

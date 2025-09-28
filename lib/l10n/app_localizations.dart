@@ -1255,6 +1255,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'M-Banking'**
   String get mobileBanking;
+
+  /// No description provided for @confirmOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm OTP'**
+  String get confirmOtp;
+
+  /// No description provided for @otpSentMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A 4-digit OTP has been sent to your mobile number'**
+  String get otpSentMessage;
+
+  /// No description provided for @enterOtpBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter OTP below'**
+  String get enterOtpBelow;
+
+  /// No description provided for @didntReceiveCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Didn’t receive the code?'**
+  String get didntReceiveCode;
+
+  /// No description provided for @sendAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Send again'**
+  String get sendAgain;
+
+  /// No description provided for @changeNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Number'**
+  String get changeNumber;
+
+  /// No description provided for @enterYourNumberBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your number below'**
+  String get enterYourNumberBelow;
+
+  /// No description provided for @enterPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter phone number'**
+  String get enterPhoneNumber;
 }
 
 class _AppLocalizationsDelegate

@@ -203,5 +203,14 @@
   "supplierOpeningBalance": "Supplier Opening Balance",
   "customerOpeningBalance": "Customer Opening Balance",
   "appName": "PakkaHishab",
-  "mobileBanking": "M-Banking"
+  "mobileBanking": "M-Banking",
+  "privacyPolicy": "Privacy Policy",
+  "confirmOtp": "Confirm OTP",
+  "otpSentMessage": "A 4-digit OTP has been sent to your mobile number",
+  "enterOtpBelow": "Enter OTP below",
+  "didntReceiveCode": "Didn’t receive the code?",
+  "sendAgain": "Send again",
+  "changeNumber": "Change Number",
+  "enterYourNumberBelow": "Enter your number below",
+  "enterPhoneNumber": "Enter phone number"
 }

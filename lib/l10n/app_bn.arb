@@ -206,5 +206,14 @@
   "supplierOpeningBalance": "সরবরাহকারীর প্রারম্ভিক ব্যালান্স",
   "customerOpeningBalance": "গ্রাহকের প্রারম্ভিক ব্যালান্স",
   "appName": "পাক্কাহিসাব",
-  "mobileBanking": "এম-ব্যাংকিং"
+  "mobileBanking": "এম-ব্যাংকিং",
+  "privacyPolicy": "গোপনীয়তা নীতি",
+  "confirmOtp": "ওটিপি নিশ্চিত করুন",
+  "otpSentMessage": "আপনার মোবাইল নম্বরে ৪ সংখ্যার ওটিপি পাঠানো হয়েছে",
+  "enterOtpBelow": "নীচে ওটিপি লিখুন",
+  "didntReceiveCode": "কোডটি পাননি?",
+  "sendAgain": "পুনরায় পাঠান",
+  "changeNumber": "নম্বর পরিবর্তন করুন",
+  "enterYourNumberBelow": "নীচে আপনার নম্বর লিখুন",
+  "enterPhoneNumber": "ফোন নম্বর লিখুন"
 }

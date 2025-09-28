@@ -594,4 +594,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mobileBanking => 'M-Banking';
+
+  @override
+  String get confirmOtp => 'Confirm OTP';
+
+  @override
+  String get otpSentMessage =>
+      'A 4-digit OTP has been sent to your mobile number';
+
+  @override
+  String get enterOtpBelow => 'Enter OTP below';
+
+  @override
+  String get didntReceiveCode => 'Didn’t receive the code?';
+
+  @override
+  String get sendAgain => 'Send again';
+
+  @override
+  String get changeNumber => 'Change Number';
+
+  @override
+  String get enterYourNumberBelow => 'Enter your number below';
+
+  @override
+  String get enterPhoneNumber => 'Enter phone number';
 }
