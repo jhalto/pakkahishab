@@ -215,5 +215,6 @@
   "sendAgain": "পুনরায় পাঠান",
   "changeNumber": "নম্বর পরিবর্তন করুন",
   "enterYourNumberBelow": "নীচে আপনার নম্বর লিখুন",
-  "enterPhoneNumber": "ফোন নম্বর লিখুন"
+  "enterPhoneNumber": "ফোন নম্বর লিখুন",
+  "otp_sent": "OTP কোড পাঠানো হয়েছে!"
 }

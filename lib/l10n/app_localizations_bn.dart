@@ -618,4 +618,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get enterPhoneNumber => 'ফোন নম্বর লিখুন';
+
+  @override
+  String get otp_sent => 'OTP কোড পাঠানো হয়েছে!';
 }

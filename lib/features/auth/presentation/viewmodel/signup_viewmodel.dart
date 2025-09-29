@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
+import 'package:pakkahishab/features/auth/presentation/view/otp_view.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
 import '../../data/repositories/auth_repository.dart';
 
@@ -15,11 +18,13 @@ final signupNotifierProvider = NotifierProvider<SignupNotifier, SignupState>(
 );
 
 class SignupState {
-  final bool isNumberCheck;
+  final bool isResendAvailable;
+  final int secondsRemaining;
   final String name;
   final String companyName;
   final String email;
   final String phone;
+  final String phone2;
   final String password;
   final String nameError;
   final String companyNameError;
@@ -29,11 +34,13 @@ class SignupState {
   final bool isLoading;
 
   const SignupState({
-    this.isNumberCheck = false,
+    this.isResendAvailable = false,
+    this.secondsRemaining = 0,
     this.name = '',
     this.companyName = '',
     this.email = '',
     this.phone = '',
+    this.phone2 = '',
     this.password = '',
     this.nameError = '',
     this.companyNameError = '',
@@ -44,11 +51,13 @@ class SignupState {
   });
 
   SignupState copyWith({
-    bool? isNumberCheck,
+    bool? isResendAvailable,
+    int? secondsRemaining,
     String? name,
     String? companyName,
     String? email,
     String? phone,
+    String? phone2,
     String? password,
     String? nameError,
     String? companyNameError,
@@ -57,11 +66,13 @@ class SignupState {
     String? passwordError,
     bool? isLoading,
   }) => SignupState(
-    isNumberCheck: isNumberCheck ?? this.isNumberCheck,
+    isResendAvailable: isResendAvailable ?? this.isResendAvailable,
+    secondsRemaining: secondsRemaining ?? this.secondsRemaining,
     name: name ?? this.name,
     companyName: companyName ?? this.companyName,
     email: email ?? this.email,
     phone: phone ?? this.phone,
+    phone2: phone2 ?? this.phone2,
     password: password ?? this.password,
     nameError: nameError ?? this.nameError,
     companyNameError: companyNameError ?? this.companyNameError,
@@ -79,8 +90,6 @@ class SignupNotifier extends Notifier<SignupState> {
     _repo = ref.read(authRepositoryProvider);
     return const SignupState();
   }
-
-  bool isNumberCheck = false;
 
   void updateCompany(String value, BuildContext context) {
     final error = Validation.validateCompany(value, context) ?? '';
@@ -102,12 +111,36 @@ class SignupNotifier extends Notifier<SignupState> {
     state = state.copyWith(phone: value, phoneError: error);
   }
 
+  void updatePhone2(String value, BuildContext context) {
+    final error = Validation.validatePhone(value, context) ?? '';
+    state = state.copyWith(phone2: value, phoneError: error);
+  }
+
   void updatePassword(String value, BuildContext context) {
     final error = Validation.validatePassword(value, context) ?? '';
     state = state.copyWith(password: value, passwordError: error);
   }
 
-  Future<void> register(BuildContext context) async {
+  Timer? _timer;
+  void startResendTimer() {
+    state = state.copyWith(isResendAvailable: false);
+    state = state.copyWith(secondsRemaining: 60);
+
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (state.secondsRemaining > 0) {
+        state = state.copyWith(secondsRemaining: state.secondsRemaining - 1);
+      } else {
+        state = state.copyWith(isResendAvailable: true);
+        timer.cancel();
+      }
+    });
+  }
+
+  Future<void> register({
+    required BuildContext context,
+    required String otp,
+  }) async {
     final nameError = Validation.validateName(state.name, context) ?? '';
     final companyNameError =
         Validation.validateCompany(state.companyName, context) ?? '';
@@ -138,6 +171,7 @@ class SignupNotifier extends Notifier<SignupState> {
         password: state.password,
         companyName: state.companyName,
         email: state.email,
+        otp: otp,
       );
 
       if (result['success'] == true) {
@@ -188,8 +222,8 @@ class SignupNotifier extends Notifier<SignupState> {
       print(result);
       if (result['status'] == 'success') {
         if (!context.mounted) return;
-        state = state.copyWith(isLoading: false);
-        await register(context);
+
+        await sendOtp(context, state.phone);
       } else {
         state = state.copyWith(isLoading: false);
         if (!context.mounted) return;
@@ -198,6 +232,172 @@ class SignupNotifier extends Notifier<SignupState> {
     } catch (e) {
       state = state.copyWith(isLoading: false);
       print(e);
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<void> verifyNumber2(BuildContext context) async {
+    final phoneError = Validation.validatePhone(state.phone2, context) ?? '';
+    state = state.copyWith(phoneError: phoneError);
+    if (phoneError.isNotEmpty) {
+      return;
+    }
+    state = state.copyWith(isLoading: true);
+
+    try {
+      final result = await _repo.verifyNumber(phone: state.phone2);
+      print(result);
+      if (result['status'] == 'success') {
+        state = state.copyWith(phone: state.phone2);
+        if (!context.mounted) return;
+
+        await changeNumber(context, state.phone);
+      } else {
+        state = state.copyWith(isLoading: false);
+        if (!context.mounted) return;
+        showCustomSnackBar(context, "This mobile number is already registered");
+      }
+    } catch (e) {
+      state = state.copyWith(isLoading: false);
+      print(e);
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<void> sendOtp(BuildContext context, String phone) async {
+    try {
+      final result = await _repo.sendOtp(phone: phone);
+
+      if (result['statusCode'] == 200) {
+        if (!context.mounted) return;
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => OtpView()),
+        );
+        startResendTimer();
+        showCustomSnackBar(
+          context,
+          "Otp sent successfully",
+          type: SnackBarType.success,
+        );
+      } else if (result['statusCode'] == 401) {
+        if (!context.mounted) return;
+        showCustomSnackBar(context, "Unauthorized");
+      } else if (result['statusCode'] == 422) {
+        if (!context.mounted) return;
+        showCustomSnackBar(context, "The phone field is required");
+      } else if (result['statusCode'] == 429) {
+        if (!context.mounted) return;
+        showCustomSnackBar(
+          context,
+          "You have reached the maximum number of OTP requests",
+        );
+      } else if (result['statusCode'] == 500) {
+        if (!context.mounted) return;
+        showCustomSnackBar(
+          context,
+          "Failed to send OTP. Please try again later",
+        );
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> changeNumber(BuildContext context, String phone) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await _repo.changeNumber(phone: phone);
+
+      if (result['statusCode'] == 200) {
+        if (!context.mounted) return;
+
+        Navigator.pop(context);
+        startResendTimer();
+        showCustomSnackBar(
+          context,
+          "Otp sent successfully",
+          type: SnackBarType.success,
+        );
+      } else if (result['statusCode'] == 401) {
+        if (!context.mounted) return;
+        showCustomSnackBar(context, "Unauthorized");
+      } else if (result['statusCode'] == 429) {
+        if (!context.mounted) return;
+        showCustomSnackBar(
+          context,
+          "You have reached the maximum number of OTP requests",
+        );
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<void> resendOtp(BuildContext context) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await _repo.resendOtp(phone: state.phone);
+
+      if (result['statusCode'] == 200) {
+        if (!context.mounted) return;
+
+        startResendTimer();
+        showCustomSnackBar(
+          context,
+          "Otp sent successfully",
+          type: SnackBarType.success,
+        );
+      } else if (result['statusCode'] == 401) {
+        if (!context.mounted) return;
+        showCustomSnackBar(context, "Unauthorized");
+      } else if (result['statusCode'] == 429) {
+        if (!context.mounted) return;
+        showCustomSnackBar(
+          context,
+          "You have reached the maximum number of OTP requests",
+        );
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<void> confirmOtp(BuildContext context, {required String otp}) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await _repo.confirmOtp(phone: state.phone, otp: otp);
+      print(result['data']);
+      if (result['statusCode'] == 200) {
+        if (!context.mounted) return;
+        await register(context: context, otp: otp);
+      } else if (result['statusCode'] == 401) {
+        if (!context.mounted) return;
+        showCustomSnackBar(context, "Unauthorized");
+      } else if (result['statusCode'] == 422) {
+        if (!context.mounted) return;
+        showCustomSnackBar(context, "The otp_code must be 4 digits");
+      } else if (result['statusCode'] == 400) {
+        if (!context.mounted) return;
+        showCustomSnackBar(context, "The otp_code is not valid");
+      } else if (result['statusCode'] == 429) {
+        if (!context.mounted) return;
+        showCustomSnackBar(
+          context,
+          "You have reached the maximum number of OTP requests",
+        );
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 }

@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/core/const/images_path.dart';
 import 'package:pakkahishab/core/di/translation_provider.dart';
-import 'package:pakkahishab/features/auth/presentation/view/number_verification_view.dart';
 import 'package:pakkahishab/features/auth/presentation/viewmodel/login_viewmodel.dart';
 import 'package:pakkahishab/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
-
 import 'package:pakkahishab/shared/global_widgets/custom_fullwidth_button.dart';
-
 import '../../../../core/const/app_colors.dart';
 
 class LoginView extends StatelessWidget {
@@ -66,7 +63,7 @@ class LoginView extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: Image.asset(
-                "assets/logo/pakkahishab_logo.png",
+                ImagesPath.logo,
                 width: screenWidth * .52,
               ),
             ),

@@ -212,5 +212,6 @@
   "sendAgain": "Send again",
   "changeNumber": "Change Number",
   "enterYourNumberBelow": "Enter your number below",
-  "enterPhoneNumber": "Enter phone number"
+  "enterPhoneNumber": "Enter phone number",
+  "otp_sent": "OTP Code Sent!"
 }
