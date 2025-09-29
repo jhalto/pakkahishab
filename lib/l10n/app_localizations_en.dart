@@ -619,4 +619,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterPhoneNumber => 'Enter phone number';
+
+  @override
+  String get otp_sent => 'OTP Code Sent!';
 }

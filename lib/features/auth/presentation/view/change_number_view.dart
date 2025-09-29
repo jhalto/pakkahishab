@@ -34,11 +34,10 @@ class ChangeNumberView extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 10),
-                  // Image.asset(
-                  //   ImagesPath.log,
-                  //   height: screenHeight * .12,
-                  //   width: screenWidth * .7,
-                  // ),
+                  Image.asset(
+                    ImagesPath.logo,
+                    width: screenWidth * .52,
+                  ),
                   SizedBox(height: 60.h),
                   // Text("Change Number", style: AppTextStyle.titleMedium),
                   const SizedBox(height: 10),

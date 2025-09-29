@@ -14,6 +14,7 @@ class CustomAppbarBack extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       automaticallyImplyLeading: false,
       leading: CustomBackButton(),
+      centerTitle: false,
       title: Text(
         title,
         style: TextStyle(

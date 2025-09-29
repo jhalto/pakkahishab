@@ -12,7 +12,7 @@ class AuthRepository {
   final AuthService _service;
 
   AuthRepository(this._service);
-
+ 
     Future<Map<String ,dynamic>> registerUser({
     required String companyName,
     required String name,

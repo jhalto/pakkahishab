@@ -19,7 +19,7 @@ class CustomBackButton extends StatelessWidget {
         padding: const EdgeInsets.all(6.0), // Increase tap area
         child: Icon(
           CupertinoIcons.back,
-          color: AppColors.blackColor,
+          color: AppColors.whiteColor,
         ),
       ),
     );

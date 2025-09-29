@@ -117,22 +117,35 @@ class AuthService {
   }
 
   Future<Map<String, dynamic>> sendOtp({required String phone}) async {
-    final url = Uri.parse("${Urls.baseUrl2}/send-otp");
+    final url = Uri.parse("${Urls.baseUrl2}send-otp");
 
     final body = {"auth_token": Urls.authToken, "phone": phone};
-
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
     try {
-      final response = await http.post(url, body: body);
-
+      final response = await http.post(url, body: jsonEncode(body) , headers: headers);
+      print(response.body);
       if (response.body.isNotEmpty) {
         final responseData = jsonDecode(response.body);
-        return responseData;
+        return {"statusCode": response.statusCode, "data": responseData};
       } else {
-        return {"status": "error", "message": "response body is empty"};
+        return {
+          "statusCode": response.statusCode,
+          "status": "error",
+          "message": "response body is empty",
+        };
       }
     } catch (e) {
       print(e);
-      return {"status": "error", "message": "$e"};
+      return {"statusCode": "666", "status": "error", "message": "$e"};
     }
   }
+
+
+  // Future<Map<String, dynamic>> changeNumber({required String phone})async{
+  //   return {}
+  // }
+
 }

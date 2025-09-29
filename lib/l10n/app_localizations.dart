@@ -1303,6 +1303,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter phone number'**
   String get enterPhoneNumber;
+
+  /// No description provided for @otp_sent.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP Code Sent!'**
+  String get otp_sent;
 }
 
 class _AppLocalizationsDelegate

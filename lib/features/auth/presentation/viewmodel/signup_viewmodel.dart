@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
+import 'package:pakkahishab/features/auth/presentation/view/otp_view.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
 import '../../data/repositories/auth_repository.dart';
 
@@ -15,7 +18,8 @@ final signupNotifierProvider = NotifierProvider<SignupNotifier, SignupState>(
 );
 
 class SignupState {
-  final bool isNumberCheck;
+  final bool isResendAvailable;
+  final int secondsRemaining;
   final String name;
   final String companyName;
   final String email;
@@ -29,7 +33,8 @@ class SignupState {
   final bool isLoading;
 
   const SignupState({
-    this.isNumberCheck = false,
+    this.isResendAvailable = false,
+    this.secondsRemaining = 0,
     this.name = '',
     this.companyName = '',
     this.email = '',
@@ -44,7 +49,8 @@ class SignupState {
   });
 
   SignupState copyWith({
-    bool? isNumberCheck,
+    bool? isResendAvailable,
+    int? secondsRemaining,
     String? name,
     String? companyName,
     String? email,
@@ -57,7 +63,8 @@ class SignupState {
     String? passwordError,
     bool? isLoading,
   }) => SignupState(
-    isNumberCheck: isNumberCheck ?? this.isNumberCheck,
+    isResendAvailable: isResendAvailable ?? this.isResendAvailable,
+    secondsRemaining: secondsRemaining ?? this.secondsRemaining,
     name: name ?? this.name,
     companyName: companyName ?? this.companyName,
     email: email ?? this.email,
@@ -79,8 +86,6 @@ class SignupNotifier extends Notifier<SignupState> {
     _repo = ref.read(authRepositoryProvider);
     return const SignupState();
   }
-
-  bool isNumberCheck = false;
 
   void updateCompany(String value, BuildContext context) {
     final error = Validation.validateCompany(value, context) ?? '';
@@ -105,6 +110,22 @@ class SignupNotifier extends Notifier<SignupState> {
   void updatePassword(String value, BuildContext context) {
     final error = Validation.validatePassword(value, context) ?? '';
     state = state.copyWith(password: value, passwordError: error);
+  }
+
+  Timer? _timer;
+  void startResendTimer() {
+    state = state.copyWith(isResendAvailable: false);
+    state = state.copyWith(secondsRemaining: 60);
+
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (state.secondsRemaining > 0) {
+        state = state.copyWith(secondsRemaining: state.secondsRemaining - 1);
+      } else {
+        state = state.copyWith(isResendAvailable: true);
+        timer.cancel();
+      }
+    });
   }
 
   Future<void> register(BuildContext context) async {
@@ -188,8 +209,8 @@ class SignupNotifier extends Notifier<SignupState> {
       print(result);
       if (result['status'] == 'success') {
         if (!context.mounted) return;
-        state = state.copyWith(isLoading: false);
-        await register(context);
+
+        await sendOtp(context, state.phone);
       } else {
         state = state.copyWith(isLoading: false);
         if (!context.mounted) return;
@@ -197,6 +218,49 @@ class SignupNotifier extends Notifier<SignupState> {
       }
     } catch (e) {
       state = state.copyWith(isLoading: false);
+      print(e);
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<void> sendOtp(BuildContext context, String phone) async {
+    try {
+      final result = await _repo.sendOtp(phone: phone);
+
+      if (result['statusCode'] == 200) {
+        if (!context.mounted) return;
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => OtpView()),
+        );
+        startResendTimer();
+        showCustomSnackBar(
+          context,
+          "Otp sent successfully",
+          type: SnackBarType.success,
+        );
+      } else if (result['statusCode'] == 401) {
+        if (!context.mounted) return;
+        showCustomSnackBar(context, "Unauthorized");
+      } else if (result['statusCode'] == 422) {
+        if (!context.mounted) return;
+        showCustomSnackBar(context, "The phone field is required");
+      } else if (result['statusCode'] == 429) {
+        if (!context.mounted) return;
+        showCustomSnackBar(
+          context,
+          "You have reached the maximum number of OTP requests",
+        );
+      } else if (result['statusCode'] == 500) {
+        if (!context.mounted) return;
+        showCustomSnackBar(
+          context,
+          "Failed to send OTP. Please try again later",
+        );
+      }
+    } catch (e) {
       print(e);
     }
   }
