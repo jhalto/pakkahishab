@@ -157,8 +157,8 @@ class HomeNotifier extends StateNotifier<HomeState> {
   }
 
   Future<void> logout(BuildContext context) async {
-    final sp = await SharedPreferences.getInstance();
-    await sp.clear();
+    // final sp = await SharedPreferences.getInstance();
+    // await sp.clear();
     if (!context.mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, Routes.login, (route) => false);
   }

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
 import 'package:pakkahishab/features/auth/presentation/view/otp_view.dart';
@@ -78,6 +78,7 @@ class SignupState {
     companyNameError: companyNameError ?? this.companyNameError,
     emailError: emailError ?? this.emailError,
     phoneError: phoneError ?? this.phoneError,
+    passwordError: passwordError ?? this.passwordError,
     isLoading: isLoading ?? this.isLoading,
   );
 }
@@ -175,13 +176,14 @@ class SignupNotifier extends Notifier<SignupState> {
       );
 
       if (result['success'] == true) {
+        SharedPreferencesHelper.saveString('login_phone', state.phone);
         if (!context.mounted) return;
         showCustomSnackBar(
           context,
           result['message'],
           type: SnackBarType.success,
         );
-        Navigator.pushReplacementNamed(context, Routes.login);
+        Navigator.pushReplacementNamed(context, Routes.navbar);
       } else {
         if (!context.mounted) return;
 

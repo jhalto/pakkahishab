@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import '../../core/const/app_colors.dart';
 
 class CustomBackButton extends StatelessWidget {
-  const CustomBackButton({super.key});
+  Color color;
+   CustomBackButton({super.key, this.color = Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class CustomBackButton extends StatelessWidget {
         padding: const EdgeInsets.all(6.0), // Increase tap area
         child: Icon(
           CupertinoIcons.back,
-          color: AppColors.whiteColor,
+          color: color,
         ),
       ),
     );

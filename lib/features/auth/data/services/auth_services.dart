@@ -79,7 +79,7 @@ class AuthService {
   }) async {
     final url = Uri.parse("${Urls.baseUrl}login/");
 
-    final body = {"username": username, "password": password};
+    final body = {"mobile": username, "password": password};
 
     try {
       final response = await http.post(

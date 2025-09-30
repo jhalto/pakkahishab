@@ -1,19 +1,20 @@
-
 import 'package:flutter/material.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 
 class CustomTextField extends StatefulWidget {
+  final String? text;
   final String? hint;
   final Widget? prefixIcon;
   final bool isLoading;
   final bool isPassword;
-  final VoidCallback? onDone; 
+  final VoidCallback? onDone;
   final TextInputAction? textInputAction;
   final ValueChanged<String>? onChanged;
   final TextInputType? textInputType;
   const CustomTextField({
     super.key,
+    this.text,
     this.hint,
     this.textInputAction,
     this.onDone,
@@ -30,12 +31,33 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   bool _obscureText = true;
+  late TextEditingController _controller;
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the controller with default text if provided
+    _controller = TextEditingController(text: widget.text ?? "");
+  }
 
+  @override
+void didUpdateWidget(covariant CustomTextField oldWidget) {
+  super.didUpdateWidget(oldWidget);
+  if (widget.text != oldWidget.text && widget.text != _controller.text) {
+    _controller.text = widget.text ?? '';
+  }
+}
+    @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return TextField(
+
+      controller: _controller,
       onSubmitted: (value) => widget.onDone?.call(),
-       keyboardType: widget.textInputType,
+      keyboardType: widget.textInputType,
       textInputAction: widget.textInputAction,
       cursorColor: AppColors.primaryTextColor,
       style: TextStyle(
@@ -44,17 +66,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ? Colors.transparent
             : AppColors.primaryTextColor,
       ),
-      
+
       onChanged: widget.onChanged,
       readOnly: widget.isLoading,
       obscureText: widget.isPassword ? _obscureText : false,
       decoration: InputDecoration(
-        
         border: InputBorder.none,
         prefixIconConstraints: const BoxConstraints(minWidth: 50),
         prefixIcon: widget.prefixIcon,
         label: Text(widget.hint ?? ""),
-        hintStyle:AppTextStyle.bodyMediumSecondary,
+        hintStyle: AppTextStyle.bodyMediumSecondary,
         filled: true,
         fillColor: AppColors.fillColor,
         contentPadding: const EdgeInsets.symmetric(

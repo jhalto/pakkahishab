@@ -53,7 +53,7 @@ class Validation {
     return null;
   }
 
-  static String? validatePassword(String? value, BuildContext context) {
+  static String? validatePassword2(String? value, BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     if (value == null || value.isEmpty) {
       return loc.passwordRequired;
@@ -70,6 +70,28 @@ class Validation {
     if (!regex.hasMatch(value)) {
       return loc.invalidPassword;
     }
+    return null;
+  }
+
+  static String? validatePassword(String? value, BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
+    if (value == null || value.isEmpty) {
+      return loc.passwordRequired; // you can change this to loc.pinRequired
+    }
+
+    // Check if length is between 4 and 5
+    if (value.length < 4 || value.length > 5) {
+      return loc
+          .passwordTooShort; // you can change this to loc.invalidPinLength
+    }
+
+    // Check if it contains only digits
+    final regex = RegExp(r'^\d{4,5}$');
+    if (!regex.hasMatch(value)) {
+      return loc.invalidPassword; // you can change this to loc.invalidPin
+    }
+
     return null;
   }
 }

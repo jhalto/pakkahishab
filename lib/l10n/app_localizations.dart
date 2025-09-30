@@ -962,22 +962,28 @@ abstract class AppLocalizations {
   /// **'Enter a valid phone number'**
   String get invalidPhone;
 
+  /// No description provided for @pin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get pin;
+
   /// No description provided for @passwordRequired.
   ///
   /// In en, this message translates to:
-  /// **'Password is required'**
+  /// **'PIN is required'**
   String get passwordRequired;
 
   /// No description provided for @passwordTooShort.
   ///
   /// In en, this message translates to:
-  /// **'Password must be at least 8 characters long'**
+  /// **'PIN must be 4 to 5 digits'**
   String get passwordTooShort;
 
   /// No description provided for @invalidPassword.
   ///
   /// In en, this message translates to:
-  /// **'Password must contain uppercase, lowercase, number, and special character'**
+  /// **'PIN must contain only digits'**
   String get invalidPassword;
 
   /// No description provided for @cashInHand.
