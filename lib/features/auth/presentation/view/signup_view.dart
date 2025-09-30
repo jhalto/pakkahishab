@@ -174,6 +174,7 @@ class SignupView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomTextField(
+                        textInputType: TextInputType.phone,
                         isPassword: true,
                         prefixIcon: const Icon(
                           Icons.lock,

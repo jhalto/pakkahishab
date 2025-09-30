@@ -112,6 +112,9 @@ class LoginView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextField(
+                        focusNode: ref.read(loginNotifierProvider.notifier).phoneFocusNode,
+
+                       textInputType: TextInputType.phone,
                       isPassword: true,
                       prefixIcon: const Icon(
                         Icons.lock,
@@ -144,6 +147,7 @@ class LoginView extends StatelessWidget {
                 );
                 
                 return CustomFullwidthButton(
+
                   onTap: () async {
                     print("df");
                     await ref.read(loginNotifierProvider.notifier).login(context);

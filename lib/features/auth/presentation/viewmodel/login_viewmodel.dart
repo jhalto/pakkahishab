@@ -13,6 +13,7 @@ final loginNotifierProvider =
 
 class LoginState {
   final bool isNumberSaved;
+
   final String phone;
   final String password;
   final String phoneError;
@@ -49,7 +50,7 @@ class LoginState {
 
 class LoginNotifier extends Notifier<LoginState> {
   late final AuthRepository _repo;
-
+  final phoneFocusNode = FocusNode();
   @override
   LoginState build() {
     _repo = ref.read(authRepositoryProvider);
@@ -72,6 +73,10 @@ class LoginNotifier extends Notifier<LoginState> {
     print(number);
     if (number != null && number.isNotEmpty) {
       state = state.copyWith(isNumberSaved: true, phone: number);
+      // 👇 Request focus after widget tree builds
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        phoneFocusNode.requestFocus();
+      });
       return true;
     }
     return false;

@@ -1,0 +1,26 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pakkahishab/features/purchase/data/services/purchase_services.dart';
+
+
+final purchaseRepositoryProvider = Provider<PurchaseRepository>((ref) {
+     final service = ref.read(purchaseServiceProvider);
+   return PurchaseRepository(service);
+},);
+
+
+class PurchaseRepository{
+ final PurchaseServices _purchaseServices;
+  PurchaseRepository(this._purchaseServices);
+  
+  Future<Map<String, dynamic>> getPurchases({
+    required String phone,
+    required String pin,
+    required String offset,
+  }) async {
+    return _purchaseServices.getPurchase(
+      phone: phone,
+      pin: pin,
+      offset: offset,
+    );
+  }
+}

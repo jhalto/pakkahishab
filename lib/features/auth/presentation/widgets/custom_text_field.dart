@@ -3,6 +3,7 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 
 class CustomTextField extends StatefulWidget {
+  final FocusNode? focusNode;
   final String? text;
   final String? hint;
   final Widget? prefixIcon;
@@ -14,6 +15,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputType? textInputType;
   const CustomTextField({
     super.key,
+    this.focusNode,
     this.text,
     this.hint,
     this.textInputAction,
@@ -54,7 +56,7 @@ void didUpdateWidget(covariant CustomTextField oldWidget) {
   @override
   Widget build(BuildContext context) {
     return TextField(
-
+      focusNode: widget.focusNode,
       controller: _controller,
       onSubmitted: (value) => widget.onDone?.call(),
       keyboardType: widget.textInputType,
