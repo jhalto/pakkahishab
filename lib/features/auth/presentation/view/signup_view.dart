@@ -14,13 +14,16 @@ class SignupView extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const CustomBackButton(),
+               CustomBackButton(
+                color: Colors.black,
+               ),
               Align(
                 alignment: Alignment.center,
                 child: Image.asset(
@@ -171,12 +174,13 @@ class SignupView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomTextField(
+                        textInputType: TextInputType.phone,
                         isPassword: true,
                         prefixIcon: const Icon(
                           Icons.lock,
                           color: AppColors.primaryColor,
                         ),
-                        hint: AppLocalizations.of(context)!.password,
+                        hint: AppLocalizations.of(context)!.pin,
                         onChanged: (value) => ref
                             .read(signupNotifierProvider.notifier)
                             .updatePassword(value, context),

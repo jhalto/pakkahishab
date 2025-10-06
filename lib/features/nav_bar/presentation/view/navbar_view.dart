@@ -8,7 +8,7 @@ import 'package:pakkahishab/features/home/presentation/widgets/app_drawer.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/viewmodel/navbar_viewmodel.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/widgets/bottom_bar_design.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/widgets/custom_appbar.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchase_view.dart';
+import 'package:pakkahishab/features/purchase/presentation/views/purchase_list_view.dart';
 import 'package:pakkahishab/features/sales/presentation/views/sale_view.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/routes/app_routes.dart';

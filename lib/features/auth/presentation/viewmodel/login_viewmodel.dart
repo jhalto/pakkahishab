@@ -6,36 +6,42 @@ import 'package:pakkahishab/core/utils/show_snackbar.dart';
 import 'package:pakkahishab/features/auth/data/repositories/auth_repository.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
 
-final loginNotifierProvider = NotifierProvider<LoginNotifier, LoginState>(() {
-  return LoginNotifier();
-});
+final loginNotifierProvider =
+    NotifierProvider.autoDispose<LoginNotifier, LoginState>(() {
+      return LoginNotifier();
+    });
 
 class LoginState {
-  final String name;
+  final bool isNumberSaved;
+
+  final String phone;
   final String password;
-  final String nameError;
+  final String phoneError;
   final String passwordError;
   final bool isLoading;
 
   const LoginState({
-    this.name = '',
+    this.isNumberSaved = false,
+    this.phone = '',
     this.password = '',
-    this.nameError = '',
+    this.phoneError = '',
     this.passwordError = '',
     this.isLoading = false,
   });
 
   LoginState copyWith({
-    String? name,
+    bool? isNumberSaved,
+    String? phone,
     String? password,
-    String? nameError,
+    String? phoneError,
     String? passwordError,
     bool? isLoading,
   }) {
     return LoginState(
-      name: name ?? this.name,
+      isNumberSaved: isNumberSaved ?? this.isNumberSaved,
+      phone: phone ?? this.phone,
       password: password ?? this.password,
-      nameError: nameError ?? this.nameError,
+      phoneError: phoneError ?? this.phoneError,
       passwordError: passwordError ?? this.passwordError,
       isLoading: isLoading ?? this.isLoading,
     );
@@ -43,19 +49,18 @@ class LoginState {
 }
 
 class LoginNotifier extends Notifier<LoginState> {
- late final AuthRepository _repo;
-
-
-
+  late final AuthRepository _repo;
+  final phoneFocusNode = FocusNode();
   @override
   LoginState build() {
     _repo = ref.read(authRepositoryProvider);
+    checkSavedNumber();
     return const LoginState();
   }
 
-  void updateName(String value, BuildContext context) {
-    final error = Validation.validateName(value, context) ?? '';
-    state = state.copyWith(name: value, nameError: error);
+  void updatePhone(String value, BuildContext context) {
+    final error = Validation.validatePhone(value, context) ?? '';
+    state = state.copyWith(phone: value, phoneError: error);
   }
 
   void updatePassword(String value, BuildContext context) {
@@ -63,34 +68,58 @@ class LoginNotifier extends Notifier<LoginState> {
     state = state.copyWith(password: value, passwordError: error);
   }
 
+  Future<bool> checkSavedNumber() async {
+    final number = await SharedPreferencesHelper.getString('login_phone');
+    print(number);
+    if (number != null && number.isNotEmpty) {
+      state = state.copyWith(isNumberSaved: true, phone: number);
+      // 👇 Request focus after widget tree builds
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        phoneFocusNode.requestFocus();
+      });
+      return true;
+    }
+    return false;
+  }
+
   Future<void> login(BuildContext context) async {
-    final nameError = Validation.validateName(state.name, context) ?? '';
+    final phoneError = Validation.validateName(state.phone, context) ?? '';
     final passwordError =
         Validation.validatePassword(state.password, context) ?? '';
 
-    state = state.copyWith(nameError: nameError, passwordError: passwordError);
+    state = state.copyWith(
+      phoneError: phoneError,
+      passwordError: passwordError,
+    );
 
-    if (nameError.isNotEmpty || passwordError.isNotEmpty) return;
+    if (phoneError.isNotEmpty || passwordError.isNotEmpty) return;
 
     state = state.copyWith(isLoading: true);
 
     try {
       final response = await _repo.login(
-        username: state.name,
+        username: state.phone,
         password: state.password,
       );
 
       if (response['status'] == 'success') {
         await Future.wait([
           SharedPreferencesHelper.saveString('name', response['username']),
-          SharedPreferencesHelper.saveString('company', response['Company Name']),
+          SharedPreferencesHelper.saveString(
+            'company',
+            response['Company Name'],
+          ),
           SharedPreferencesHelper.saveString('phone', response['Mobile']),
           SharedPreferencesHelper.saveString('email', response['Email']),
         ]);
-        state = state.copyWith(name: '', password: '');
+        state = state.copyWith(phone: '', password: '');
         if (!context.mounted) return;
-          
-        Navigator.pushNamedAndRemoveUntil(context, Routes.navbar, (route) => false);
+
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.navbar,
+          (route) => false,
+        );
 
         showCustomSnackBar(
           context,

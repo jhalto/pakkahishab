@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/const/images_path.dart';
 import 'package:pakkahishab/core/di/translation_provider.dart';
+import 'package:pakkahishab/features/auth/presentation/view/verify_mobile_view.dart';
 import 'package:pakkahishab/features/auth/presentation/viewmodel/login_viewmodel.dart';
 import 'package:pakkahishab/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
@@ -71,27 +72,28 @@ class LoginView extends StatelessWidget {
             Consumer(
               builder: (context, ref, child) {
                 print("name build");
-                final nameError = ref.watch(
-                  loginNotifierProvider.select((vm) => vm.nameError),
+                final phoneError = ref.watch(
+                  loginNotifierProvider.select((vm) => vm.phoneError),
                 );
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextField(
+                      text: ref.watch(loginNotifierProvider).phone,
                       prefixIcon: const Icon(
-                        Icons.person_2,
+                        Icons.phone,
                         color: AppColors.primaryColor,
                       ),
-                      hint: AppLocalizations.of(context)!.name,
+                      hint: AppLocalizations.of(context)!.phone,
                       onChanged: (value) => ref
                           .read(loginNotifierProvider.notifier)
-                          .updateName(value, context),
+                          .updatePhone(value, context),
                       textInputAction: TextInputAction.next,
                     ),
                     SizedBox(height: 2),
-                    if (nameError.isNotEmpty)
+                    if (phoneError.isNotEmpty)
                       Text(
-                        nameError,
+                        phoneError,
                         style: const TextStyle(color: AppColors.errorTextColor),
                       ),
                   ],
@@ -110,12 +112,15 @@ class LoginView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextField(
+                        focusNode: ref.read(loginNotifierProvider.notifier).phoneFocusNode,
+
+                       textInputType: TextInputType.phone,
                       isPassword: true,
                       prefixIcon: const Icon(
                         Icons.lock,
                         color: AppColors.primaryColor,
                       ),
-                      hint: AppLocalizations.of(context)!.password,
+                      hint: AppLocalizations.of(context)!.pin,
                       onChanged: (value) => ref
                           .read(loginNotifierProvider.notifier)
                           .updatePassword(value, context),
@@ -142,6 +147,7 @@ class LoginView extends StatelessWidget {
                 );
                 
                 return CustomFullwidthButton(
+
                   onTap: () async {
                     print("df");
                     await ref.read(loginNotifierProvider.notifier).login(context);
@@ -159,7 +165,7 @@ class LoginView extends StatelessWidget {
               
               onTap: () async {
                 Navigator.pushNamed(context, Routes.signup);
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => NumberVerificationView(),));
+                // Navigator.push(context, MaterialPageRoute(builder: (context) => VerifyMobileView(),));
               },
               title: "SignUp",
             ),

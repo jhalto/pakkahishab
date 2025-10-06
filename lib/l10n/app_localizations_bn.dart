@@ -447,14 +447,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get invalidPhone => 'সঠিক ফোন নম্বর দিন';
 
   @override
-  String get passwordRequired => 'পাসওয়ার্ড আবশ্যক';
+  String get pin => 'পিন';
 
   @override
-  String get passwordTooShort => 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে';
+  String get passwordRequired => 'পিন অবশ্যই প্রদান করতে হবে';
 
   @override
-  String get invalidPassword =>
-      'পাসওয়ার্ডে বড় হাতের অক্ষর, ছোট হাতের অক্ষর, সংখ্যা ও বিশেষ চিহ্ন থাকতে হবে';
+  String get passwordTooShort => 'পিন ৪ থেকে ৫ সংখ্যার হতে হবে';
+
+  @override
+  String get invalidPassword => 'পিন শুধুমাত্র সংখ্যা হতে হবে';
 
   @override
   String get cashInHand => 'হাতে নগদ';

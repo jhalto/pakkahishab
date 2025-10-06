@@ -448,14 +448,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidPhone => 'Enter a valid phone number';
 
   @override
-  String get passwordRequired => 'Password is required';
+  String get pin => 'Pin';
 
   @override
-  String get passwordTooShort => 'Password must be at least 8 characters long';
+  String get passwordRequired => 'PIN is required';
 
   @override
-  String get invalidPassword =>
-      'Password must contain uppercase, lowercase, number, and special character';
+  String get passwordTooShort => 'PIN must be 4 to 5 digits';
+
+  @override
+  String get invalidPassword => 'PIN must contain only digits';
 
   @override
   String get cashInHand => 'Cash in Hand';
