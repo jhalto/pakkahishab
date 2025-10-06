@@ -101,6 +101,8 @@ class LoginNotifier extends Notifier<LoginState> {
         username: state.phone,
         password: state.password,
       );
+      print(response);
+      print(response['statusCode']);
 
       if (response['status'] == 'success') {
         await Future.wait([

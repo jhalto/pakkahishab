@@ -24,7 +24,6 @@ class AuthService {
       "USERNAME": username,
       "PASSWORD": password,
       "COMPANY_NAME": companyName,
-      "PRESENT_STATUS": "Y",
       "MOBILE": mobile,
       "EMAIL": email,
       "OTP_CODE": otp,
@@ -38,38 +37,26 @@ class AuthService {
       );
 
       // Initialize default values
-      Map<String, dynamic> data = {};
-      bool success = false;
-      String message = "Unknown error occurred";
-
-      // Check if response is JSON
-      if ((response.headers['content-type'] ?? '').contains(
-        'application/json',
-      )) {
-        if (response.body.isNotEmpty) {
-          data = jsonDecode(response.body);
-        }
-      } else {
-        // Not JSON (HTML page or error page)
-        print("⚠️ Response is not JSON: ${response.body}");
-        message = "Server returned unexpected response";
+      if(response.body.isNotEmpty){
+        return {
+          "statusCode": response.statusCode,
+          "data": jsonDecode(response.body),
+        };
+      }else{
+        return {
+          "statusCode": response.statusCode,
+          "status": "error",
+          "message": "response body is empty",
+        };
       }
 
-      if (response.statusCode == 200) {
-        success = true;
-        message = data['message'] ?? "Registration successful";
-      } else {
-        message =
-            data['message'] ??
-            "Registration failed with status ${response.statusCode}";
-      }
-
-      print(success ? "✅ $message" : "❌ $message");
-
-      return {"success": success, "message": message};
     } catch (e) {
       print("⚠️ Error during registration: $e");
-      return {"success": false, "message": "Error: $e"};
+        return {
+          "statusCode": '666',
+          "status": "error",
+          "message": "response body is empty",
+        };
     }
   }
 
@@ -97,9 +84,9 @@ class AuthService {
       return {"status": "error", "message": "Error: $e"};
     }
   }
-
-  Future<Map<String, dynamic>> verifyNumber({required String phone}) async {
-    final url = Uri.parse("${Urls.baseUrl}check_mobile_no/?MOBILE=$phone");
+  
+  Future<Map<String, dynamic>> verifyNumber({required String phone, required String email}) async {
+    final url = Uri.parse("${Urls.baseUrl}check_mobile_no/?MOBILE=$phone&EMAIL=$email");
 
     try {
       final response = await http.get(
@@ -110,10 +97,10 @@ class AuthService {
       if (response.body.isNotEmpty) {
         return jsonDecode(response.body);
       } else {
-        return {"status": "error", "message": "Empty response from server"};
+        return {"statusCode": response.statusCode, "status": "error", "message": "Empty response from server"};
       }
     } catch (e) {
-      return {"status": "error", "message": "Error: $e"};
+      return {"statusCode": 666, "status": "error", "message": "$e"};
     }
   }
 
@@ -145,7 +132,7 @@ class AuthService {
       }
     } catch (e) {
       print(e);
-      return {"statusCode": "666", "status": "error", "message": "$e"};
+      return {"statusCode": 666, "status": "error", "message": "$e"};
     }
   }
 
@@ -176,7 +163,7 @@ class AuthService {
       }
     } catch (e) {
       print(e);
-      return {"statusCode": "666", "status": "error", "message": "$e"};
+      return {"statusCode": 666, "status": "error", "message": "$e"};
     }
   }
 
@@ -207,7 +194,7 @@ class AuthService {
       }
     } catch (e) {
       print(e);
-      return {"statusCode": "666", "status": "error", "message": "$e"};
+      return {"statusCode": 666, "status": "error", "message": "$e"};
     }
   }
 
@@ -245,7 +232,7 @@ class AuthService {
       }
     } catch (e) {
       print(e);
-      return {"statusCode": "666", "status": "error", "message": "$e"};
+      return {"statusCode": 666, "status": "error", "message": "$e"};
     }
   }
 }

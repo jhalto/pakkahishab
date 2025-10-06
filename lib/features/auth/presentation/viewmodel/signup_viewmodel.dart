@@ -174,20 +174,43 @@ class SignupNotifier extends Notifier<SignupState> {
         email: state.email,
         otp: otp,
       );
+      print(result);
+      if (result['statusCode'] == 200) {
+        print("in 200");
+        print(result['data'].runtimeType);
+        if (result['data']['status'] == 'success') {
 
-      if (result['success'] == true) {
-        SharedPreferencesHelper.saveString('login_phone', state.phone);
-        if (!context.mounted) return;
-        showCustomSnackBar(
-          context,
-          result['message'],
-          type: SnackBarType.success,
-        );
-        Navigator.pushReplacementNamed(context, Routes.navbar);
+          print("in success");
+          await Future.wait([
+            SharedPreferencesHelper.saveString('name', state.name),
+            SharedPreferencesHelper.saveString('company', state.companyName),
+            SharedPreferencesHelper.saveString('phone', state.phone),
+            SharedPreferencesHelper.saveString('email', state.email),
+            SharedPreferencesHelper.saveString('pin', state.password),
+            SharedPreferencesHelper.saveString(
+              'code',
+              result['data']['school_code'].toString(),
+            ),
+            SharedPreferencesHelper.saveString('login_phone', state.phone),
+          ]);
+          print("Context mounted: ${context.mounted}");
+          if (!context.mounted) return;
+          showCustomSnackBar(
+            context,
+            result['data']['message'],
+            type: SnackBarType.success,
+          );
+          print("Context mounted: ${context.mounted}");
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            Routes.navbar,
+            (route) => false,
+          );
+        }
       } else {
         if (!context.mounted) return;
 
-        showCustomSnackBar(context, result['message']);
+        showCustomSnackBar(context, result['data']['message']);
       }
     } catch (e) {
       "Something went wrong: $e";
@@ -220,16 +243,19 @@ class SignupNotifier extends Notifier<SignupState> {
     }
     state = state.copyWith(isLoading: true);
     try {
-      final result = await _repo.verifyNumber(phone: state.phone);
+      final result = await _repo.verifyNumber(
+        phone: state.phone,
+        email: state.email,
+      );
       print(result);
       if (result['status'] == 'success') {
         if (!context.mounted) return;
 
         await sendOtp(context, state.phone);
-      } else {
+      } else if (result['status'] == 'error') {
         state = state.copyWith(isLoading: false);
         if (!context.mounted) return;
-        showCustomSnackBar(context, "This mobile number is already registered");
+        showCustomSnackBar(context, result['message']);
       }
     } catch (e) {
       state = state.copyWith(isLoading: false);
@@ -248,7 +274,10 @@ class SignupNotifier extends Notifier<SignupState> {
     state = state.copyWith(isLoading: true);
 
     try {
-      final result = await _repo.verifyNumber(phone: state.phone2);
+      final result = await _repo.verifyNumber(
+        phone: state.phone2,
+        email: state.email,
+      );
       print(result);
       if (result['status'] == 'success') {
         state = state.copyWith(phone: state.phone2);

@@ -44,11 +44,11 @@ class MyApp extends ConsumerWidget {
               elevation: 0, // Optional: remove shadow
               centerTitle: true, // Optional: center the title
             ),
-            scaffoldBackgroundColor: AppColors.whiteColor,
+            scaffoldBackgroundColor: AppColors.bgColor,
             textTheme: TextTheme(bodyMedium:AppTextStyle.bodyMedium),
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           ),
-          initialRoute: Routes.login,
+          initialRoute: Routes.navbar,
           onGenerateRoute: Routes.generateRoute,
         );
       },

@@ -1,0 +1,109 @@
+class PurchaseItem {
+  final int purchaseId;
+  final String purchaseNo;
+  final DateTime purchaseDate;
+  final int purchaseType;
+  final String supplierId;
+  final String? supplierName;
+  final double netAmount;
+  final double paidPrice;
+  final double due;
+  final int schoolCode;
+  final String password;
+  final String mobile;
+  final int totalCount;
+
+  PurchaseItem({
+    required this.purchaseId,
+    required this.purchaseNo,
+    required this.purchaseDate,
+    required this.purchaseType,
+    required this.supplierId,
+    this.supplierName,
+    required this.netAmount,
+    required this.paidPrice,
+    required this.due,
+    required this.schoolCode,
+    required this.password,
+    required this.mobile,
+    required this.totalCount,
+  });
+
+  factory PurchaseItem.fromJson(Map<String, dynamic> json) {
+    return PurchaseItem(
+      purchaseId: json['purchase_id'],
+      purchaseNo: json['purchase_no'],
+      purchaseDate: DateTime.parse(json['purchase_date']),
+      purchaseType: json['purchase_type'],
+      supplierId: json['supplier_id'],
+      supplierName: json['supplier_name'],
+      netAmount: (json['net_amount'] as num).toDouble(),
+      paidPrice: (json['paid_price'] as num).toDouble(),
+      due: (json['due'] as num).toDouble(),
+      schoolCode: json['school_code'],
+      password: json['password'],
+      mobile: json['mobile'],
+      totalCount: json['total_count'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'purchase_id': purchaseId,
+      'purchase_no': purchaseNo,
+      'purchase_date': purchaseDate.toIso8601String(),
+      'purchase_type': purchaseType,
+      'supplier_id': supplierId,
+      'supplier_name': supplierName,
+      'net_amount': netAmount,
+      'paid_price': paidPrice,
+      'due': due,
+      'school_code': schoolCode,
+      'password': password,
+      'mobile': mobile,
+      'total_count': totalCount,
+    };
+  }
+}
+
+class PurchaseResponse {
+  final List<PurchaseItem> items;
+  final bool hasMore;
+  final int limit;
+  final int offset;
+  final int count;
+  final List<Map<String, dynamic>> links;
+
+  PurchaseResponse({
+    required this.items,
+    required this.hasMore,
+    required this.limit,
+    required this.offset,
+    required this.count,
+    required this.links,
+  });
+
+  factory PurchaseResponse.fromJson(Map<String, dynamic> json) {
+    return PurchaseResponse(
+      items: (json['items'] as List)
+          .map((e) => PurchaseItem.fromJson(e))
+          .toList(),
+      hasMore: json['hasMore'],
+      limit: json['limit'],
+      offset: json['offset'],
+      count: json['count'],
+      links: List<Map<String, dynamic>>.from(json['links']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'items': items.map((e) => e.toJson()).toList(),
+      'hasMore': hasMore,
+      'limit': limit,
+      'offset': offset,
+      'count': count,
+      'links': links,
+    };
+  }
+}
