@@ -4,8 +4,8 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
-import 'package:pakkahishab/shared/global_widgets/custom_appbar_back.dart';
-import 'package:pakkahishab/shared/global_widgets/custom_fullwidth_button.dart';
+import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
+import 'package:pakkahishab/core/global_widgets/custom_fullwidth_button.dart';
 
 class NumberVerificationView extends StatelessWidget {
   const NumberVerificationView({super.key});

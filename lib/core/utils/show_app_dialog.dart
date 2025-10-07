@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
-import 'package:pakkahishab/shared/global_widgets/custom_button.dart';
+import 'package:pakkahishab/core/global_widgets/custom_button.dart';
 
 enum DialogType { success, error }
 
