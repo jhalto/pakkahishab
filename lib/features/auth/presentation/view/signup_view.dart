@@ -5,7 +5,7 @@ import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/shared/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:pakkahishab/shared/global_widgets/custom_fullwidth_button.dart';
-import '../../../../core/const/app_colors.dart';
+import 'package:pakkahishab/core/const/app_colors.dart';
 
 class SignupView extends StatelessWidget {
   const SignupView({super.key});
@@ -31,7 +31,7 @@ class SignupView extends StatelessWidget {
                   width: screenWidth * .52,
                 ),
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               Consumer(
                 builder: (context, ref, child) {
                   print("company build");
@@ -53,7 +53,7 @@ class SignupView extends StatelessWidget {
                             .updateCompany(value, context),
                         textInputAction: TextInputAction.next,
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       if (companyError.isNotEmpty)
                         Text(
                           companyError,
@@ -86,7 +86,7 @@ class SignupView extends StatelessWidget {
                             .updateName(value, context),
                         textInputAction: TextInputAction.next,
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       if (nameError.isNotEmpty)
                         Text(
                           nameError,
@@ -119,7 +119,7 @@ class SignupView extends StatelessWidget {
                             .updatePhone(value, context),
                         textInputAction: TextInputAction.next,
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       if (phoneError.isNotEmpty)
                         Text(
                           phoneError,
@@ -152,7 +152,7 @@ class SignupView extends StatelessWidget {
                             .updateEmail(value, context),
                         textInputAction: TextInputAction.next,
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       if (emailError.isNotEmpty)
                         Text(
                           emailError,
@@ -202,7 +202,7 @@ class SignupView extends StatelessWidget {
                   );
                 },
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Consumer(
                 builder: (context, ref, child) {
                   final isLoading = ref.watch(

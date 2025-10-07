@@ -26,8 +26,8 @@ class BodyTopPart extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(5),
+              decoration: const BoxDecoration(
                 color: AppColors.primaryColor2,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(10),
@@ -57,7 +57,7 @@ class BodyTopPart extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                     child: VerticalDivider(color: AppColors.whiteColor),
                   ),
@@ -68,7 +68,7 @@ class BodyTopPart extends StatelessWidget {
                           AppLocalizations.of(context)!.cashAtBank,
                           style: AppTextStyle.bodyMediumWhite,
                         ),
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         Consumer(
                           builder: (context, ref, child) {
                             return Text(
@@ -85,7 +85,7 @@ class BodyTopPart extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(
@@ -97,7 +97,7 @@ class BodyTopPart extends StatelessWidget {
                           color: AppColors.primaryColor4,
                         ),
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       Consumer(
                         builder: (context, ref, child) {
                           return Text(
@@ -111,7 +111,7 @@ class BodyTopPart extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                   child: VerticalDivider(color: AppColors.primaryColor2),
                 ),
@@ -124,7 +124,7 @@ class BodyTopPart extends StatelessWidget {
                           color: AppColors.primaryColor4,
                         ),
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       Consumer(
                         builder: (context, ref, child) {
                           return Text(
@@ -140,8 +140,8 @@ class BodyTopPart extends StatelessWidget {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
               child: Divider(color: AppColors.primaryColor2),
             ),
             Padding(
@@ -171,7 +171,7 @@ class BodyTopPart extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                     child: VerticalDivider(color: AppColors.primaryColor2),
                   ),
@@ -184,7 +184,7 @@ class BodyTopPart extends StatelessWidget {
                             color: AppColors.primaryColor4,
                           ),
                         ),
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         Consumer(
                           builder: (context, ref, child) {
                             return Text(

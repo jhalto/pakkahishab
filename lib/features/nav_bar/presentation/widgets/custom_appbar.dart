@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -28,14 +27,14 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
 
       title: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: AppColors.whiteColor,
         ),
       ),
       flexibleSpace: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.primaryColor2, AppColors.primaryColor],
             begin: Alignment.topLeft,
@@ -51,7 +50,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
             return PopupMenuButton(
               requestFocus: false,
 
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(16),
                 ), // Change radius here
@@ -62,7 +61,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                 vm.fetchDashBoard(value);
               },
               initialValue: ref.watch(homeProvider).filter,
-              icon: Icon(FontAwesomeIcons.filter, color: Colors.white),
+              icon: const Icon(FontAwesomeIcons.filter, color: Colors.white),
               itemBuilder: (context) {
                 return option.map((option) {
                   return PopupMenuItem(
@@ -78,14 +77,14 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
         // InkWell(onTap: () {
 
         // }, child: Icon(FontAwesomeIcons.filter, color: Colors.white,)),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Padding(
-          padding: EdgeInsetsGeometry.only(right: 10),
+          padding: const EdgeInsetsGeometry.only(right: 10),
           child: Consumer(
             builder: (context, ref, child) {
               final translation = ref.watch(translationProvider);
               return InkWell(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
                 onTap: () {
                   if (translation.appLocale.languageCode == 'en') {
                     ref
@@ -98,8 +97,8 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                   }
                 },
                 child: Ink(
-                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  decoration: BoxDecoration(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     color: AppColors.primaryColor2,
                   ),

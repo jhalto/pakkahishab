@@ -11,7 +11,7 @@ class BottomBarDesign extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(24),
           topRight: Radius.circular(24),
         ),
@@ -27,30 +27,30 @@ class BottomBarDesign extends StatelessWidget {
                 // Left side icons
                 Expanded(
                   child: InkWell(
-                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => PurchasesView()),
+                        MaterialPageRoute(builder: (context) => const PurchasesView()),
                       );
                     },
                     child: Ink(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: AppColors.primaryColor3,
                         borderRadius: BorderRadius.all(Radius.circular(50)),
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
+                          const Icon(
                             FontAwesomeIcons.moneyCheck,
                             color: AppColors.whiteColor,
                           ),
                           const SizedBox(width: 8),
                           Text(
                             AppLocalizations.of(context)!.purchase,
-                            style: TextStyle(color: AppColors.whiteColor),
+                            style: const TextStyle(color: AppColors.whiteColor),
                           ),
                         ],
                       ),
@@ -59,35 +59,35 @@ class BottomBarDesign extends StatelessWidget {
                 ),
 
                 // Spacer for FAB
-                Expanded(child: const SizedBox()),
+                const Expanded(child: SizedBox()),
 
                 // Right side icons
                 Expanded(
                   child: InkWell(
-                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SaleView()),
+                        MaterialPageRoute(builder: (context) => const SaleView()),
                       );
                     },
                     child: Ink(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: AppColors.primaryColor2,
                         borderRadius: BorderRadius.all(Radius.circular(50)),
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
+                          const Icon(
                             FontAwesomeIcons.bangladeshiTakaSign,
                             color: AppColors.whiteColor,
                           ),
                           const SizedBox(width: 5),
                           Text(
                             AppLocalizations.of(context)!.sales,
-                            style: TextStyle(color: AppColors.whiteColor),
+                            style: const TextStyle(color: AppColors.whiteColor),
                           ),
                         ],
                       ),

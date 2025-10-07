@@ -40,7 +40,7 @@ class CustomFeatureWidget extends StatelessWidget {
                     color: AppColors.whiteColor,
                   ),
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +56,7 @@ class CustomFeatureWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(CupertinoIcons.forward, color: AppColors.primaryColor2),
+                const Icon(CupertinoIcons.forward, color: AppColors.primaryColor2),
               ],
             ),
           ),

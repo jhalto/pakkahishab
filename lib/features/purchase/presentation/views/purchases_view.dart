@@ -15,11 +15,11 @@ class PurchasesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarBack(title: "Purchases"),
+      appBar: const CustomAppbarBack(title: "Purchases"),
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(vertical: 6),
+            padding: const EdgeInsets.symmetric(vertical: 6),
             color: Colors.white,
             child: IntrinsicHeight(
               child: Row(
@@ -28,20 +28,20 @@ class PurchasesView extends StatelessWidget {
                     child: Column(
                       children: [
                         Text("Total Item", style: AppTextStyle.labelLarge),
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         Text("2", style: AppTextStyle.labelLarge),
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5),
                     child: VerticalDivider(),
                   ),
                   Expanded(
                     child: Column(
                       children: [
                         Text("Total Price", style: AppTextStyle.labelLarge),
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         Text("2", style: AppTextStyle.labelLarge),
                       ],
                     ),
@@ -50,7 +50,7 @@ class PurchasesView extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Consumer(
             builder: (context, ref, child) {
               final purchaseState = ref.watch(purchaseViewModelProvider);
@@ -58,7 +58,7 @@ class PurchasesView extends StatelessWidget {
                 return Expanded(child: loader);
               }
               if (purchaseState.purchaseList.isEmpty) {
-                return Expanded(child: const Center(child: Text("No purchases")));
+                return const Expanded(child: Center(child: Text("No purchases")));
               }
               return Expanded(
                 child:
@@ -86,16 +86,16 @@ class PurchasesView extends StatelessWidget {
                                   color: AppColors.blackColor.withAlpha(20),
                                   blurRadius: .00001,
                                   spreadRadius: .01,
-                                  offset: Offset(0, 4),
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
-                            padding: EdgeInsets.symmetric(vertical: 16),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                             child: IntrinsicHeight(
                               child: Row(
                                 children: [
                                   Container(
-                                    padding: EdgeInsets.only(left: 8),
+                                    padding: const EdgeInsets.only(left: 8),
                                     child: Column(
                                       children: [
                                         Text(
@@ -106,7 +106,7 @@ class PurchasesView extends StatelessWidget {
                                                 fontSize: 16.sp,
                                               ),
                                         ),
-                                        SizedBox(height: 4),
+                                        const SizedBox(height: 4),
                                         Text(
                                           formattedTime,
                                           style: AppTextStyle.bodySmall
@@ -117,7 +117,7 @@ class PurchasesView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  VerticalDivider(color: AppColors.fillColor2),
+                                  const VerticalDivider(color: AppColors.fillColor2),
                                   Expanded(
                                     child: Row(
                                       mainAxisAlignment:
@@ -136,7 +136,7 @@ class PurchasesView extends StatelessWidget {
                                               style: AppTextStyle.bodySmall,
                                             ),
 
-                                            SizedBox(height: 10),
+                                            const SizedBox(height: 10),
                                             Text(
                                               "${item.netAmount.toString()} Tk",
                                             ),
@@ -151,7 +151,7 @@ class PurchasesView extends StatelessWidget {
                                                 "Paid",
                                                 style: AppTextStyle.bodyMedium
                                                     .copyWith(
-                                                      color: Color(0xff50AA53),
+                                                      color: const Color(0xff50AA53),
                                                     ),
                                               ),
 
@@ -160,7 +160,7 @@ class PurchasesView extends StatelessWidget {
                                                 "Unpaid",
                                                 style: AppTextStyle.bodyMedium
                                                     .copyWith(
-                                                      color: Color(0xfff5a848),
+                                                      color: const Color(0xfff5a848),
                                                     ),
                                               ),
                                             if (item.due != 0)
@@ -193,15 +193,15 @@ class PurchasesView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(width: 10),
+                                  const SizedBox(width: 10),
                                   Align(
                                     alignment: Alignment.topRight,
                                     child: PopupMenuButton(
                                       menuPadding: EdgeInsets.zero,
-                                      padding: EdgeInsets.symmetric(
+                                      padding: const EdgeInsets.symmetric(
                                         horizontal: 10,
                                       ),
-                                      icon: Icon(
+                                      icon: const Icon(
                                         CupertinoIcons.chevron_down,
                                         size: 20,
                                       ),
@@ -229,14 +229,14 @@ class PurchasesView extends StatelessWidget {
                                                         .white, // Important: Keep white to reveal gradient
                                                   ),
                                                 ),
-                                                SizedBox(width: 10),
-                                                Text("Print Invoice"),
+                                                const SizedBox(width: 10),
+                                                const Text("Print Invoice"),
                                               ],
                                             ),
                                           ),
                                           PopupMenuItem(
                                             onTap: () {},
-                                            child: Row(
+                                            child: const Row(
                                               children: [
                                                 Icon(
                                                   Icons.local_print_shop_sharp,

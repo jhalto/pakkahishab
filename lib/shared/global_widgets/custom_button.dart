@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../core/const/app_colors.dart';
+import 'package:pakkahishab/core/const/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
@@ -50,7 +50,7 @@ class CustomButton extends StatelessWidget {
             color: color,
             gradient: color == null?
                 gradient ??
-                LinearGradient(
+                const LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                   colors: [AppColors.primaryColor2, AppColors.primaryColor],

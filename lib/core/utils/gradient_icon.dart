@@ -15,7 +15,7 @@ class GradientIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final defaultGradient = const LinearGradient(
+    const defaultGradient = LinearGradient(
       colors: [
         AppColors.primaryColor2, // Sky blue
         AppColors.primaryColor, // Deep blue

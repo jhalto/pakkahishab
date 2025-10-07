@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/const/app_colors.dart';
-import '../../core/const/app_text_style.dart';
+import 'package:pakkahishab/core/const/app_colors.dart';
+import 'package:pakkahishab/core/const/app_text_style.dart';
 
 
 
@@ -34,20 +34,20 @@ class CustomField extends StatelessWidget {
       decoration: InputDecoration(
        border: InputBorder.none,
        
-        prefixIconConstraints: BoxConstraints(minWidth: 50),
+        prefixIconConstraints: const BoxConstraints(minWidth: 50),
         prefixIcon: prefixIcon,
         hintText: hint,
         hintStyle:AppTextStyle. bodyMediumSecondary,
         filled: true,
         fillColor: AppColors.fillColor,
-        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 19),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 19),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xffF4F4F4)),
+          borderSide: const BorderSide(color: Color(0xffF4F4F4)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xffF4F4F4)),
+          borderSide: const BorderSide(color: Color(0xffF4F4F4)),
         ),
       ),
     );

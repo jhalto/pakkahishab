@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/const/app_colors.dart';
-import '../../core/const/app_text_style.dart';
+import 'package:pakkahishab/core/const/app_colors.dart';
+import 'package:pakkahishab/core/const/app_text_style.dart';
 
 class CustomFormField extends StatefulWidget {
   final String? hint;
@@ -98,7 +98,7 @@ class CustomFormFieldState extends State<CustomFormField> {
 
               decoration: InputDecoration(
                 errorText: error,
-                errorStyle: TextStyle(
+                errorStyle: const TextStyle(
                   fontSize: 16,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w600,
@@ -110,9 +110,9 @@ class CustomFormFieldState extends State<CustomFormField> {
                 // Error border when the field is focused
                 focusedErrorBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(6),
-                  borderSide: BorderSide(color: Colors.transparent),
+                  borderSide: const BorderSide(color: Colors.transparent),
                 ),
-                prefixIconConstraints: BoxConstraints(minWidth: 50),
+                prefixIconConstraints: const BoxConstraints(minWidth: 50),
                 prefixIcon: widget.prefixIcon,
                 hintText: widget.hint,
                 hintStyle: AppTextStyle.bodyMediumSecondary,
@@ -120,18 +120,18 @@ class CustomFormFieldState extends State<CustomFormField> {
 
                 fillColor: _errorText.value == null
                     ? AppColors.fillColor
-                    : Color(0xfff9d1d1),
-                contentPadding: EdgeInsets.symmetric(
+                    : const Color(0xfff9d1d1),
+                contentPadding: const EdgeInsets.symmetric(
                   vertical: 14,
                   horizontal: 19,
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(6),
-                  borderSide: BorderSide(color: Colors.transparent),
+                  borderSide: const BorderSide(color: Colors.transparent),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(6),
-                  borderSide: BorderSide(color: Colors.transparent),
+                  borderSide: const BorderSide(color: Colors.transparent),
                 ),
                 suffixIcon: widget.isPassword
                     ? ValueListenableBuilder<bool>(
@@ -150,7 +150,7 @@ class CustomFormFieldState extends State<CustomFormField> {
                         },
                       )
                     : (_errorText.value != null
-                          ? Icon(
+                          ? const Icon(
                               Icons.report_problem_rounded,
                               color: Colors.black54,
                             )
@@ -168,10 +168,10 @@ class CustomFormFieldState extends State<CustomFormField> {
                 // margin: EdgeInsets.only(top: 2.h),
                 height: 1,
                 width: double.infinity,
-                color: Color(0xfff9d1d1),
+                color: const Color(0xfff9d1d1),
               );
             }
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           },
         ),
       ],

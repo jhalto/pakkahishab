@@ -22,7 +22,7 @@ class BodyMiddlePart extends StatelessWidget {
                       Text(ref.watch(homeProvider).expenses),
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               CustomFeatureWidget(
                 title: Text(AppLocalizations.of(context)!.income),
                 consumer: Consumer(
@@ -32,7 +32,7 @@ class BodyMiddlePart extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             children: [
               CustomFeatureWidget(
@@ -42,7 +42,7 @@ class BodyMiddlePart extends StatelessWidget {
                       Text(ref.watch(homeProvider).stock),
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               CustomFeatureWidget(
                 title: Text(AppLocalizations.of(context)!.advance),
                 consumer: Consumer(
@@ -52,7 +52,7 @@ class BodyMiddlePart extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             children: [
               CustomFeatureWidget(
@@ -62,7 +62,7 @@ class BodyMiddlePart extends StatelessWidget {
                       Text(ref.watch(homeProvider).loan),
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               CustomFeatureWidget(
                 title: Text(AppLocalizations.of(context)!.mobileBanking),
                 consumer: Consumer(

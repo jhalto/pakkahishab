@@ -20,19 +20,19 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final translation = ref.watch(translationProvider);
     return ScreenUtilInit(
-      designSize: Size(375, 812),
+      designSize: const Size(375, 812),
       builder: (context, child) {
         return MaterialApp(
           title: 'PakkaHishab',
           debugShowCheckedModeBanner: false,
           locale: translation.appLocale,
-          localizationsDelegates: [
+          localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: [
+          supportedLocales: const [
             Locale('en'),
             Locale('bn'), 
           ],

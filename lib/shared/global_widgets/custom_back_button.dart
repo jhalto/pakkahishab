@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/const/app_colors.dart';
+import 'package:pakkahishab/core/const/app_colors.dart';
 
 class CustomBackButton extends StatelessWidget {
   Color color;

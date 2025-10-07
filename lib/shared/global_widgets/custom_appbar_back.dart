@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'custom_back_button.dart';
+import 'package:pakkahishab/shared/global_widgets/custom_back_button.dart';
 
-import '../../core/const/app_colors.dart';
+import 'package:pakkahishab/core/const/app_colors.dart';
 
 class CustomAppbarBack extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -17,14 +17,14 @@ class CustomAppbarBack extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: false,
       title: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: AppColors.whiteColor,
         ),
       ),
       flexibleSpace: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.primaryColor2, AppColors.primaryColor],
             begin: Alignment.topLeft,
