@@ -17,10 +17,12 @@ class PurchaseRepository{
     required String pin,
     required String offset,
   }) async {
-    return _purchaseServices.getPurchase(
+    final purchaseData =await _purchaseServices.getPurchase(
       phone: phone,
       pin: pin,
       offset: offset,
     );
+    print(purchaseData.length);
+    return purchaseData;
   }
 }

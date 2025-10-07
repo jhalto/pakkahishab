@@ -12,7 +12,7 @@ class AppColors {
   static const Color disabledTextColor = Colors.black38; // Disabled text
   static const Color accentTextColor = Color(0xFF1E88E5); // Links, clickable text (blue)
   static const Color errorTextColor = Colors.red;
-  static const Color bgColor = Color(0xffFFFFFF);
+  static const Color bgColor = Color(0xffFAFAFA);
   static const Color dotColor = Color(0xff858485);
   static const Color whiteColor = Color(0xffFFFFFF);
   static const Color borderColor = Color(0xffe3eff4);

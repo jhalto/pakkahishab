@@ -47,7 +47,10 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
         Consumer(
           builder: (context, ref, child) {
             final vm = ref.watch(homeProvider.notifier);
+            final option = ['All', 'Today', 'Month', 'Year'];
             return PopupMenuButton(
+              requestFocus: false,
+
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(16),
@@ -61,11 +64,12 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
               initialValue: ref.watch(homeProvider).filter,
               icon: Icon(FontAwesomeIcons.filter, color: Colors.white),
               itemBuilder: (context) {
-                return [
-                  PopupMenuItem(value: "TODAY", child: Text("Today")),
-                  PopupMenuItem(value: "MONTH", child: Text("Month")),
-                  PopupMenuItem(value: "YEAR", child: Text("Year")),
-                ];
+                return option.map((option) {
+                  return PopupMenuItem(
+                    value: option.toUpperCase(),
+                    child: Text(option),
+                  );
+                }).toList();
               },
             );
           },
