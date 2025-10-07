@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
@@ -52,9 +53,63 @@ class CustomAppbarBackWithSearch extends StatelessWidget
                   ),
                 ),
           actions: [
-            Visibility(
-              visible: !value,
-              child: SvgPicture.asset("assets/icons/filter.svg",colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),height: 18,),),
+            Consumer(
+              builder: (context, ref, child) {
+                PopupMenuButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadiusGeometry.all(Radius.circular(10)),
+                  ),
+                  color: AppColors.whiteColor,
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(child: Text("Supplier")),
+
+                      PopupMenuItem(
+                        onTap: () async {
+                          final selectedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2025),
+                            lastDate: DateTime.now(),
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: ColorScheme.light(
+                                    primary: AppColors
+                                        .primaryColor, // header background & selected date
+                                    onPrimary: Colors
+                                        .white, // header text & selected date text
+                                    onSurface:
+                                        Colors.black, // default date text
+                                  ),
+                                  textButtonTheme: TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: AppColors.primaryColor,
+                                    ),
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
+                          );
+
+                          if (selectedDate != null) {}
+                        },
+                        child: Text("Purchase Date"),
+                      ),
+                    ];
+                  },
+                  child: SvgPicture.asset(
+                    "assets/icons/filter.svg",
+                    colorFilter: ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                    height: 18,
+                  ),
+                );
+              },
+            ),
             IconButton(
               icon: Icon(
                 value ? Icons.close : Icons.search,
