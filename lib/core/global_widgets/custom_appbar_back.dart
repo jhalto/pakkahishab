@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:pakkahishab/shared/global_widgets/custom_back_button.dart';
+import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 
 import 'package:pakkahishab/core/const/app_colors.dart';
 

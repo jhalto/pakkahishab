@@ -16,11 +16,13 @@ class PurchaseRepository{
     required String phone,
     required String pin,
     required String offset,
+    required String code,
   }) async {
     final purchaseData =await _purchaseServices.getPurchase(
       phone: phone,
       pin: pin,
       offset: offset,
+      code: code
     );
     print(purchaseData.length);
     return purchaseData;

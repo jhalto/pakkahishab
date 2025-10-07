@@ -11,7 +11,7 @@ import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/auth/presentation/view/change_number_view.dart';
 import 'package:pakkahishab/features/auth/presentation/viewmodel/signup_viewmodel.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
-import 'package:pakkahishab/shared/global_widgets/custom_appbar_back.dart';
+import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 
 class OtpView extends StatelessWidget {
   const OtpView({super.key});

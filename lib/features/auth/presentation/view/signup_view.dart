@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/features/auth/presentation/viewmodel/signup_viewmodel.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
-import 'package:pakkahishab/shared/global_widgets/custom_back_button.dart';
+import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/features/auth/presentation/widgets/custom_text_field.dart';
-import 'package:pakkahishab/shared/global_widgets/custom_fullwidth_button.dart';
+import 'package:pakkahishab/core/global_widgets/custom_fullwidth_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 
 class SignupView extends StatelessWidget {

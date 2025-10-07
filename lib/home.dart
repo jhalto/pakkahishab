@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/di/translation_provider.dart';
-import 'package:pakkahishab/shared/global_widgets/custom_button.dart';
+import 'package:pakkahishab/core/global_widgets/custom_button.dart';
 
 import 'package:pakkahishab/l10n/app_localizations.dart';
 
