@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../const/app_colors.dart';
-import '../const/app_text_style.dart';
-import '../../shared/global_widgets/custom_button.dart';
+import 'package:pakkahishab/core/const/app_colors.dart';
+import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/shared/global_widgets/custom_button.dart';
 
 enum DialogType { success, error }
 
@@ -20,14 +20,14 @@ class ShowAppDialog {
             mainAxisSize: MainAxisSize.min,
 
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 30,
                 backgroundColor: AppColors.primaryColor,
                 child: Icon(Icons.done, size: 30, color: Colors.white),
               ),
               const SizedBox(height: 18),
               Text("Success !", style: AppTextStyle.titleExtraLarge),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Text(
                 "Your payment was successful.",
                 style: AppTextStyle.bodyMedium,
@@ -70,7 +70,7 @@ class ShowAppDialog {
             mainAxisSize: MainAxisSize.min,
 
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 30,
                 backgroundColor: Colors.red,
                 child: Icon(
@@ -81,7 +81,7 @@ class ShowAppDialog {
               ),
               const SizedBox(height: 18),
               Text("Error !", style: AppTextStyle.titleExtraLarge),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               if (body1 != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -134,8 +134,8 @@ class ShowAppDialog {
     DialogType type = DialogType.error,
     Duration autoCloseDuration = const Duration(seconds: 3),
   }) {
-    Color bgColor = type == DialogType.success ? Colors.green : Colors.red;
-    String title = type == DialogType.success ? "Success !" : "Error !";
+    final Color bgColor = type == DialogType.success ? Colors.green : Colors.red;
+    final String title = type == DialogType.success ? "Success !" : "Error !";
 
     bool isDialogOpen = true;
 

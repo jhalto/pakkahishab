@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/features/home/data/models/dashboard_count_model.dart';
 import 'package:pakkahishab/features/home/data/services/home_services.dart';
-import 'package:pakkahishab/home.dart';
 
 final homeRepositoryProvider = Provider<HomeRepository>((ref) {
   final service = ref.watch(homeServiceProvider);

@@ -49,7 +49,7 @@ class CustomFullwidthButton extends StatelessWidget {
           color: color,
           gradient: color == null
               ? gradient ??
-                    LinearGradient(
+                    const LinearGradient(
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                       colors: [AppColors.primaryColor2, AppColors.primaryColor],
@@ -59,10 +59,10 @@ class CustomFullwidthButton extends StatelessWidget {
         ),
         child: Center(
           child: isLoading
-              ? SizedBox(
+              ? const SizedBox(
                   height: 23,
                   width: 23,
-                  child: const CircularProgressIndicator(
+                  child: CircularProgressIndicator(
                     strokeWidth: 2,
                     color: Colors.white,
                   ),

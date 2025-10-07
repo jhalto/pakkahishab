@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
-import 'package:pakkahishab/features/home/data/models/dashboard_count_model.dart';
 import 'package:pakkahishab/features/home/data/repositories/home_repository.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final homeProvider = StateNotifierProvider<HomeNotifier, HomeState>((ref) {
   final repo = ref.watch(homeRepositoryProvider);

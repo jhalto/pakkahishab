@@ -66,7 +66,7 @@ class OtpView extends StatelessWidget {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              ChangeNumberView(),
+                                              const ChangeNumberView(),
                                         ),
                                       );
                                     },

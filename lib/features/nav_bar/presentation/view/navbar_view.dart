@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
-import 'package:pakkahishab/features/auth/presentation/view/signup_view.dart';
 import 'package:pakkahishab/features/home/presentation/views/home_view.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/app_drawer.dart';
-import 'package:pakkahishab/features/nav_bar/presentation/viewmodel/navbar_viewmodel.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/widgets/bottom_bar_design.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/widgets/custom_appbar.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';
-import 'package:pakkahishab/features/sales/presentation/views/sale_view.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
-import 'package:pakkahishab/routes/app_routes.dart';
 
 
 class NavbarView extends StatelessWidget {
@@ -22,10 +15,10 @@ class NavbarView extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppbar(title: AppLocalizations.of(context)!.appName),
       drawer: const AppDrawer(),
-      body: HomeView(),
+      body: const HomeView(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.all(Radius.circular(50)),
         ),
         onPressed: () {
@@ -35,7 +28,7 @@ class NavbarView extends StatelessWidget {
         elevation: 4,
         child: const Icon(Icons.add, color: AppColors.whiteColor),
       ),
-      bottomNavigationBar: BottomBarDesign()
+      bottomNavigationBar: const BottomBarDesign()
     );
   }
 }

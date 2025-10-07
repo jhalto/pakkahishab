@@ -7,7 +7,7 @@ import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
 import 'package:pakkahishab/features/auth/presentation/view/otp_view.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
-import '../../data/repositories/auth_repository.dart';
+import 'package:pakkahishab/features/auth/data/repositories/auth_repository.dart';
 
 // final signupViewModelProvider = ChangeNotifierProvider<SignupViewModel>((ref) {
 //   final repo = ref.read(authRepositoryProvider);
@@ -306,7 +306,7 @@ class SignupNotifier extends Notifier<SignupState> {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => OtpView()),
+          MaterialPageRoute(builder: (context) => const OtpView()),
         );
         startResendTimer();
         showCustomSnackBar(

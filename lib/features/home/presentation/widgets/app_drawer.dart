@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,8 +22,8 @@ class AppDrawer extends StatelessWidget {
               final vm = ref.watch(homeProvider);
               return DrawerHeader(
                 // currentAccountPictureSize: Size(70, 70),
-                margin: EdgeInsets.only(bottom: 0),
-                decoration: BoxDecoration(color: AppColors.primaryColor),
+                margin: const EdgeInsets.only(bottom: 0),
+                decoration: const BoxDecoration(color: AppColors.primaryColor),
                 child: SizedBox(
                   width: double.infinity,
                   child: Column(
@@ -82,7 +81,7 @@ class AppDrawer extends StatelessWidget {
                           ),
                           leading: const Icon(FontAwesomeIcons.arrowRotateLeft),
                         ),
-                        Divider(),
+                        const Divider(),
                       ],
                     ),
                   ),
@@ -106,7 +105,7 @@ class AppDrawer extends StatelessWidget {
                           ),
                           leading: const Icon(FontAwesomeIcons.arrowRotateLeft),
                         ),
-                        Divider(),
+                        const Divider(),
                       ],
                     ),
                   ),
@@ -136,7 +135,7 @@ class AppDrawer extends StatelessWidget {
                           ),
                           leading: const Icon(Icons.edit),
                         ),
-                        Divider(),
+                        const Divider(),
                       ],
                     ),
                   ),
@@ -162,7 +161,7 @@ class AppDrawer extends StatelessWidget {
                           title: Text(AppLocalizations.of(context)!.editIncome),
                           leading: const Icon(Icons.edit),
                         ),
-                        Divider(),
+                        const Divider(),
                       ],
                     ),
                   ),
@@ -188,7 +187,7 @@ class AppDrawer extends StatelessWidget {
                           ),
                           leading: const Icon(Icons.person),
                         ),
-                        Divider(),
+                        const Divider(),
                       ],
                     ),
                   ),
@@ -222,7 +221,7 @@ class AppDrawer extends StatelessWidget {
                           ),
                           leading: const Icon(Icons.undo),
                         ),
-                        Divider(),
+                        const Divider(),
                       ],
                     ),
                   ),
@@ -252,7 +251,7 @@ class AppDrawer extends StatelessWidget {
                           title: Text(AppLocalizations.of(context)!.loanPay),
                           leading: const Icon(Icons.payments),
                         ),
-                        Divider(),
+                        const Divider(),
                       ],
                     ),
                   ),
@@ -278,7 +277,7 @@ class AppDrawer extends StatelessWidget {
                           ),
                           leading: const Icon(Icons.inventory),
                         ),
-                        Divider(),
+                        const Divider(),
                       ],
                     ),
                   ),
@@ -344,7 +343,7 @@ class AppDrawer extends StatelessWidget {
                           ),
                           leading: const Icon(Icons.people_alt),
                         ),
-                        Divider(),
+                        const Divider(),
                       ],
                     ),
                   ),
@@ -353,7 +352,7 @@ class AppDrawer extends StatelessWidget {
                       final vm = ref.read(homeProvider.notifier);
 
                       return ListTile(
-                        leading: Icon(Icons.logout),
+                        leading: const Icon(Icons.logout),
                         title: Text(AppLocalizations.of(context)!.logout),
                         onTap: () {
                           vm.logout(context);

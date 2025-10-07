@@ -4,12 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/const/images_path.dart';
-import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/features/auth/presentation/viewmodel/signup_viewmodel.dart';
 import 'package:pakkahishab/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/shared/global_widgets/custom_appbar_back.dart';
-import 'package:pakkahishab/shared/global_widgets/custom_form_field.dart';
 import 'package:pakkahishab/shared/global_widgets/custom_fullwidth_button.dart';
 
 class ChangeNumberView extends StatelessWidget {
@@ -74,7 +72,7 @@ class ChangeNumberView extends StatelessWidget {
                                 .updatePhone2(value, context),
                             textInputAction: TextInputAction.next,
                           ),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 2),
                           if (phoneError.isNotEmpty)
                             Text(
                               phoneError,

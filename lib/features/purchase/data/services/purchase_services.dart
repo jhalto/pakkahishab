@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,7 +16,7 @@ class PurchaseServices {
     final url =
         "${Urls.baseUrl}Get_Puchase/?school_code=1&mobile=$phone&password=$pin&offset=$offset&limit=10";
 
-    Dio dio = Dio();
+    final Dio dio = Dio();
 
     try {
       final response = await dio.get(url);

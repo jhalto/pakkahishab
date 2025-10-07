@@ -3,13 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/const/images_path.dart';
 import 'package:pakkahishab/core/di/translation_provider.dart';
-import 'package:pakkahishab/features/auth/presentation/view/verify_mobile_view.dart';
 import 'package:pakkahishab/features/auth/presentation/viewmodel/login_viewmodel.dart';
 import 'package:pakkahishab/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
 import 'package:pakkahishab/shared/global_widgets/custom_fullwidth_button.dart';
-import '../../../../core/const/app_colors.dart';
+import 'package:pakkahishab/core/const/app_colors.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -22,12 +21,12 @@ class LoginView extends StatelessWidget {
         automaticallyImplyLeading: false,
         actions: [
           Padding(
-            padding: EdgeInsetsGeometry.only(right: 10),
+            padding: const EdgeInsetsGeometry.only(right: 10),
             child: Consumer(
               builder: (context, ref, child) {
                 final translation = ref.watch(translationProvider);
                 return InkWell(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
                   onTap: () {
                     if (translation.appLocale.languageCode == 'en') {
                       ref
@@ -40,8 +39,8 @@ class LoginView extends StatelessWidget {
                     }
                   },
                   child: Ink(
-                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                    decoration: BoxDecoration(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       color: AppColors.primaryColor,
                     ),
@@ -68,7 +67,7 @@ class LoginView extends StatelessWidget {
                 width: screenWidth * .52,
               ),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Consumer(
               builder: (context, ref, child) {
                 print("name build");
@@ -90,7 +89,7 @@ class LoginView extends StatelessWidget {
                           .updatePhone(value, context),
                       textInputAction: TextInputAction.next,
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     if (phoneError.isNotEmpty)
                       Text(
                         phoneError,
@@ -159,7 +158,7 @@ class LoginView extends StatelessWidget {
             ),
 
             const SizedBox(height: 10),
-            Divider(color: AppColors.primaryColor),
+            const Divider(color: AppColors.primaryColor),
             const SizedBox(height: 10),
             CustomFullwidthButton(
               

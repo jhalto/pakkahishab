@@ -9,8 +9,8 @@ class ShowSnackbar {
     String message, {
     SnackBarType type = SnackBarType.error,
   }) {
-    Color bgColor = type == SnackBarType.success ? Colors.green : Colors.red;
-    String title = type == SnackBarType.success ? 'Success' : 'Error';
+    final Color bgColor = type == SnackBarType.success ? Colors.green : Colors.red;
+    final String title = type == SnackBarType.success ? 'Success' : 'Error';
 
     final snackBar = SnackBar(
       content: Row(
@@ -159,8 +159,8 @@ void showCustomSnackBar(
   Duration duration = const Duration(seconds: 3),
 }) {
   Color bgColor;
-  String title = type == SnackBarType.success ? 'Success' : 'Error';
-  Icon icon = type == SnackBarType.success
+  final String title = type == SnackBarType.success ? 'Success' : 'Error';
+  final Icon icon = type == SnackBarType.success
       ? const Icon(Icons.done, color: Colors.white, size: 28)
       : const Icon(Icons.error_outline, color: Colors.white, size: 28);
 
@@ -186,7 +186,7 @@ void showCustomSnackBar(
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.circular(10),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Colors.black26,
                 blurRadius: 6,
