@@ -55,7 +55,7 @@ class CustomAppbarBackWithSearch extends StatelessWidget
           actions: [
             Consumer(
               builder: (context, ref, child) {
-                PopupMenuButton(
+               return PopupMenuButton(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadiusGeometry.all(Radius.circular(10)),
                   ),
