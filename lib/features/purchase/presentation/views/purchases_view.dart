@@ -90,14 +90,14 @@ class PurchasesView extends StatelessWidget {
                             final data = ref
                                 .read(purchaseViewModelProvider)
                                 .purchaseDetails;
-                            if (data != null && context.mounted) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => PurchaseDetails(),
-                                ),
-                              );
-                            }
+                            // if (data != null && context.mounted) {
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (_) => PurchaseDetails(),
+                            //     ),
+                            //   );
+                            // }
                           },
                           child: Ink(
                             decoration: BoxDecoration(
