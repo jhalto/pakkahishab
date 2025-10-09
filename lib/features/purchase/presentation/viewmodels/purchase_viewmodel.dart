@@ -20,6 +20,7 @@ final purchaseViewModelProvider =
 final class PurchaseState {
   final PurchaseDetailsResponse? purchaseDetails;
   final bool loading;
+  final bool detailLoading;
   final bool hasMore;
   final int currentPage;
   final int totalPage;
@@ -33,6 +34,7 @@ final class PurchaseState {
   const PurchaseState({
     this.purchaseDetails,
     this.loading = false,
+    this.detailLoading = false,
     this.hasMore = false,
     this.currentPage = 1,
     this.totalPage = 0,
@@ -45,6 +47,7 @@ final class PurchaseState {
   PurchaseState copyWith({
     PurchaseDetailsResponse? purchaseDetails,
     bool? loading,
+    bool? detailLoading,
     bool? hasMore,
     int? currentPage,
     int? totalPage,
@@ -56,6 +59,7 @@ final class PurchaseState {
     return PurchaseState(
       purchaseDetails: purchaseDetails ?? this.purchaseDetails,
       loading: loading ?? this.loading,
+      detailLoading: detailLoading ?? this.detailLoading,
       hasMore: hasMore ?? this.hasMore,
       currentPage: currentPage ?? this.currentPage,
       totalPage: totalPage ?? this.totalPage,
@@ -77,7 +81,12 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     return const PurchaseState();
   }
 
-  Future<void> fetchPurchases({bool loadMore = false, int? page, String? purchaseDate, String? supplierId }) async {
+  Future<void> fetchPurchases({
+    bool loadMore = false,
+    int? page,
+    String? purchaseDate,
+    String? supplierId,
+  }) async {
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
@@ -97,7 +106,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
         purchaseDate: purchaseDate,
         supplierId: supplierId,
       );
-       
+
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
       final totalItem = result['data']['items'][0]['total_count'] ?? 0;
@@ -130,8 +139,8 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     fetchPurchases();
   }
 
-  Future<void> fetchPurchaseDetails(
-    BuildContext context, {
+  Future<bool> fetchPurchaseDetails({
+   
     bool loadMore = false,
     int? page,
     required String purchaseNo,
@@ -141,9 +150,8 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
-      state = state.copyWith(loading: true);
+      state = state.copyWith(detailLoading: true);
 
-      // if user taps a page number, use that page’s offset
       final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
       final int newOffset = (newPage - 1) * 10;
 
@@ -155,41 +163,16 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
         purchaseNo: purchaseNo,
       );
 
-      print("purchase details: $response");
-
       if (response['statusCode'] == 200) {
-        print("in 200");
-        print(response['data']);
-        final purchaseData = await PurchaseDetailsResponse.fromJson(
-          response['data'],
-        );
-        print("pasdflkj : $purchaseData");
+        final purchaseData = PurchaseDetailsResponse.fromJson(response['data']);
         state = state.copyWith(purchaseDetails: purchaseData);
-
-        if (state.purchaseDetails != null) {
-         if(!context.mounted)return;
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => PurchaseDetails()),
-          );
-        }
-
-        // if(!context.mounted)return;
-
-        // //  if(state.purchaseDetails != null){
-        // //     print("Navigating to PurchaseDetails page...");
-        // //   if(!context.mounted)return;
-        // //     print("Navigating to PurchaseDetails page...");
-        //  Navigator.push(context, MaterialPageRoute(builder: (context) => PurchaseDetails(),));
-
-        // //  }
-
-        //  Navigator.push(context, MaterialPageRoute(builder: (context) => PurchaseDetails(),));
+        return true; // ✅ signal success
       }
     } catch (e) {
       debugPrint("Error fetching purchases: $e");
     } finally {
-      state = state.copyWith(loading: false);
+      state = state.copyWith(detailLoading: false);
     }
+    return false;
   }
 }

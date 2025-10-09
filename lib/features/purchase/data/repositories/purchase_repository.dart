@@ -25,8 +25,8 @@ class PurchaseRepository{
       pin: pin,
       offset: offset,
       code: code,
-      purchasedate: purchaseDate.toString(),
-      supplierId: supplierId.toString(),
+      purchasedate: purchaseDate,
+      supplierId: supplierId,
     );
     print(purchaseData.length);
     return purchaseData;

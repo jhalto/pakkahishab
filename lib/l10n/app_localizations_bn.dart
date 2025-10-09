@@ -165,7 +165,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get myCoupons => 'আমার কুপন';
 
   @override
-  String get explorePakkaHishab => 'পাকা হিসাব দেখুন';
+  String get explorePakkaHishab => 'পাক্কাহিসাব দেখুন';
 
   @override
   String get requestDemo => 'ডেমো অনুরোধ করুন';
@@ -183,7 +183,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get eSchoolService => 'ই-স্কুল';
 
   @override
-  String get pakkaHisabService => 'পাকাহিসাব';
+  String get pakkaHisabService => 'পাক্কাহিসাব';
 
   @override
   String get myProfile => 'আমার প্রোফাইল';

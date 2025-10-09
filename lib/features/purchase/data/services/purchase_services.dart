@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/urls.dart';
@@ -13,30 +12,31 @@ Future<Map<String, dynamic>> getPurchase({
   required String pin,
   required String offset,
   required String code,
-  String purchasedate = '',
-  String supplierId = '',
+  String? purchasedate,
+  String? supplierId,
 }) async {
   final Dio dio = Dio();
 
-  // Build query parameters dynamically
+  // Base query parameters
   final Map<String, dynamic> queryParams = {
     'school_code': code,
     'mobile': phone,
     'password': pin,
     'offset': offset,
     'limit': '10',
+    'purchase_date': purchasedate,
+    'supplier_id': supplierId,
   };
-
-  // Include optional parameters only if they are not empty
-  if (purchasedate.isNotEmpty) queryParams['purchase_date'] = purchasedate;
-  if (supplierId.isNotEmpty) queryParams['supplier_id'] = supplierId;
+    print(supplierId);
+    print(purchasedate);
+  // ✅ Remove any null or empty parameters before request
+  queryParams.removeWhere((key, value) => value == null || value.toString().isEmpty);
 
   final String url = "${Urls.baseUrl}Get_Puchase/";
 
   try {
     final response = await dio.get(url, queryParameters: queryParams);
 
-    // Optional: print actual URL and response
     print("Request URL: ${response.realUri}");
     print("Response: ${response.data}");
 
@@ -45,20 +45,19 @@ Future<Map<String, dynamic>> getPurchase({
       "data": response.data,
     };
   } on DioException catch (e) {
-    // Handle Dio-specific errors
     return {
       "statusCode": e.response?.statusCode ?? 666,
-      "data": e.response?.data ?? "Dio error: ${e.message}"
+      "data": e.response?.data ?? "Dio error: ${e.message}",
     };
   } catch (e) {
-    // Handle unexpected errors
     return {
       "statusCode": 666,
-      "data": "Unexpected error: $e"
+      "data": "Unexpected error: $e",
     };
   }
 }
-   Future<Map<String, dynamic>> getPurchaseDetails({
+
+  Future<Map<String, dynamic>> getPurchaseDetails({
     required String phone,
     required String pin,
     required String offset,
@@ -72,8 +71,8 @@ Future<Map<String, dynamic>> getPurchase({
 
     try {
       final response = await dio.get(url);
-   
-       print(response);
+
+      print(response);
       return {"statusCode": response.statusCode, "data": response.data};
     } catch (e) {
       return {"statusCode": 666, "data": "Catch error $e"};
