@@ -12,6 +12,7 @@ class PurchaseItem {
   final String password;
   final String mobile;
   final int totalCount;
+  final int totalNetAmount;
 
   PurchaseItem({
     required this.purchaseId,
@@ -27,6 +28,7 @@ class PurchaseItem {
     required this.password,
     required this.mobile,
     required this.totalCount,
+    required this.totalNetAmount,
   });
 
   factory PurchaseItem.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class PurchaseItem {
       password: json['password'],
       mobile: json['mobile'],
       totalCount: json['total_count'],
+      totalNetAmount: json['total_net_amount'],
     );
   }
 
@@ -62,6 +65,7 @@ class PurchaseItem {
       'password': password,
       'mobile': mobile,
       'total_count': totalCount,
+      'total_net_amount': totalNetAmount,
     };
   }
 }

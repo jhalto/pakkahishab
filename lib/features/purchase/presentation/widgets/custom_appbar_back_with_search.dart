@@ -1,7 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
@@ -57,66 +57,290 @@ class CustomAppbarBackWithSearch extends StatelessWidget
           actions: [
             Consumer(
               builder: (context, ref, child) {
-                return PopupMenuButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.all(Radius.circular(10)),
-                  ),
-                  color: AppColors.whiteColor,
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(child: Text("Supplier")),
+                final vm = ref.watch(purchaseViewModelProvider);
 
-                      PopupMenuItem(
-                        onTap: () async {
-                          final selectedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2025),
-                            lastDate: DateTime.now(),
-                            builder: (context, child) {
-                              return Theme(
-                                data: Theme.of(context).copyWith(
-                                  colorScheme: ColorScheme.light(
-                                    primary: AppColors
-                                        .primaryColor, // header background & selected date
-                                    onPrimary: Colors
-                                        .white, // header text & selected date text
-                                    onSurface:
-                                        Colors.black, // default date text
-                                  ),
-                                  textButtonTheme: TextButtonThemeData(
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: AppColors.primaryColor,
+                return InkWell(
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                  onTap: () {
+                    final RenderBox button =
+                        context.findRenderObject() as RenderBox;
+                    final Offset position = button.localToGlobal(Offset.zero);
+
+                    showMenu(
+                      color: AppColors.whiteColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                      ),
+                      position: RelativeRect.fromLTRB(
+                        position.dx,
+                        position.dy,
+                        position.dy,
+                        0,
+                      ),
+                      context: context,
+                      items: [
+                        PopupMenuItem(
+                          onTap: () async {
+                            final notifier = ref.read(
+                              purchaseViewModelProvider.notifier,
+                            );
+                            final vm = ref.read(purchaseViewModelProvider);
+
+                            if (vm.supplier == null ||
+                                (vm.supplier?.items?.isEmpty ?? true)) {
+                              notifier.getSupplier();
+                            }
+
+                            if (!context.mounted) return;
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.bgColor,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(16),
+                                      topRight: Radius.circular(16),
                                     ),
                                   ),
-                                ),
-                                child: child!,
-                              );
-                            },
-                          );
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        SizedBox(height: 20),
+                                        Consumer(
+                                          builder: (context, ref, child) {
+                                            final vmn = ref.watch(
+                                              purchaseViewModelProvider
+                                                  .notifier,
+                                            );
 
-                          if (selectedDate != null) {
-                            final formattedDate = DateFormat(
-                              'yyyy-MM-dd',
-                            ).format(selectedDate);
+                                            return Row(
+                                              children: [
+                                                Expanded(
+                                                  child: TextField(
+                                                    controller: vmn
+                                                        .searchSupplierController,
+                                                    autofocus: true,
 
-                            // Pass the formatted date to fetchPurchases
-                            ref
-                                .read(purchaseViewModelProvider.notifier)
-                                .fetchPurchases(purchaseDate: formattedDate);
-                          }
-                        },
-                        child: Text("Purchase Date"),
-                      ),
-                    ];
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                    ),
+                                                    decoration: const InputDecoration(
+                                                      prefixIcon: Icon(
+                                                        CupertinoIcons.search,
+                                                      ),
+                                                      fillColor:
+                                                          AppColors.fillColor,
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                            vertical: 14,
+                                                            horizontal: 0,
+                                                          ),
+                                                      filled: true,
+
+                                                      labelText:
+                                                          'Search supplier',
+                                                      hintStyle: TextStyle(
+                                                        color: Colors.white70,
+                                                      ),
+                                                      border: InputBorder.none,
+                                                      focusedBorder:
+                                                          OutlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                              color: AppColors
+                                                                  .primaryColor,
+                                                            ),
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                  Radius.circular(
+                                                                    10,
+                                                                  ),
+                                                                ),
+                                                          ),
+                                                      enabledBorder:
+                                                          OutlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                              color: Colors
+                                                                  .transparent,
+                                                            ),
+
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                  Radius.circular(
+                                                                    10,
+                                                                  ),
+                                                                ),
+                                                          ),
+                                                    ),
+                                                    onChanged: (value) {
+                                                      vmn.searchSupplier(value);
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                        Expanded(
+                                          child: Consumer(
+                                            builder: (context, ref, child) {
+                                              final notifier = ref.read(
+                                                purchaseViewModelProvider
+                                                    .notifier,
+                                              );
+                                              final vm = ref.watch(
+                                                purchaseViewModelProvider,
+                                              );
+                                              final supplierList =
+                                                  vm.filteredSuppliers ?? [];
+                                              if (vm.detailLoading) {
+                                                return Center(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(
+                                                      16.0,
+                                                    ),
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                );
+                                              }
+                                              if (supplierList.isEmpty) {
+                                                return Center(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(
+                                                      16.0,
+                                                    ),
+                                                    child: Text(
+                                                      'No suppliers available',
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                              return ListView.separated(
+                                                itemCount: supplierList.length,
+                                                separatorBuilder:
+                                                    (context, index) =>
+                                                        const Divider(
+                                                          color: Colors.grey,
+                                                          thickness: 0.5,
+                                                          height: 0,
+                                                          indent: 16,
+                                                          endIndent: 16,
+                                                        ),
+                                                itemBuilder: (context, index) {
+                                                  final supplier =
+                                                      supplierList[index];
+                                                  return Material(
+                                                    color: Colors.transparent,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                          Radius.circular(16),
+                                                        ),
+                                                    child: ListTile(
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                              Radius.circular(
+                                                                16,
+                                                              ),
+                                                            ),
+                                                      ),
+                                                      splashColor: AppColors
+                                                          .blackColor
+                                                          .withAlpha(20),
+                                                      onTap: () {
+                                                        notifier
+                                                            .updateSupplierId(
+                                                              supplier
+                                                                  .supplierId,
+                                                            );
+                                                        notifier
+                                                            .fetchPurchases();
+                                                        Navigator.pop(context);
+                                                      },
+                                                      title: Text(
+                                                        supplier.supplierName,
+                                                      ),
+                                                      subtitle: Text(
+                                                        supplier.mobile,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+
+                          child: const Text("Supplier"),
+                        ),
+
+                        // ---- Purchase Date filter ----
+                        PopupMenuItem(
+                          onTap: () async {
+                            final selectedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2025),
+                              lastDate: DateTime.now(),
+                              builder: (context, child) {
+                                return Theme(
+                                  data: Theme.of(context).copyWith(
+                                    colorScheme: ColorScheme.light(
+                                      primary: AppColors.primaryColor,
+                                      onPrimary: Colors.white,
+                                      onSurface: Colors.black,
+                                    ),
+                                    textButtonTheme: TextButtonThemeData(
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: AppColors.primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  child: child!,
+                                );
+                              },
+                            );
+
+                            if (selectedDate != null) {
+                              final formattedDate = DateFormat(
+                                'yyyy-MM-dd',
+                              ).format(selectedDate);
+
+                              ref
+                                  .read(purchaseViewModelProvider.notifier)
+                                  .fetchPurchases(purchaseDate: formattedDate);
+                            }
+                          },
+                          child: const Text("Purchase Date"),
+                        ),
+                      ],
+                    );
                   },
-                  child: SvgPicture.asset(
-                    "assets/icons/filter.svg",
-                    colorFilter: ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.transparent,
                     ),
-                    height: 18,
+                    child: SvgPicture.asset(
+                      "assets/icons/filter.svg",
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                      height: 18,
+                    ),
                   ),
                 );
               },
