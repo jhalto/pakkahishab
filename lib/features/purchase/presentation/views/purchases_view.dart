@@ -18,379 +18,440 @@ class PurchasesView extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppbarBackWithSearch(title: "Purchases"),
       body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              color: Colors.white,
-              child: IntrinsicHeight(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Text("Total Item", style: AppTextStyle.labelLarge),
-                          const SizedBox(height: 2),
-                          Text("2", style: AppTextStyle.labelLarge),
-                        ],
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: VerticalDivider(),
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Text("Total Price", style: AppTextStyle.labelLarge),
-                          const SizedBox(height: 2),
-                          Text("2", style: AppTextStyle.labelLarge),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
+        child: Consumer(
+          builder: (context, ref, child) {
+            return RefreshIndicator(
+              color: AppColors.primaryColor,
+              onRefresh: () {
+                return ref
+                    .read(purchaseViewModelProvider.notifier)
+                    .refreshPurchases();
+              },
               child: Consumer(
                 builder: (outerContext, ref, child) {
                   final purchaseState = ref.watch(purchaseViewModelProvider);
                   if (purchaseState.loading) {
-                    return loader;
+                    return Center(child: loader);
                   }
                   if (purchaseState.purchaseList.isEmpty) {
                     return Center(child: Text("No purchases"));
                   }
-                  return ListView.builder(
-                    itemCount: purchaseState.purchaseList.length,
-                    itemBuilder: (context, index) {
-                      final item = purchaseState.purchaseList[index];
-                      final formattedDate = DateFormat(
-                        'dd MMM',
-                      ).format(item.purchaseDate);
-                      final formattedTime = DateFormat(
-                        'hh:mma ',
-                      ).format(item.purchaseDate);
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 2,
-                          left: 10,
-                          right: 10,
-                        ),
-                        child: InkWell(
-                          onTap: () async {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => PurchaseDetails(),
-                              ),
-                            );
-
-                            final success = await ref
-                                .read(purchaseViewModelProvider.notifier)
-                                .fetchPurchaseDetails(
-                                  purchaseNo: item.purchaseNo,
-                                );
-                            print(success);
-                          },
-                          child: Ink(
-                            decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.blackColor.withAlpha(20),
-                                  blurRadius: .00001,
-                                  spreadRadius: .01,
-                                  offset: const Offset(0, 4),
+                  return Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        color: Colors.white,
+                        child: IntrinsicHeight(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "Total Item",
+                                      style: AppTextStyle.labelLarge,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      ref
+                                          .watch(purchaseViewModelProvider)
+                                          .purchaseList
+                                          .first
+                                          .totalCount
+                                          .toString(),
+                                      style: AppTextStyle.labelLarge,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            child: IntrinsicHeight(
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          formattedDate,
-                                          style: AppTextStyle.bodyMedium
-                                              .copyWith(
-                                                color: AppColors.primaryColor2,
-                                                fontSize: 16.sp,
-                                              ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          formattedTime,
-                                          style: AppTextStyle.bodySmall
-                                              .copyWith(
-                                                color: AppColors.primaryColor2,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const VerticalDivider(
-                                    color: AppColors.fillColor2,
-                                  ),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              item.supplierName.toString(),
-                                              style: AppTextStyle.bodyMedium,
-                                            ),
-                                            Text(
-                                              item.mobile,
-                                              style: AppTextStyle.bodySmall,
-                                            ),
-
-                                            const SizedBox(height: 10),
-                                            Text(
-                                              "${item.netAmount.toString()} Tk",
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            if (item.due == 0)
-                                              Text(
-                                                "Paid",
-                                                style: AppTextStyle.bodyMedium
-                                                    .copyWith(
-                                                      color: const Color(
-                                                        0xff50AA53,
-                                                      ),
-                                                    ),
-                                              ),
-
-                                            if (item.due == item.netAmount)
-                                              Text(
-                                                "Unpaid",
-                                                style: AppTextStyle.bodyMedium
-                                                    .copyWith(
-                                                      color: const Color(
-                                                        0xfff5a848,
-                                                      ),
-                                                    ),
-                                              ),
-                                            if (item.due != 0 &&
-                                                item.due != item.netAmount)
-                                              Text(
-                                                "Partial",
-                                                style: AppTextStyle.bodyMedium
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryColor2,
-                                                    ),
-                                              ),
-                                            if (item.due != 0)
-                                              Text(
-                                                item.due.toString(),
-                                                style: AppTextStyle.bodyMedium
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryColor2,
-                                                    ),
-                                              ),
-
-                                            // if (item.due == item.netAmount)
-                                            //   Text(
-                                            //     item.netAmount.toString(),
-                                            //     style:
-                                            //         AppTextStyle.bodyMedium,
-                                            //   ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: PopupMenuButton(
-                                      menuPadding: EdgeInsets.zero,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      icon: const Icon(
-                                        CupertinoIcons.chevron_down,
-                                        size: 20,
-                                      ),
-                                      itemBuilder: (context) {
-                                        return [
-                                          PopupMenuItem(
-                                            child: Row(
-                                              children: [
-                                                ShaderMask(
-                                                  shaderCallback: (bounds) =>
-                                                      const LinearGradient(
-                                                        colors: [
-                                                          Color(0xFF4FACFE),
-                                                          Color(0xFF00F2FE),
-                                                        ],
-                                                        begin:
-                                                            Alignment.topLeft,
-                                                        end: Alignment
-                                                            .bottomRight,
-                                                      ).createShader(bounds),
-                                                  child: const Icon(
-                                                    Icons.print,
-                                                    size: 30,
-                                                    color: Colors
-                                                        .white, // Important: Keep white to reveal gradient
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 10),
-                                                const Text("Print Invoice"),
-                                              ],
-                                            ),
-                                          ),
-                                          PopupMenuItem(
-                                            onTap: () {},
-                                            child: const Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.local_print_shop_sharp,
-                                                  color:
-                                                      AppColors.accentTextColor,
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text("Print Invoice"),
-                                              ],
-                                            ),
-                                          ),
-                                        ];
-                                      },
-                                    ),
-                                  ),
-                                ],
                               ),
-                            ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 5),
+                                child: VerticalDivider(),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "Total Price",
+                                      style: AppTextStyle.labelLarge,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      ref
+                                          .watch(purchaseViewModelProvider)
+                                          .purchaseList
+                                          .first
+                                          .totalNetAmount
+                                          .toString(),
+                                      style: AppTextStyle.labelLarge,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    },
+                      ),
+                      const SizedBox(height: 8),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: purchaseState.purchaseList.length,
+                          itemBuilder: (context, index) {
+                            final item = purchaseState.purchaseList[index];
+                            final formattedDate = DateFormat(
+                              'dd MMM',
+                            ).format(item.purchaseDate);
+                            final formattedTime = DateFormat(
+                              'hh:mma ',
+                            ).format(item.purchaseDate);
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: 2,
+                                left: 10,
+                                right: 10,
+                              ),
+                              child: InkWell(
+                                onTap: () async {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => PurchaseDetails(),
+                                    ),
+                                  );
+
+                                  final success = await ref
+                                      .read(purchaseViewModelProvider.notifier)
+                                      .fetchPurchaseDetails(
+                                        purchaseNo: item.purchaseNo,
+                                      );
+                                  print(success);
+                                },
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.whiteColor,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.blackColor.withAlpha(
+                                          20,
+                                        ),
+                                        blurRadius: .00001,
+                                        spreadRadius: .01,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  child: IntrinsicHeight(
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.only(
+                                            left: 8,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                formattedDate,
+                                                style: AppTextStyle.bodyMedium
+                                                    .copyWith(
+                                                      color: AppColors
+                                                          .primaryColor2,
+                                                      fontSize: 16.sp,
+                                                    ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                formattedTime,
+                                                style: AppTextStyle.bodySmall
+                                                    .copyWith(
+                                                      color: AppColors
+                                                          .primaryColor2,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const VerticalDivider(
+                                          color: AppColors.fillColor2,
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    item.supplierName
+                                                        .toString(),
+                                                    style:
+                                                        AppTextStyle.bodyMedium,
+                                                  ),
+                                                  Text(
+                                                    item.mobile,
+                                                    style:
+                                                        AppTextStyle.bodySmall,
+                                                  ),
+
+                                                  const SizedBox(height: 10),
+                                                  Text(
+                                                    "${item.netAmount.toString()} Tk",
+                                                  ),
+                                                ],
+                                              ),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  if (item.due == 0)
+                                                    Text(
+                                                      "Paid",
+                                                      style: AppTextStyle
+                                                          .bodyMedium
+                                                          .copyWith(
+                                                            color: const Color(
+                                                              0xff50AA53,
+                                                            ),
+                                                          ),
+                                                    ),
+
+                                                  if (item.due ==
+                                                      item.netAmount)
+                                                    Text(
+                                                      "Unpaid",
+                                                      style: AppTextStyle
+                                                          .bodyMedium
+                                                          .copyWith(
+                                                            color: const Color(
+                                                              0xfff5a848,
+                                                            ),
+                                                          ),
+                                                    ),
+                                                  if (item.due != 0 &&
+                                                      item.due !=
+                                                          item.netAmount)
+                                                    Text(
+                                                      "Partial",
+                                                      style: AppTextStyle
+                                                          .bodyMedium
+                                                          .copyWith(
+                                                            color: AppColors
+                                                                .primaryColor2,
+                                                          ),
+                                                    ),
+                                                  if (item.due != 0)
+                                                    Text(
+                                                      item.due.toString(),
+                                                      style: AppTextStyle
+                                                          .bodyMedium
+                                                          .copyWith(
+                                                            color: AppColors
+                                                                .primaryColor2,
+                                                          ),
+                                                    ),
+
+                                                  // if (item.due == item.netAmount)
+                                                  //   Text(
+                                                  //     item.netAmount.toString(),
+                                                  //     style:
+                                                  //         AppTextStyle.bodyMedium,
+                                                  //   ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Align(
+                                          alignment: Alignment.topRight,
+                                          child: PopupMenuButton(
+                                            menuPadding: EdgeInsets.zero,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                            ),
+                                            icon: const Icon(
+                                              CupertinoIcons.chevron_down,
+                                              size: 20,
+                                            ),
+                                            itemBuilder: (context) {
+                                              return [
+                                                PopupMenuItem(
+                                                  child: Row(
+                                                    children: [
+                                                      ShaderMask(
+                                                        shaderCallback: (bounds) =>
+                                                            const LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                  0xFF4FACFE,
+                                                                ),
+                                                                Color(
+                                                                  0xFF00F2FE,
+                                                                ),
+                                                              ],
+                                                              begin: Alignment
+                                                                  .topLeft,
+                                                              end: Alignment
+                                                                  .bottomRight,
+                                                            ).createShader(
+                                                              bounds,
+                                                            ),
+                                                        child: const Icon(
+                                                          Icons.print,
+                                                          size: 30,
+                                                          color: Colors
+                                                              .white, // Important: Keep white to reveal gradient
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 10),
+                                                      const Text(
+                                                        "Print Invoice",
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
+                                                  onTap: () {},
+                                                  child: const Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons
+                                                            .local_print_shop_sharp,
+                                                        color: AppColors
+                                                            .accentTextColor,
+                                                      ),
+                                                      SizedBox(width: 10),
+                                                      Text("Print Invoice"),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ];
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      PurchasesPagination(),
+                    ],
                   );
                 },
               ),
-            ),
 
-            // Consumer(
-            //   builder: (context, ref, _) {
-            //     final purchaseState = ref.watch(purchaseViewModelProvider);
-            //     final notifier = ref.read(purchaseViewModelProvider.notifier);
+              // Consumer(
+              //   builder: (context, ref, _) {
+              //     final purchaseState = ref.watch(purchaseViewModelProvider);
+              //     final notifier = ref.read(purchaseViewModelProvider.notifier);
 
-            //     final int currentPage = purchaseState.currentPage;
-            //     final int totalPage = purchaseState.totalPage;
+              //     final int currentPage = purchaseState.currentPage;
+              //     final int totalPage = purchaseState.totalPage;
 
-            //     if (totalPage == 0) return const SizedBox();
+              //     if (totalPage == 0) return const SizedBox();
 
-            //     // How many pages to show in the window at a time (optional)
-            //     int maxVisiblePages = totalPage;
-            //     int startPage = (currentPage - 2).clamp(1, totalPage);
-            //     int endPage = (startPage + maxVisiblePages - 1).clamp(
-            //       1,
-            //       totalPage,
-            //     );
+              //     // How many pages to show in the window at a time (optional)
+              //     int maxVisiblePages = totalPage;
+              //     int startPage = (currentPage - 2).clamp(1, totalPage);
+              //     int endPage = (startPage + maxVisiblePages - 1).clamp(
+              //       1,
+              //       totalPage,
+              //     );
 
-            //     if (endPage - startPage + 1 < maxVisiblePages) {
-            //       startPage = (endPage - maxVisiblePages + 1).clamp(
-            //         1,
-            //         totalPage,
-            //       );
-            //     }
+              //     if (endPage - startPage + 1 < maxVisiblePages) {
+              //       startPage = (endPage - maxVisiblePages + 1).clamp(
+              //         1,
+              //         totalPage,
+              //       );
+              //     }
 
-            //     final pages = List.generate(
-            //       endPage - startPage + 1,
-            //       (index) => startPage + index,
-            //     );
+              //     final pages = List.generate(
+              //       endPage - startPage + 1,
+              //       (index) => startPage + index,
+              //     );
 
-            //     return Padding(
-            //       padding: const EdgeInsets.symmetric(horizontal: 100),
-            //       child: Row(
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         children: [
-            //           // Previous button (fixed)
-            //           IconButton(
-            //             icon: const Icon(Icons.arrow_back_ios, size: 18),
-            //             onPressed: currentPage > 1
-            //                 ? () => notifier.goToPage(currentPage - 1)
-            //                 : null,
-            //           ),
+              //     return Padding(
+              //       padding: const EdgeInsets.symmetric(horizontal: 100),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           // Previous button (fixed)
+              //           IconButton(
+              //             icon: const Icon(Icons.arrow_back_ios, size: 18),
+              //             onPressed: currentPage > 1
+              //                 ? () => notifier.goToPage(currentPage - 1)
+              //                 : null,
+              //           ),
 
-            //           // Scrollable page numbers
-            //           Expanded(
-            //             child: SingleChildScrollView(
-            //               scrollDirection: Axis.horizontal,
-            //               child: Row(
-            //                 children: pages.map((page) {
-            //                   final isActive = page == currentPage;
-            //                   return Padding(
-            //                     padding: const EdgeInsets.symmetric(
-            //                       horizontal: 4,
-            //                     ),
-            //                     child: InkWell(
-            //                       onTap: () => notifier.goToPage(page),
-            //                       borderRadius: BorderRadius.circular(8),
-            //                       child: Container(
-            //                         padding: const EdgeInsets.symmetric(
-            //                           horizontal: 10,
-            //                           vertical: 6,
-            //                         ),
-            //                         decoration: BoxDecoration(
-            //                           color: isActive
-            //                               ? AppColors.primaryColor2
-            //                               : Colors.grey.shade200,
-            //                           borderRadius: BorderRadius.circular(8),
-            //                         ),
-            //                         child: Text(
-            //                           "$page",
-            //                           style: TextStyle(
-            //                             color: isActive
-            //                                 ? Colors.white
-            //                                 : Colors.black87,
-            //                             fontWeight: isActive
-            //                                 ? FontWeight.bold
-            //                                 : FontWeight.normal,
-            //                           ),
-            //                         ),
-            //                       ),
-            //                     ),
-            //                   );
-            //                 }).toList(),
-            //               ),
-            //             ),
-            //           ),
+              //           // Scrollable page numbers
+              //           Expanded(
+              //             child: SingleChildScrollView(
+              //               scrollDirection: Axis.horizontal,
+              //               child: Row(
+              //                 children: pages.map((page) {
+              //                   final isActive = page == currentPage;
+              //                   return Padding(
+              //                     padding: const EdgeInsets.symmetric(
+              //                       horizontal: 4,
+              //                     ),
+              //                     child: InkWell(
+              //                       onTap: () => notifier.goToPage(page),
+              //                       borderRadius: BorderRadius.circular(8),
+              //                       child: Container(
+              //                         padding: const EdgeInsets.symmetric(
+              //                           horizontal: 10,
+              //                           vertical: 6,
+              //                         ),
+              //                         decoration: BoxDecoration(
+              //                           color: isActive
+              //                               ? AppColors.primaryColor2
+              //                               : Colors.grey.shade200,
+              //                           borderRadius: BorderRadius.circular(8),
+              //                         ),
+              //                         child: Text(
+              //                           "$page",
+              //                           style: TextStyle(
+              //                             color: isActive
+              //                                 ? Colors.white
+              //                                 : Colors.black87,
+              //                             fontWeight: isActive
+              //                                 ? FontWeight.bold
+              //                                 : FontWeight.normal,
+              //                           ),
+              //                         ),
+              //                       ),
+              //                     ),
+              //                   );
+              //                 }).toList(),
+              //               ),
+              //             ),
+              //           ),
 
-            //           // Next button (fixed)
-            //           IconButton(
-            //             icon: const Icon(Icons.arrow_forward_ios, size: 18),
-            //             onPressed: currentPage < totalPage
-            //                 ? () => notifier.goToPage(currentPage + 1)
-            //                 : null,
-            //           ),
-            //         ],
-            //       ),
-            //     );
-            //   },
-            // ),
-            PurchasesPagination(),
-          ],
+              //           // Next button (fixed)
+              //           IconButton(
+              //             icon: const Icon(Icons.arrow_forward_ios, size: 18),
+              //             onPressed: currentPage < totalPage
+              //                 ? () => notifier.goToPage(currentPage + 1)
+              //                 : null,
+              //           ),
+              //         ],
+              //       ),
+              //     );
+              //   },
+              // ),
+            );
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
