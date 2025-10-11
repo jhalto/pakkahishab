@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 
 class CustomAppbarBackWithSearch extends StatelessWidget
     implements PreferredSizeWidget {
@@ -55,7 +57,7 @@ class CustomAppbarBackWithSearch extends StatelessWidget
           actions: [
             Consumer(
               builder: (context, ref, child) {
-               return PopupMenuButton(
+                return PopupMenuButton(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadiusGeometry.all(Radius.circular(10)),
                   ),
@@ -93,7 +95,16 @@ class CustomAppbarBackWithSearch extends StatelessWidget
                             },
                           );
 
-                          if (selectedDate != null) {}
+                          if (selectedDate != null) {
+                            final formattedDate = DateFormat(
+                              'yyyy-MM-dd',
+                            ).format(selectedDate);
+
+                            // Pass the formatted date to fetchPurchases
+                            ref
+                                .read(purchaseViewModelProvider.notifier)
+                                .fetchPurchases(purchaseDate: formattedDate);
+                          }
                         },
                         child: Text("Purchase Date"),
                       ),

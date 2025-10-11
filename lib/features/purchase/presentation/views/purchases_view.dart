@@ -7,7 +7,7 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
-import 'package:pakkahishab/core/global_widgets/custom_appbar_back_with_search.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/custom_appbar_back_with_search.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_details.dart';
 
 class PurchasesView extends StatelessWidget {
@@ -55,7 +55,7 @@ class PurchasesView extends StatelessWidget {
             const SizedBox(height: 8),
             Expanded(
               child: Consumer(
-                builder: (context, ref, child) {
+                builder: (outerContext, ref, child) {
                   final purchaseState = ref.watch(purchaseViewModelProvider);
                   if (purchaseState.loading) {
                     return loader;
@@ -80,24 +80,20 @@ class PurchasesView extends StatelessWidget {
                           right: 10,
                         ),
                         child: InkWell(
-                          onTap: () {
-                            ref
+                          onTap: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PurchaseDetails(),
+                              ),
+                            );
+
+                            final success = await ref
                                 .read(purchaseViewModelProvider.notifier)
                                 .fetchPurchaseDetails(
-                                  context,
                                   purchaseNo: item.purchaseNo,
                                 );
-                            final data = ref
-                                .read(purchaseViewModelProvider)
-                                .purchaseDetails;
-                            if (data != null && context.mounted) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => PurchaseDetails(),
-                                ),
-                              );
-                            }
+                            print(success);
                           },
                           child: Ink(
                             decoration: BoxDecoration(

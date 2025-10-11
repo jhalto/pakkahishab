@@ -39,7 +39,7 @@ class MyApp extends ConsumerWidget {
           
           theme: ThemeData(
             appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.white, // AppBar background
+              backgroundColor: AppColors.bgColor, // AppBar background
               foregroundColor: Colors.black, // AppBar text & icons
               elevation: 0, // Optional: remove shadow
               centerTitle: true, // Optional: center the title
