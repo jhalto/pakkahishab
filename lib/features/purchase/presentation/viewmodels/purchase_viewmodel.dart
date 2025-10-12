@@ -33,6 +33,7 @@ final class PurchaseState {
   final String offset;
   final List<PurchaseItem> purchaseList;
   final String? supplierId;
+  final String? paymentMethod;
   // final String purchaseDate;
   // final String supplierId;
 
@@ -50,6 +51,7 @@ final class PurchaseState {
     this.offset = '0',
     this.purchaseList = const [],
     this.supplierId,
+    this.paymentMethod,
   });
 
   PurchaseState copyWith({
@@ -66,6 +68,7 @@ final class PurchaseState {
     String? offset,
     List<PurchaseItem>? purchaseList,
     String? supplierId,
+    String? paymentMethod,
   }) {
     return PurchaseState(
       purchaseDetails: purchaseDetails ?? this.purchaseDetails,
@@ -81,6 +84,7 @@ final class PurchaseState {
       offset: offset ?? this.offset,
       purchaseList: purchaseList ?? this.purchaseList,
       supplierId: supplierId ?? this.supplierId,
+      paymentMethod: paymentMethod ?? this.paymentMethod
     );
   }
 }
@@ -96,6 +100,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
   }
 
   TextEditingController searchSupplierController = TextEditingController();
+  String paymentMethod  = "Cash";
 
   Future<void> fetchPurchases({
     bool loadMore = false,
@@ -246,4 +251,8 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
       state = state.copyWith(filteredSuppliers: filtered);
     }
   }
+
+   void updatePaymentMethod(String value){
+    state = state.copyWith(paymentMethod: value);
+   }
 }

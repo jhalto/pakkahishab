@@ -115,7 +115,10 @@ class PurchasesView extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => PurchaseDetails(),
+                                      builder: (_) => PurchaseDetails(
+                                        purchase: item,
+                                        
+                                      ),
                                     ),
                                   );
 
