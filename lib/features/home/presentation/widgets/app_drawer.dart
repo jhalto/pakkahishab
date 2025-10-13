@@ -5,6 +5,7 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
+import 'package:pakkahishab/routes/app_routes.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -69,6 +70,16 @@ class AppDrawer extends StatelessWidget {
                         style: AppTextStyle.bodyLarge,
                       ),
                       children: [
+                         ListTile(
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, Routes.purchase);
+                          },
+                          title: Text(
+                            AppLocalizations.of(context)!.purchase,
+                          ),
+                          leading: const Icon(FontAwesomeIcons.cartShopping),
+                        ),
                         ListTile(
                           title: Text(
                             AppLocalizations.of(context)!.newPurchase,
@@ -95,6 +106,14 @@ class AppDrawer extends StatelessWidget {
                         style: AppTextStyle.bodyLarge,
                       ),
                       children: [
+                         ListTile(
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, Routes.sales);
+                          },
+                          title: Text(AppLocalizations.of(context)!.sales),
+                          leading: const Icon(FontAwesomeIcons.cashRegister),
+                        ),
                         ListTile(
                           title: Text(AppLocalizations.of(context)!.newSales),
                           leading: const Icon(FontAwesomeIcons.cashRegister),

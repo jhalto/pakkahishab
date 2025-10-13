@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';
-import 'package:pakkahishab/features/sales/presentation/views/sale_view.dart';
+import 'package:pakkahishab/features/sales/presentation/views/sales_view.dart';
 
 final navbarProvider = ChangeNotifierProvider((ref) => NavbarViewmodel());
 
@@ -10,7 +10,7 @@ class NavbarViewmodel extends ChangeNotifier {
 
   final screens = const [
     PurchasesView(),
-    SaleView(),
+    SalesView(),
   ];
   
 

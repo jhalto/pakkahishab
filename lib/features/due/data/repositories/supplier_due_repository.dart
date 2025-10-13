@@ -1,43 +1,43 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pakkahishab/features/purchase/data/services/purchase_services.dart';
+import 'package:pakkahishab/features/due/data/services/supplier_due_services.dart';
 
-final purchaseRepositoryProvider = Provider<PurchaseRepository>((ref) {
-  final service = ref.read(purchaseServiceProvider);
-  return PurchaseRepository(service);
+final supplierDueRepositoryProvider = Provider<SupplierDueRepository>((ref) {
+  final service = ref.read(supplierDueServiceProvider);
+  return SupplierDueRepository(service);
 });
 
-class PurchaseRepository {
-  final PurchaseServices _purchaseServices;
-  PurchaseRepository(this._purchaseServices);
+class SupplierDueRepository {
+  final SupplierDueServices _supplierDueServices;
+  SupplierDueRepository(this._supplierDueServices);
 
-  Future<Map<String, dynamic>> getPurchases({
+  Future<Map<String, dynamic>> getSupplierDues({
     required String phone,
     required String pin,
     required String offset,
     required String code,
-    String? purchaseDate,
+    String? dueDate,
     String? supplierId,
   }) async {
-    final purchaseData = await _purchaseServices.getPurchase(
+    final dueData = await _supplierDueServices.getSupplierDues(
       phone: phone,
       pin: pin,
       offset: offset,
       code: code,
-      purchasedate: purchaseDate,
+      dueDate: dueDate,
       supplierId: supplierId,
     );
-    print(purchaseData.length);
-    return purchaseData;
+    print(dueData.length);
+    return dueData;
   }
 
-  Future<Map<String, dynamic>> getPurchaseDetails({
+  Future<Map<String, dynamic>> getSaleDetails({
     required String phone,
     required String pin,
     required String offset,
     required String code,
     required String purchaseNo,
   }) async {
-    final purchaseData = await _purchaseServices.getPurchaseDetails(
+    final purchaseData = await _supplierDueServices.getSaleDetails(
       purchaseNo: purchaseNo,
       phone: phone,
       pin: pin,
@@ -53,7 +53,7 @@ class PurchaseRepository {
     required String pin,
     required String code,
   }) async {
-    final response = await _purchaseServices.getSupplier(
+    final response = await _supplierDueServices.getSupplier(
       phone: phone,
       pin: pin,
       code: code

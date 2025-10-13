@@ -7,12 +7,12 @@ import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 
-class CustomAppbarBackWithSearch extends StatelessWidget
+class PurchaseAppbarBackWithSearch extends StatelessWidget
     implements PreferredSizeWidget {
   final String title;
   final ValueChanged<String>? onSearchChanged;
 
-  CustomAppbarBackWithSearch({
+  PurchaseAppbarBackWithSearch({
     super.key,
     required this.title,
     this.onSearchChanged,

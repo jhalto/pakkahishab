@@ -3,21 +3,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
-import 'package:pakkahishab/features/purchase/data/models/purchase_detail_model.dart';
-import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
-import 'package:pakkahishab/features/purchase/data/models/supplier_model.dart';
-import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
+import 'package:pakkahishab/features/sales/data/models/customer_model.dart';
+import 'package:pakkahishab/features/sales/data/models/sale_details_model.dart';
+import 'package:pakkahishab/features/sales/data/models/sales_model.dart';
+import 'package:pakkahishab/features/sales/data/repositories/sales_repository.dart';
 
-
-final purchaseViewModelProvider =
-    NotifierProvider.autoDispose<PurchaseNotifier, PurchaseState>(
-      () => PurchaseNotifier(),
+// final purchaseViewModelProvider =
+//     AsyncNotifierProvider<PurchaseNotifier, PurchaseState>(
+//       () => PurchaseNotifier(),
+//     );
+final salesViewModelProvider =
+    NotifierProvider.autoDispose<SalesNotifier, SalesState>(
+      () => SalesNotifier(),
     );
 
-final class PurchaseState {
-  final PurchaseDetailsResponse? purchaseDetails;
-  final SupplierResponse? supplier;
-  final List<Supplier>? filteredSuppliers;
+final class SalesState {
+  final SalesDetailsResponse? salesDetails;
+  final CustomerResponse? customer;
+  final List<Customer>? filteredCustomers;
   final bool loading;
   final bool detailLoading;
   final bool hasMore;
@@ -26,16 +29,16 @@ final class PurchaseState {
   final String phone;
   final String pin;
   final String offset;
-  final List<PurchaseItem> purchaseList;
-  final String? supplierId;
+  final List<SalesItem> salesList;
+  final String? customerId;
   final String? paymentMethod;
   // final String purchaseDate;
   // final String supplierId;
 
-  const PurchaseState({
-    this.purchaseDetails,
-    this.supplier,
-    this.filteredSuppliers,
+  const SalesState({
+    this.salesDetails,
+    this.customer,
+    this.filteredCustomers,
     this.loading = false,
     this.detailLoading = false,
     this.hasMore = false,
@@ -44,15 +47,15 @@ final class PurchaseState {
     this.phone = '',
     this.pin = '',
     this.offset = '0',
-    this.purchaseList = const [],
-    this.supplierId,
+    this.salesList = const [],
+    this.customerId,
     this.paymentMethod,
   });
 
-  PurchaseState copyWith({
-    PurchaseDetailsResponse? purchaseDetails,
-    SupplierResponse? supplier,
-    List<Supplier>? filteredSuppliers,
+  SalesState copyWith({
+    SalesDetailsResponse? salesDetails,
+    CustomerResponse? customer,
+    List<Customer>? filteredCustomers,
     bool? loading,
     bool? detailLoading,
     bool? hasMore,
@@ -61,14 +64,14 @@ final class PurchaseState {
     String? phone,
     String? pin,
     String? offset,
-    List<PurchaseItem>? purchaseList,
-    String? supplierId,
+    List<SalesItem>? salesList,
+    String? customerId,
     String? paymentMethod,
   }) {
-    return PurchaseState(
-      purchaseDetails: purchaseDetails ?? this.purchaseDetails,
-      supplier: supplier ?? this.supplier,
-      filteredSuppliers: filteredSuppliers ?? this.filteredSuppliers,
+    return SalesState(
+      salesDetails: salesDetails ?? this.salesDetails,
+      customer: customer ?? this.customer,
+      filteredCustomers: filteredCustomers ?? this.filteredCustomers,
       loading: loading ?? this.loading,
       detailLoading: detailLoading ?? this.detailLoading,
       hasMore: hasMore ?? this.hasMore,
@@ -77,30 +80,30 @@ final class PurchaseState {
       phone: phone ?? this.phone,
       pin: pin ?? this.pin,
       offset: offset ?? this.offset,
-      purchaseList: purchaseList ?? this.purchaseList,
-      supplierId: supplierId ?? this.supplierId,
+      salesList: salesList ?? this.salesList,
+      customerId: customerId ?? this.customerId,
       paymentMethod: paymentMethod ?? this.paymentMethod
     );
   }
 }
 
-class PurchaseNotifier extends Notifier<PurchaseState> {
-  late final PurchaseRepository _repo;
+class SalesNotifier extends Notifier<SalesState> {
+  late final SalesRepository _repo;
 
   @override
-  PurchaseState build() {
-    _repo = ref.read(purchaseRepositoryProvider);
-    fetchPurchases(); // call async stuff manually
-    return const PurchaseState();
+  SalesState build() {
+    _repo = ref.read(salesRepositoryProvider);
+    fetchSales(); // call async stuff manually
+    return const SalesState();
   }
 
   TextEditingController searchSupplierController = TextEditingController();
   String paymentMethod  = "Cash";
 
-  Future<void> fetchPurchases({
+  Future<void> fetchSales({
     bool loadMore = false,
     int? page,
-    String? purchaseDate,
+    String? saleDate,
   }) async {
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
@@ -113,30 +116,30 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
       final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
       final int newOffset = (newPage - 1) * 10;
 
-      final result = await _repo.getPurchases(
+      final result = await _repo.getSales(
         phone: phone ?? '',
         pin: pin ?? '',
         code: code ?? '',
         offset: newOffset.toString(),
-        purchaseDate: purchaseDate,
-        supplierId: state.supplierId,
+        saleDate: saleDate,
+        customerId: state.customerId,
       );
 
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
       final totalItem = result['data']['items'][0]['total_count'] ?? 0;
       print(totalItem);
+      state = state.copyWith(totalPage: (totalItem / 10).ceil());
       print(state.totalPage);
       final newItems = items
-          .map<PurchaseItem>((e) => PurchaseItem.fromJson(e))
+          .map<SalesItem>((e) => SalesItem.fromJson(e))
           .toList();
 
       state = state.copyWith(
-        purchaseList: newItems,
+        salesList: newItems,
         offset: newOffset.toString(),
         currentPage: newPage,
         hasMore: hasMore,
-        totalPage: (totalItem / 10).ceil(),
       );
     } catch (e) {
       debugPrint("Error fetching purchases: $e");
@@ -145,17 +148,17 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     }
   }
 
-  void updateSupplierId(String supplierId) {
-    state = state.copyWith(supplierId: supplierId);
+  void updateCustomerId(String customerId) {
+    state = state.copyWith(customerId: customerId);
   }
 
-  Future<void> refreshPurchases() async {
-    state = state.copyWith(supplierId: "");
-    await fetchPurchases();
+  Future<void> refreshSales() async {
+    state = state.copyWith(customerId: "");
+    await fetchSales();
   }
 
   void goToPage(int page) {
-    fetchPurchases(page: page);
+    fetchSales(page: page);
   }
 
   // void refreshPurchases() {
@@ -163,10 +166,10 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
   //   fetchPurchases();
   // }
 
-  Future<bool> fetchPurchaseDetails({
+  Future<bool> fetchSalesDetails({
     bool loadMore = false,
     int? page,
-    required String purchaseNo,
+    required String saleNo,
   }) async {
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin') ?? '';
@@ -178,17 +181,17 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
       final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
       final int newOffset = (newPage - 1) * 10;
 
-      final response = await _repo.getPurchaseDetails(
+      final response = await _repo.getSaleDetails(
         phone: phone ?? '',
         pin: pin,
         code: code ?? '',
         offset: newOffset.toString(),
-        purchaseNo: purchaseNo,
+        saleNo: saleNo,
       );
 
       if (response['statusCode'] == 200) {
-        final purchaseData = PurchaseDetailsResponse.fromJson(response['data']);
-        state = state.copyWith(purchaseDetails: purchaseData);
+        final salesData = SalesDetailsResponse.fromJson(response['data']);
+        state = state.copyWith(salesDetails: salesData);
         return true; // ✅ signal success
       }
     } catch (e) {
@@ -199,27 +202,25 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     return false;
   }
 
-  // bool supplierLoading = false;
-
-  Future<void> getSupplier() async {
+  
+  Future<void> getCustomer() async {
     state = state.copyWith(detailLoading: true);
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
-      final response = await _repo.getSupplier(
+      final response = await _repo.getCustomer(
         phone: phone.toString(),
         pin: pin.toString(),
         code: code.toString(),
       );
-      
-      print(code.toString());
+      print(response);
       if (response['statusCode'] == 200) {
-        final responseData = SupplierResponse.fromJson(response['data']);
+        final responseData = CustomerResponse.fromJson(response['data']);
         state = state.copyWith(
-          supplier: responseData,
-          filteredSuppliers: responseData.items,
+          customer: responseData,
+          filteredCustomers: responseData.items,
         );
         print("done");
       } else {
@@ -233,20 +234,20 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
   }
 
   void searchSupplier(String query) {
-    final allSuppliers = state.supplier?.items ?? [];
+    final allCustomers = state.customer?.items ?? [];
 
     if (query.isEmpty) {
       // if query is empty, show all suppliers
-      state = state.copyWith(filteredSuppliers: allSuppliers);
+      state = state.copyWith(filteredCustomers: allCustomers);
     } else {
-      final filtered = allSuppliers
+      final filtered = allCustomers
           .where(
-            (supplier) => supplier.supplierName.toLowerCase().contains(
+            (supplier) => supplier.customerName.toLowerCase().contains(
               query.toLowerCase(),
             ),
           )
           .toList();
-      state = state.copyWith(filteredSuppliers: filtered);
+      state = state.copyWith(filteredCustomers: filtered);
     }
   }
 

@@ -6,12 +6,13 @@ import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
+import 'package:pakkahishab/features/due/presentation/viewmodels/supplier_due_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_appbar_back_with_search.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_details.dart';
 
-class PurchasesView extends StatelessWidget {
-  const PurchasesView({super.key});
+class SupplierDuesView extends StatelessWidget {
+  const SupplierDuesView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,20 +25,18 @@ class PurchasesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(purchaseViewModelProvider.notifier)
+                    .read(supplierDueViewModelProvider.notifier)
                     .refreshPurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final purchaseState = ref.watch(purchaseViewModelProvider);
-                  final purchaseNotifier = ref.watch(
-                    purchaseViewModelProvider.notifier,
-                  );
-                  if (purchaseState.loading) {
+                  final dueState = ref.watch(supplierDueViewModelProvider);
+                  if (dueState.loading) {
                     return Center(child: loader);
                   }
-                  if (purchaseState.purchaseList.isEmpty) {
-                    return Center(child: Text("No purchases"));
+                  
+                  if (dueState.duesList.isEmpty) {
+                    return Center(child: Text("No Dues"));
                   }
                   return Column(
                     children: [
@@ -56,16 +55,13 @@ class PurchasesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      purchaseState.purchaseList.isEmpty
-                                          ? "0"
-                                          : ref
-                                                .watch(
-                                                  purchaseViewModelProvider,
-                                                )
-                                                .purchaseList
-                                                .first
-                                                .totalCount
-                                                .toString(),
+                                      // ref
+                                      //     .watch(supplierDueViewModelProvider)
+                                      //     .duesList
+                                      //     .first
+                                      //     .
+                                      //     .toString(),
+                                      "",
                                       style: AppTextStyle.labelLarge,
                                     ),
                                   ],
@@ -84,16 +80,13 @@ class PurchasesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      purchaseState.purchaseList.isEmpty
-                                          ? "0"
-                                          : ref
-                                                .watch(
-                                                  purchaseViewModelProvider,
-                                                )
-                                                .purchaseList
-                                                .first
-                                                .totalNetAmount
-                                                .toString(),
+                                      // ref
+                                      //     .watch(purchaseViewModelProvider)
+                                      //     .purchaseList
+                                      //     .first
+                                      //     .totalNetAmount
+                                      //     .toString(),
+                                      "",
                                       style: AppTextStyle.labelLarge,
                                     ),
                                   ],
@@ -106,15 +99,15 @@ class PurchasesView extends StatelessWidget {
                       const SizedBox(height: 8),
                       Expanded(
                         child: ListView.builder(
-                          itemCount: purchaseState.purchaseList.length,
+                          itemCount: dueState.duesList.length,
                           itemBuilder: (context, index) {
-                            final item = purchaseState.purchaseList[index];
-                            final formattedDate = DateFormat(
-                              'dd MMM',
-                            ).format(item.purchaseDate);
-                            final formattedTime = DateFormat(
-                              'hh:mma ',
-                            ).format(item.purchaseDate);
+                            final item = dueState.duesList[index];
+                            // final formattedDate = DateFormat(
+                            //   'dd MMM',
+                            // ).format(item.);
+                            // final formattedTime = DateFormat(
+                            //   'hh:mma ',
+                            // ).format(item.purchaseDate);
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 2,
@@ -123,18 +116,20 @@ class PurchasesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          PurchaseDetails(purchase: item),
-                                    ),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (_) => PurchaseDetails(
+                                  //       purchase: item.,
+                                        
+                                  //     ),
+                                  //   ),
+                                  // );
 
                                   final success = await ref
                                       .read(purchaseViewModelProvider.notifier)
                                       .fetchPurchaseDetails(
-                                        purchaseNo: item.purchaseNo,
+                                        purchaseNo: item.accountNo,
                                       );
                                   print(success);
                                 },
@@ -165,7 +160,8 @@ class PurchasesView extends StatelessWidget {
                                           child: Column(
                                             children: [
                                               Text(
-                                                formattedDate,
+                                                // formattedDate,
+                                                "",
                                                 style: AppTextStyle.bodyMedium
                                                     .copyWith(
                                                       color: AppColors
@@ -175,7 +171,8 @@ class PurchasesView extends StatelessWidget {
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
-                                                formattedTime,
+                                                // formattedTime,
+                                                "",
                                                 style: AppTextStyle.bodySmall
                                                     .copyWith(
                                                       color: AppColors
@@ -198,20 +195,21 @@ class PurchasesView extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    item.supplierName
+                                                    item.accountName
                                                         .toString(),
+                                                  
                                                     style:
                                                         AppTextStyle.bodyMedium,
                                                   ),
                                                   Text(
-                                                    item.supplierPhone!,
+                                                    item.phoneNo,
                                                     style:
                                                         AppTextStyle.bodySmall,
                                                   ),
 
                                                   const SizedBox(height: 10),
                                                   Text(
-                                                    "${item.netAmount.toString()} Tk",
+                                                    "${item.payDue.toString()} Tk",
                                                   ),
                                                 ],
                                               ),
@@ -222,7 +220,7 @@ class PurchasesView extends StatelessWidget {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.end,
                                                 children: [
-                                                  if (item.due == 0)
+                                                  if (item.amount == 0)
                                                     Text(
                                                       "Paid",
                                                       style: AppTextStyle
@@ -234,40 +232,40 @@ class PurchasesView extends StatelessWidget {
                                                           ),
                                                     ),
 
-                                                  if (item.due ==
-                                                      item.netAmount)
-                                                    Text(
-                                                      "Unpaid",
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: const Color(
-                                                              0xfff5a848,
-                                                            ),
-                                                          ),
-                                                    ),
-                                                  if (item.due != 0 &&
-                                                      item.due !=
-                                                          item.netAmount)
-                                                    Text(
-                                                      "Partial",
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: AppColors
-                                                                .primaryColor2,
-                                                          ),
-                                                    ),
-                                                  if (item.due != 0)
-                                                    Text(
-                                                      item.due.toString(),
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: AppColors
-                                                                .primaryColor2,
-                                                          ),
-                                                    ),
+                                                  // if (item.due ==
+                                                  //     item.netAmount)
+                                                  //   Text(
+                                                  //     "Unpaid",
+                                                  //     style: AppTextStyle
+                                                  //         .bodyMedium
+                                                  //         .copyWith(
+                                                  //           color: const Color(
+                                                  //             0xfff5a848,
+                                                  //           ),
+                                                  //         ),
+                                                  //   ),
+                                                  // if (item.due != 0 &&
+                                                  //     item.due !=
+                                                  //         item.netAmount)
+                                                  //   Text(
+                                                  //     "Partial",
+                                                  //     style: AppTextStyle
+                                                  //         .bodyMedium
+                                                  //         .copyWith(
+                                                  //           color: AppColors
+                                                  //               .primaryColor2,
+                                                  //         ),
+                                                  //   ),
+                                                  // if (item.due != 0)
+                                                  //   Text(
+                                                  //     item.due.toString(),
+                                                  //     style: AppTextStyle
+                                                  //         .bodyMedium
+                                                  //         .copyWith(
+                                                  //           color: AppColors
+                                                  //               .primaryColor2,
+                                                  //         ),
+                                                  //   ),
 
                                                   // if (item.due == item.netAmount)
                                                   //   Text(
@@ -488,54 +486,30 @@ class PurchasesPagination extends ConsumerStatefulWidget {
 
 class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
   final ScrollController _scrollController = ScrollController();
-  int? _previousPage;
-
-  // Approximate width of each page button (adjust based on your design)
-  static const double buttonWidth = 40.0;
-  static const double buttonSpacing = 8.0;
-
-  @override
-  void initState() {
-    super.initState();
-    // Scroll to current page after first frame
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentPage = ref.read(purchaseViewModelProvider).currentPage;
-      if (currentPage > 1) {
-        _scrollToPageImmediate(currentPage);
-      }
-    });
-  }
-
-  void _scrollToPageImmediate(int page) {
-    if (!_scrollController.hasClients) return;
-
-    final itemWidth = buttonWidth + buttonSpacing;
-    final buttonPosition = (page - 1) * itemWidth;
-    final viewportWidth = _scrollController.position.viewportDimension;
-    final targetOffset =
-        buttonPosition - (viewportWidth / 2) + (buttonWidth / 2);
-
-    // Jump immediately without animation for initial positioning
-    _scrollController.jumpTo(
-      targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
-    );
-  }
+  final Map<int, GlobalKey> _pageKeys = {};
 
   void _scrollToPage(int page) {
-    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final key = _pageKeys[page];
+      if (key == null) return;
 
-    // Use a longer delay to ensure the UI has updated
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (!mounted || !_scrollController.hasClients) return;
+      final context = key.currentContext;
+      if (context == null) return;
 
-      final itemWidth = buttonWidth + buttonSpacing;
-      final buttonPosition = (page - 1) * itemWidth;
-      final viewportWidth = _scrollController.position.viewportDimension;
-      final targetOffset =
-          buttonPosition - (viewportWidth / 2) + (buttonWidth / 2);
+      final box = context.findRenderObject() as RenderBox;
+      final scrollableBox =
+          _scrollController.position.context.storageContext.findRenderObject()
+              as RenderBox;
+
+      // Get offset of page relative to scrollable
+      final offset =
+          _scrollController.offset +
+          box.localToGlobal(Offset.zero, ancestor: scrollableBox).dx +
+          box.size.width / 2 -
+          scrollableBox.size.width / 2;
 
       _scrollController.animateTo(
-        targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
+        offset.clamp(0.0, _scrollController.position.maxScrollExtent),
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -544,17 +518,11 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(purchaseViewModelProvider);
-    final notifier = ref.read(purchaseViewModelProvider.notifier);
+    final purchaseState = ref.watch(supplierDueViewModelProvider);
+    final notifier = ref.read(supplierDueViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;
-
-    // Detect page change and scroll to it
-    if (_previousPage != null && _previousPage != currentPage) {
-      _scrollToPage(currentPage);
-    }
-    _previousPage = currentPage;
 
     if (totalPage == 0) return const SizedBox();
 
@@ -563,31 +531,36 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 60),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
             icon: const Icon(Icons.arrow_back_ios, size: 18),
             onPressed: currentPage > 1
-                ? () => notifier.goToPage(currentPage - 1)
+                ? () {
+                    notifier.goToPage(currentPage - 1);
+                    _scrollToPage(currentPage - 1);
+                  }
                 : null,
           ),
 
-          Flexible(
+          Expanded(
             child: SingleChildScrollView(
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 children: pages.map((page) {
+                  _pageKeys.putIfAbsent(page, () => GlobalKey());
                   final isActive = page == currentPage;
                   return Padding(
+                    key: _pageKeys[page],
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: InkWell(
-                      onTap: () => notifier.goToPage(page),
+                      onTap: () {
+                        notifier.goToPage(page);
+                        _scrollToPage(page);
+                      },
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         alignment: Alignment.center,
-                        constraints: const BoxConstraints(minWidth: 40),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 6,
@@ -618,17 +591,14 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
           IconButton(
             icon: const Icon(Icons.arrow_forward_ios, size: 18),
             onPressed: currentPage < totalPage
-                ? () => notifier.goToPage(currentPage + 1)
+                ? () {
+                    notifier.goToPage(currentPage + 1);
+                    _scrollToPage(currentPage + 1);
+                  }
                 : null,
           ),
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 }
