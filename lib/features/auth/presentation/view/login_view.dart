@@ -39,14 +39,17 @@ class LoginView extends StatelessWidget {
                     }
                   },
                   child: Ink(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
+                    ),
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       color: AppColors.primaryColor,
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.languageType,
-                      style:AppTextStyle.bodyMediumWhite,
+                      style: AppTextStyle.bodyMediumWhite,
                     ),
                   ),
                 );
@@ -62,10 +65,7 @@ class LoginView extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.center,
-              child: Image.asset(
-                ImagesPath.logo,
-                width: screenWidth * .52,
-              ),
+              child: Image.asset(ImagesPath.logo, width: screenWidth * .52),
             ),
             const SizedBox(height: 50),
             Consumer(
@@ -111,9 +111,11 @@ class LoginView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextField(
-                        focusNode: ref.read(loginNotifierProvider.notifier).phoneFocusNode,
+                      focusNode: ref
+                          .read(loginNotifierProvider.notifier)
+                          .phoneFocusNode,
 
-                       textInputType: TextInputType.phone,
+                      textInputType: TextInputType.phone,
                       isPassword: true,
                       prefixIcon: const Icon(
                         Icons.lock,
@@ -124,7 +126,9 @@ class LoginView extends StatelessWidget {
                           .read(loginNotifierProvider.notifier)
                           .updatePassword(value, context),
                       onDone: () async {
-                        await ref.read(loginNotifierProvider.notifier).login(context);
+                        await ref
+                            .read(loginNotifierProvider.notifier)
+                            .login(context);
                       },
                       textInputAction: TextInputAction.done,
                     ),
@@ -144,12 +148,13 @@ class LoginView extends StatelessWidget {
                 final isLoading = ref.watch(
                   loginNotifierProvider.select((vm) => vm.isLoading),
                 );
-                
-                return CustomFullwidthButton(
 
+                return CustomFullwidthButton(
                   onTap: () async {
                     print("df");
-                    await ref.read(loginNotifierProvider.notifier).login(context);
+                    await ref
+                        .read(loginNotifierProvider.notifier)
+                        .login(context);
                   },
                   title: "Login",
                   isLoading: isLoading,
@@ -161,7 +166,6 @@ class LoginView extends StatelessWidget {
             const Divider(color: AppColors.primaryColor),
             const SizedBox(height: 10),
             CustomFullwidthButton(
-              
               onTap: () async {
                 Navigator.pushNamed(context, Routes.signup);
                 // Navigator.push(context, MaterialPageRoute(builder: (context) => VerifyMobileView(),));

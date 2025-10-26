@@ -6,38 +6,34 @@ import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_appbar_back_with_search.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchase_details.dart';
+import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_viewmodel.dart';
+import 'package:pakkahishab/features/sales/presentation/views/sale_details.dart';
+import 'package:pakkahishab/features/sales/presentation/widgets/sales_appbar_back_with_search.dart';
 
-class PurchasesView extends StatelessWidget {
-  const PurchasesView({super.key});
+class SalesView extends StatelessWidget {
+  const SalesView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurchaseAppbarBackWithSearch(title: "Purchases"),
+      appBar: SalesAppbarBackWithSearch(title: "Sales"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
             return RefreshIndicator(
               color: AppColors.primaryColor,
               onRefresh: () {
-                return ref
-                    .read(purchaseViewModelProvider.notifier)
-                    .refreshPurchases();
+                return ref.read(salesViewModelProvider.notifier).refreshSales();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final purchaseState = ref.watch(purchaseViewModelProvider);
-                  final purchaseNotifier = ref.watch(
-                    purchaseViewModelProvider.notifier,
-                  );
-                  if (purchaseState.loading) {
+                  final saleState = ref.watch(salesViewModelProvider);
+                  final salesNotifier = ref.watch(salesViewModelProvider);
+                  if (saleState.loading) {
                     return Center(child: loader);
                   }
-                  if (purchaseState.purchaseList.isEmpty) {
-                    return Center(child: Text("No purchases"));
+                  if (saleState.salesList.isEmpty) {
+                    return Center(child: Text("No Sales"));
                   }
                   return Column(
                     children: [
@@ -56,13 +52,11 @@ class PurchasesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      purchaseState.purchaseList.isEmpty
+                                      saleState.salesList.isEmpty
                                           ? "0"
                                           : ref
-                                                .watch(
-                                                  purchaseViewModelProvider,
-                                                )
-                                                .purchaseList
+                                                .watch(salesViewModelProvider)
+                                                .salesList
                                                 .first
                                                 .totalCount
                                                 .toString(),
@@ -84,13 +78,11 @@ class PurchasesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      purchaseState.purchaseList.isEmpty
+                                      saleState.salesList.isEmpty
                                           ? "0"
                                           : ref
-                                                .watch(
-                                                  purchaseViewModelProvider,
-                                                )
-                                                .purchaseList
+                                                .watch(salesViewModelProvider)
+                                                .salesList
                                                 .first
                                                 .totalNetAmount
                                                 .toString(),
@@ -106,15 +98,15 @@ class PurchasesView extends StatelessWidget {
                       const SizedBox(height: 8),
                       Expanded(
                         child: ListView.builder(
-                          itemCount: purchaseState.purchaseList.length,
+                          itemCount: saleState.salesList.length,
                           itemBuilder: (context, index) {
-                            final item = purchaseState.purchaseList[index];
+                            final item = saleState.salesList[index];
                             final formattedDate = DateFormat(
                               'dd MMM',
-                            ).format(item.purchaseDate);
+                            ).format(item.salesDate);
                             final formattedTime = DateFormat(
                               'hh:mma ',
-                            ).format(item.purchaseDate);
+                            ).format(item.salesDate);
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 2,
@@ -126,16 +118,13 @@ class PurchasesView extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) =>
-                                          PurchaseDetails(purchase: item),
+                                      builder: (_) => SaleDetails(sale: item),
                                     ),
                                   );
 
                                   final success = await ref
-                                      .read(purchaseViewModelProvider.notifier)
-                                      .fetchPurchaseDetails(
-                                        purchaseNo: item.purchaseNo,
-                                      );
+                                      .read(salesViewModelProvider.notifier)
+                                      .fetchSalesDetails(saleNo: item.salesNo);
                                   print(success);
                                 },
                                 child: Ink(
@@ -198,13 +187,13 @@ class PurchasesView extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    item.supplierName
+                                                    item.customerName
                                                         .toString(),
                                                     style:
                                                         AppTextStyle.bodyMedium,
                                                   ),
                                                   Text(
-                                                    item.supplierPhone!,
+                                                    item.customerName,
                                                     style:
                                                         AppTextStyle.bodySmall,
                                                   ),
@@ -357,7 +346,7 @@ class PurchasesView extends StatelessWidget {
                           },
                         ),
                       ),
-                      PurchasesPagination(),
+                      SalesPagination(),
                     ],
                   );
                 },
@@ -478,15 +467,14 @@ class PurchasesView extends StatelessWidget {
   }
 }
 
-class PurchasesPagination extends ConsumerStatefulWidget {
-  const PurchasesPagination({super.key});
+class SalesPagination extends ConsumerStatefulWidget {
+  const SalesPagination({super.key});
 
   @override
-  ConsumerState<PurchasesPagination> createState() =>
-      _PurchasesPaginationState();
+  ConsumerState<SalesPagination> createState() => _SalesPaginationState();
 }
 
-class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
+class _SalesPaginationState extends ConsumerState<SalesPagination> {
   final ScrollController _scrollController = ScrollController();
   int? _previousPage;
 
@@ -499,7 +487,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
     super.initState();
     // Scroll to current page after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentPage = ref.read(purchaseViewModelProvider).currentPage;
+      final currentPage = ref.read(salesViewModelProvider).currentPage;
       if (currentPage > 1) {
         _scrollToPageImmediate(currentPage);
       }
@@ -544,8 +532,8 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(purchaseViewModelProvider);
-    final notifier = ref.read(purchaseViewModelProvider.notifier);
+    final purchaseState = ref.watch(salesViewModelProvider);
+    final notifier = ref.read(salesViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;

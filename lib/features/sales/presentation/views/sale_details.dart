@@ -7,26 +7,26 @@ import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/utils/custom_box_shadow.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
+import 'package:pakkahishab/features/sales/data/models/sales_model.dart';
+import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_viewmodel.dart';
 
-class PurchaseDetails extends StatelessWidget {
-  PurchaseItem purchase;
-  PurchaseDetails({super.key, required this.purchase});
+class SaleDetails extends StatelessWidget {
+  SalesItem sale;
+  SaleDetails({super.key, required this.sale});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarBack(title: "Purchase Details"),
+      appBar: CustomAppbarBack(title: "Sale Details"),
       body: Consumer(
         builder: (context, ref, child) {
-          if (ref.watch(purchaseViewModelProvider).detailLoading) {
+          if (ref.watch(salesViewModelProvider).detailLoading) {
             return Center(child: loader);
           }
-          final data = ref.watch(purchaseViewModelProvider).purchaseDetails;
+          final data = ref.watch(salesViewModelProvider).salesDetails;
           final item = ref
-              .watch(purchaseViewModelProvider)
-              .purchaseDetails!
+              .watch(salesViewModelProvider)
+              .salesDetails!
               .items
               .first;
 
@@ -41,9 +41,9 @@ class PurchaseDetails extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Bill No: ${item.purchaseNo}"),
+                    Text("Bill No: ${item.salesNo}"),
                     Text(
-                      "Date: ${DateFormat("dd:mm:yyyy").format(item.purchaseDate!)}",
+                      "Date: ${DateFormat("dd:mm:yyyy").format(item.salesDate)}",
                     ),
                   ],
                 ),
@@ -61,7 +61,7 @@ class PurchaseDetails extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Text("Total Payable: ${purchase.due.toString()}"),
+                      child: Text("Total Payable: ${sale.due.toString()}"),
                     ),
 
                     Padding(
@@ -77,7 +77,8 @@ class PurchaseDetails extends StatelessWidget {
                         border: Border.all(color: AppColors.dotColor),
                       ),
                       child: Text(
-                        item.supplierName,
+                        item.customerName,
+      
                         style: AppTextStyle.titleSmall,
                       ),
                     ),
@@ -131,13 +132,13 @@ class PurchaseDetails extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Consumer(
                   builder: (context, ref, child) {
-                    final vm = ref.watch(purchaseViewModelProvider);
+                    final vm = ref.watch(salesViewModelProvider);
                     return ListView.builder(
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
-                      itemCount: vm.purchaseDetails!.items.length,
+                      itemCount: vm.salesDetails!.items.length,
                       itemBuilder: (context, index) {
-                        final product = vm.purchaseDetails!.items[index];
+                        final product = vm.salesDetails!.items[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 6),
                           child: Column(
@@ -148,7 +149,7 @@ class PurchaseDetails extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      product.product,
+                                      product.product ??"",
                                       textAlign: TextAlign.start,
                                     ),
                                   ),
@@ -228,7 +229,7 @@ class PurchaseDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                purchase.netAmount.toString(),
+                                sale.netAmount.toString(),
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -269,7 +270,7 @@ class PurchaseDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                purchase.netAmount.toString(),
+                                sale.netAmount.toString(),
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -310,7 +311,7 @@ class PurchaseDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                purchase.paidPrice.toString(),
+                                sale.paidPrice.toString(),
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -348,7 +349,7 @@ class PurchaseDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                purchase.due.toString(),
+                                sale.due.toString(),
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -383,9 +384,9 @@ class PurchaseDetails extends StatelessWidget {
                       const SizedBox(height: 10),
                       Consumer(
                         builder: (context, ref, child) {
-                          final vm = ref.watch(purchaseViewModelProvider);
+                          final vm = ref.watch(salesViewModelProvider);
                           final vmn = ref.watch(
-                            purchaseViewModelProvider.notifier,
+                            salesViewModelProvider.notifier,
                           );
                           return Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12),

@@ -5,6 +5,7 @@ class PurchaseItem {
   final int purchaseType;
   final String supplierId;
   final String? supplierName;
+  final String? supplierPhone;
   final double netAmount;
   final double paidPrice;
   final double due;
@@ -21,6 +22,7 @@ class PurchaseItem {
     required this.purchaseType,
     required this.supplierId,
     this.supplierName,
+    this.supplierPhone,
     required this.netAmount,
     required this.paidPrice,
     required this.due,
@@ -39,6 +41,7 @@ class PurchaseItem {
       purchaseType: json['purchase_type'],
       supplierId: json['supplier_id'],
       supplierName: json['supplier_name'],
+      supplierPhone: json['supplier_phoneno'],
       netAmount: (json['net_amount'] as num).toDouble(),
       paidPrice: (json['paid_price'] as num).toDouble(),
       due: (json['due'] as num).toDouble(),
@@ -58,6 +61,7 @@ class PurchaseItem {
       'purchase_type': purchaseType,
       'supplier_id': supplierId,
       'supplier_name': supplierName,
+      'supplier_phoneno': supplierPhone,
       'net_amount': netAmount,
       'paid_price': paidPrice,
       'due': due,

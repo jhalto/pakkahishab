@@ -2,17 +2,17 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/urls.dart';
 
-final purchaseServiceProvider = Provider<PurchaseServices>(
-  (ref) => PurchaseServices(),
+final supplierDueServiceProvider = Provider<SupplierDueServices>(
+  (ref) => SupplierDueServices(),
 );
 
-class PurchaseServices {
-  Future<Map<String, dynamic>> getPurchase({
+class SupplierDueServices {
+  Future<Map<String, dynamic>> getSupplierDues({
     required String phone,
     required String pin,
     required String offset,
     required String code,
-    String? purchasedate,
+    String? dueDate,
     String? supplierId,
   }) async {
     final Dio dio = Dio();
@@ -24,17 +24,15 @@ class PurchaseServices {
       'password': pin,
       'offset': offset,
       'limit': '10',
-      'purchase_date': purchasedate,
+      'voucher_date': dueDate,
       'supplier_id': supplierId,
     };
-    print(supplierId);
-    print(purchasedate);
     // ✅ Remove any null or empty parameters before request
     queryParams.removeWhere(
       (key, value) => value == null || value.toString().isEmpty,
     );
 
-    final String url = "${Urls.baseUrl}Get_Puchase/";
+    final String url = "${Urls.baseUrl}Get_PA_Supplier_due/";
 
     try {
       final response = await dio.get(url, queryParameters: queryParams);
@@ -53,7 +51,7 @@ class PurchaseServices {
     }
   }
 
-  Future<Map<String, dynamic>> getPurchaseDetails({
+  Future<Map<String, dynamic>> getSupplierDueDetails({
     required String phone,
     required String pin,
     required String offset,
@@ -61,7 +59,7 @@ class PurchaseServices {
     required String purchaseNo,
   }) async {
     final url =
-        "${Urls.baseUrl}Get_Purchase_Details/?school_code=$code&password=$pin&mobile=$phone&purchase_no=$purchaseNo&offset=$offset&limit=10";
+        "${Urls.baseUrl}Get_PA_Supplier_due_details/?school_code=$code&password=$pin&mobile=$phone&purchase_no=$purchaseNo&offset=$offset&limit=10";
 
     final Dio dio = Dio();
 

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';
-import 'package:pakkahishab/features/sales/presentation/views/sale_view.dart';
+import 'package:pakkahishab/features/sales/presentation/views/sales_view.dart';
+
 import 'package:pakkahishab/l10n/app_localizations.dart';
 
 class BottomBarDesign extends StatelessWidget {
@@ -68,7 +69,7 @@ class BottomBarDesign extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const SaleView()),
+                        MaterialPageRoute(builder: (context) => const SalesView()),
                       );
                     },
                     child: Ink(

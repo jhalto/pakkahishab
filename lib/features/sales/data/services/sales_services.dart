@@ -2,18 +2,18 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/urls.dart';
 
-final purchaseServiceProvider = Provider<PurchaseServices>(
-  (ref) => PurchaseServices(),
+final salesServiceProvider = Provider<SalesServices>(
+  (ref) => SalesServices(),
 );
 
-class PurchaseServices {
-  Future<Map<String, dynamic>> getPurchase({
+class SalesServices {
+  Future<Map<String, dynamic>> getSales({
     required String phone,
     required String pin,
     required String offset,
     required String code,
-    String? purchasedate,
-    String? supplierId,
+    String? saledate,
+    String? customerId,
   }) async {
     final Dio dio = Dio();
 
@@ -24,17 +24,17 @@ class PurchaseServices {
       'password': pin,
       'offset': offset,
       'limit': '10',
-      'purchase_date': purchasedate,
-      'supplier_id': supplierId,
+      'SALES_DATE': saledate,
+      'customer_id': customerId,
     };
-    print(supplierId);
-    print(purchasedate);
+    print(customerId);
+    print(saledate);
     // ✅ Remove any null or empty parameters before request
     queryParams.removeWhere(
       (key, value) => value == null || value.toString().isEmpty,
     );
 
-    final String url = "${Urls.baseUrl}Get_Puchase/";
+    final String url = "${Urls.baseUrl}Get_sales/";
 
     try {
       final response = await dio.get(url, queryParameters: queryParams);
@@ -53,15 +53,15 @@ class PurchaseServices {
     }
   }
 
-  Future<Map<String, dynamic>> getPurchaseDetails({
+  Future<Map<String, dynamic>> getSaleDetails({
     required String phone,
     required String pin,
     required String offset,
     required String code,
-    required String purchaseNo,
+    required String saleNo,
   }) async {
     final url =
-        "${Urls.baseUrl}Get_Purchase_Details/?school_code=$code&password=$pin&mobile=$phone&purchase_no=$purchaseNo&offset=$offset&limit=10";
+        "${Urls.baseUrl}Get_Sales_Details/?school_code=$code&password=$pin&mobile=$phone&sales_no=$saleNo&offset=$offset&limit=10";
 
     final Dio dio = Dio();
 
@@ -75,12 +75,12 @@ class PurchaseServices {
     }
   }
 
-  Future<Map<String, dynamic>> getSupplier({
+  Future<Map<String, dynamic>> getCustomer({
     required String phone,
     required String pin,
     required String code,
   }) async {
-    final url = "${Urls.baseUrl}Supplier_name/?mobile=$phone&password=$pin&school_code=$code";
+    final url = "${Urls.baseUrl}Customer_name/?mobile=$phone&password=$pin&school_code=$code";
     Dio dio = Dio();
     try {
       final response = await dio.get(url);
