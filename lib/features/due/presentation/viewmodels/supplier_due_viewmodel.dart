@@ -1,15 +1,11 @@
-
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/features/due/data/models/due_model.dart';
 import 'package:pakkahishab/features/due/data/repositories/supplier_due_repository.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_detail_model.dart';
-import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/supplier_model.dart';
-import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
-
 
 final supplierDueViewModelProvider =
     NotifierProvider.autoDispose<SupplierDuesNotifier, SupplierDueState>(
@@ -21,6 +17,8 @@ final class SupplierDueState {
   final SupplierResponse? supplier;
   final List<Supplier>? filteredSuppliers;
   final bool loading;
+  final String totalItem;
+  final String totalPrice;
   final bool detailLoading;
   final bool hasMore;
   final int currentPage;
@@ -28,7 +26,7 @@ final class SupplierDueState {
   final String phone;
   final String pin;
   final String offset;
-  final List<DueItem> duesList;
+  final List<SupplierDueItem> duesList;
   final String? supplierId;
   final String? paymentMethod;
   // final String purchaseDate;
@@ -39,6 +37,8 @@ final class SupplierDueState {
     this.supplier,
     this.filteredSuppliers,
     this.loading = false,
+    this.totalItem = "0",
+    this.totalPrice = "0",
     this.detailLoading = false,
     this.hasMore = false,
     this.currentPage = 1,
@@ -56,6 +56,8 @@ final class SupplierDueState {
     SupplierResponse? supplier,
     List<Supplier>? filteredSuppliers,
     bool? loading,
+    String? totalItem,
+    String? totalPrice,
     bool? detailLoading,
     bool? hasMore,
     int? currentPage,
@@ -63,7 +65,7 @@ final class SupplierDueState {
     String? phone,
     String? pin,
     String? offset,
-    List<DueItem>? duesList,
+    List<SupplierDueItem>? duesList,
     String? supplierId,
     String? paymentMethod,
   }) {
@@ -72,6 +74,8 @@ final class SupplierDueState {
       supplier: supplier ?? this.supplier,
       filteredSuppliers: filteredSuppliers ?? this.filteredSuppliers,
       loading: loading ?? this.loading,
+      totalItem: totalItem ?? this.totalItem,
+      totalPrice: totalPrice ?? this.totalPrice,
       detailLoading: detailLoading ?? this.detailLoading,
       hasMore: hasMore ?? this.hasMore,
       currentPage: currentPage ?? this.currentPage,
@@ -81,7 +85,7 @@ final class SupplierDueState {
       offset: offset ?? this.offset,
       duesList: duesList ?? this.duesList,
       supplierId: supplierId ?? this.supplierId,
-      paymentMethod: paymentMethod ?? this.paymentMethod
+      paymentMethod: paymentMethod ?? this.paymentMethod,
     );
   }
 }
@@ -97,7 +101,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
   }
 
   TextEditingController searchSupplierController = TextEditingController();
-  String paymentMethod  = "Cash";
+  String paymentMethod = "Cash";
 
   Future<void> fetchSupplierDues({
     bool loadMore = false,
@@ -123,7 +127,9 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
         dueDate: dueDate,
         supplierId: state.supplierId,
       );
-
+      if (kDebugMode) {
+        print(result);
+      }
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
       final totalItem = result['data']['items'][0]['total_count'] ?? 0;
@@ -131,9 +137,21 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
       state = state.copyWith(totalPage: (totalItem / 10).ceil());
       print(state.totalPage);
       final newItems = items
-          .map<DueItem>((e) => DueItem.fromJson(e))
+          .map<SupplierDueItem>((e) => SupplierDueItem.fromJson(e))
           .toList();
+      print(newItems.length);
+      final allammount = [];
+      for (var i in newItems) {
+        allammount.add(i.amount);
 
+        print("${i.amount}\n");
+      }
+      print(allammount);
+      final totalPriceSum = allammount.fold<num>(
+        0,
+        (sum, element) => sum + element,
+      );
+      print(totalPriceSum);
       state = state.copyWith(
         duesList: newItems,
         offset: newOffset.toString(),
@@ -180,7 +198,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
       final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
       final int newOffset = (newPage - 1) * 10;
 
-      final response = await _repo.getSaleDetails(
+      final response = await _repo.getSupplierDueDetails(
         phone: phone ?? '',
         pin: pin,
         code: code ?? '',
@@ -215,7 +233,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
         pin: pin.toString(),
         code: code.toString(),
       );
-      
+
       print(code.toString());
       if (response['statusCode'] == 200) {
         final responseData = SupplierResponse.fromJson(response['data']);
@@ -252,7 +270,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
     }
   }
 
-   void updatePaymentMethod(String value){
+  void updatePaymentMethod(String value) {
     state = state.copyWith(paymentMethod: value);
-   }
+  }
 }

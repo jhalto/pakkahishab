@@ -30,14 +30,14 @@ class SupplierDueRepository {
     return dueData;
   }
 
-  Future<Map<String, dynamic>> getSaleDetails({
+  Future<Map<String, dynamic>> getSupplierDueDetails({
     required String phone,
     required String pin,
     required String offset,
     required String code,
     required String purchaseNo,
   }) async {
-    final purchaseData = await _supplierDueServices.getSaleDetails(
+    final purchaseData = await _supplierDueServices.getSupplierDueDetails(
       purchaseNo: purchaseNo,
       phone: phone,
       pin: pin,

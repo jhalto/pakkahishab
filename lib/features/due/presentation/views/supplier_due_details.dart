@@ -10,9 +10,9 @@ import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 
-class PurchaseDetails extends StatelessWidget {
+class SupplierDueDetails extends StatelessWidget {
   PurchaseItem purchase;
-  PurchaseDetails({super.key, required this.purchase});
+  SupplierDueDetails({super.key, required this.purchase});
 
   @override
   Widget build(BuildContext context) {

@@ -32,7 +32,7 @@ class SupplierDueServices {
       (key, value) => value == null || value.toString().isEmpty,
     );
 
-    final String url = "${Urls.baseUrl}Get_PA_Supplier_due_details/";
+    final String url = "${Urls.baseUrl}Get_PA_Supplier_due/";
 
     try {
       final response = await dio.get(url, queryParameters: queryParams);
@@ -51,7 +51,7 @@ class SupplierDueServices {
     }
   }
 
-  Future<Map<String, dynamic>> getSaleDetails({
+  Future<Map<String, dynamic>> getSupplierDueDetails({
     required String phone,
     required String pin,
     required String offset,

@@ -17,7 +17,7 @@ class SupplierDuesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurchaseAppbarBackWithSearch(title: "Purchases"),
+      appBar: PurchaseAppbarBackWithSearch(title: "Supplier Dues"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
