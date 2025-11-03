@@ -5,8 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
-import 'package:pakkahishab/features/due/presentation/viewmodels/supplier_due_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
+import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
 
 class SupplierDueAppbarBackWithSearch extends StatelessWidget
     implements PreferredSizeWidget {
@@ -58,7 +57,7 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
           actions: [
             Consumer(
               builder: (context, ref, child) {
-                final vm = ref.watch(supplierDueViewModelProvider);
+              
 
                 return InkWell(
                   borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -82,14 +81,15 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                       items: [
                         PopupMenuItem(
                           onTap: () async {
+                            print("SupplierDueAppBar");
                             final notifier = ref.read(
                               supplierDueViewModelProvider.notifier,
                             );
                             final vm = ref.read(supplierDueViewModelProvider);
 
                             if (vm.supplier == null ||
-                                (vm.supplier?.items?.isEmpty ?? true)) {
-                              notifier.getSupplier();
+                                (vm.supplier?.items.isEmpty ?? true)) {
+                              notifier.getDueSupplier();
                             }
 
                             if (!context.mounted) return;
@@ -114,7 +114,7 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                         Consumer(
                                           builder: (context, ref, child) {
                                             final vmn = ref.watch(
-                                              purchaseViewModelProvider
+                                              supplierDueViewModelProvider
                                                   .notifier,
                                             );
 
@@ -256,14 +256,14 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                                         notifier
                                                             .updateSupplierId(
                                                               supplier
-                                                                  .supplierId,
+                                                                  .accountNo,
                                                             );
                                                         notifier
                                                             .fetchSupplierDues();
                                                         Navigator.pop(context);
                                                       },
                                                       title: Text(
-                                                        supplier.supplierName,
+                                                        supplier.accountName,
                                                       ),
                                                       subtitle: Text(
                                                         supplier.mobile,

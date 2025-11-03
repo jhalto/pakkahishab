@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/urls.dart';
 
@@ -73,17 +74,22 @@ class SupplierDueServices {
     }
   }
 
-  Future<Map<String, dynamic>> getSupplier({
+  Future<Map<String, dynamic>> getDueSupplier({
     required String phone,
     required String pin,
     required String code,
   }) async {
-    final url = "${Urls.baseUrl}Supplier_name/?mobile=$phone&password=$pin&school_code=$code";
+
+    final url =
+        "${Urls.baseUrl}Get_AccountName_Supplier/?school_code=$code&mobile=$phone&password=$pin";
     Dio dio = Dio();
     try {
       final response = await dio.get(url);
+      print("due supplier");
       print(url);
-      print(response);
+      if (kDebugMode) {
+        print(response);
+      }
       return {"statusCode": response.statusCode, "data": response.data};
     } catch (e) {
       return {"statusCode": 666, "data": "Catch Error $e"};

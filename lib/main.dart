@@ -34,7 +34,7 @@ class MyApp extends ConsumerWidget {
           ],
           supportedLocales: const [
             Locale('en'),
-            Locale('bn'), 
+            Locale('bn'),
           ],
           
           theme: ThemeData(
@@ -48,7 +48,7 @@ class MyApp extends ConsumerWidget {
             textTheme: TextTheme(bodyMedium:AppTextStyle.bodyMedium),
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           ),
-          initialRoute: Routes.navbar,
+          initialRoute: Routes.login,
           onGenerateRoute: Routes.generateRoute,
         );
       },
