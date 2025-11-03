@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pakkahishab/features/due/data/services/supplier_due_services.dart';
+import 'package:pakkahishab/features/supplier_due/data/services/supplier_due_services.dart';
 
 final supplierDueRepositoryProvider = Provider<SupplierDueRepository>((ref) {
   final service = ref.read(supplierDueServiceProvider);
@@ -48,12 +48,13 @@ class SupplierDueRepository {
     return purchaseData;
   }
 
-  Future<Map<String, dynamic>> getSupplier({
+  Future<Map<String, dynamic>> getDueSupplier({
     required String phone,
     required String pin,
     required String code,
   }) async {
-    final response = await _supplierDueServices.getSupplier(
+    print("supplier_repository");
+    final response = await _supplierDueServices.getDueSupplier(
       phone: phone,
       pin: pin,
       code: code

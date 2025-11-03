@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pakkahishab/features/auth/presentation/view/login_view.dart';
 import 'package:pakkahishab/features/auth/presentation/view/signup_view.dart';
-import 'package:pakkahishab/features/due/presentation/views/supplier_dues_view.dart';
+import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_dues_view.dart';
 import 'package:pakkahishab/features/home/presentation/views/home_view.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/view/navbar_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';

@@ -6,18 +6,19 @@ import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/due/presentation/viewmodels/supplier_due_viewmodel.dart';
+import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_appbar_back_with_search.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchase_details.dart';
+import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
 
 class SupplierDuesView extends StatelessWidget {
-  const SupplierDuesView({super.key});
+  const SupplierDuesView({super.key, e});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurchaseAppbarBackWithSearch(title: "Supplier Dues"),
+      backgroundColor: Color(0xfff5f5f5),
+      appBar: SupplierDueAppbarBackWithSearch(title: "Supplier Dues"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -31,10 +32,16 @@ class SupplierDuesView extends StatelessWidget {
               child: Consumer(
                 builder: (outerContext, ref, child) {
                   final dueState = ref.watch(supplierDueViewModelProvider);
+                  final totalItem = dueState.duesList.isNotEmpty
+                      ? dueState.duesList.first.totalSupplier
+                      : 0;
+                  final totalPrice = dueState.duesList.isNotEmpty
+                      ? dueState.duesList.first.totalAmount
+                      : 0;
                   if (dueState.loading) {
                     return Center(child: loader);
                   }
-                  
+
                   if (dueState.duesList.isEmpty) {
                     return Center(child: Text("No Dues"));
                   }
@@ -55,13 +62,7 @@ class SupplierDuesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      // ref
-                                      //     .watch(supplierDueViewModelProvider)
-                                      //     .duesList
-                                      //     .first
-                                      //     .
-                                      //     .toString(),
-                                      "",
+                                      totalItem.toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
                                   ],
@@ -80,13 +81,7 @@ class SupplierDuesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      // ref
-                                      //     .watch(purchaseViewModelProvider)
-                                      //     .purchaseList
-                                      //     .first
-                                      //     .totalNetAmount
-                                      //     .toString(),
-                                      "",
+                                      totalPrice.toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
                                   ],
@@ -102,15 +97,15 @@ class SupplierDuesView extends StatelessWidget {
                           itemCount: dueState.duesList.length,
                           itemBuilder: (context, index) {
                             final item = dueState.duesList[index];
-                            // final formattedDate = DateFormat(
-                            //   'dd MMM',
-                            // ).format(item.);
-                            // final formattedTime = DateFormat(
-                            //   'hh:mma ',
-                            // ).format(item.purchaseDate);
+                            final formattedDate = DateFormat(
+                              'dd MMM',
+                            ).format(item.followUpDate);
+                            final formattedTime = DateFormat(
+                              'hh:mma ',
+                            ).format(item.followUpDate);
                             return Padding(
                               padding: const EdgeInsets.only(
-                                bottom: 2,
+                                bottom: 5,
                                 left: 10,
                                 right: 10,
                               ),
@@ -121,7 +116,7 @@ class SupplierDuesView extends StatelessWidget {
                                   //   MaterialPageRoute(
                                   //     builder: (_) => PurchaseDetails(
                                   //       purchase: item.,
-                                        
+
                                   //     ),
                                   //   ),
                                   // );
@@ -148,7 +143,7 @@ class SupplierDuesView extends StatelessWidget {
                                     ],
                                   ),
                                   padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
+                                    vertical: 8,
                                   ),
                                   child: IntrinsicHeight(
                                     child: Row(
@@ -160,24 +155,25 @@ class SupplierDuesView extends StatelessWidget {
                                           child: Column(
                                             children: [
                                               Text(
-                                                // formattedDate,
-                                                "",
+                                                "Follow Up",
                                                 style: AppTextStyle.bodyMedium
                                                     .copyWith(
                                                       color: AppColors
                                                           .primaryColor2,
-                                                      fontSize: 16.sp,
+                                                      fontSize: 14.sp,
                                                     ),
+                                              ),
+                                              SizedBox(height: 2),
+                                              Text(
+                                                formattedDate,
+
+                                                style: AppTextStyle.labelLarge,
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
-                                                // formattedTime,
-                                                "",
-                                                style: AppTextStyle.bodySmall
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryColor2,
-                                                    ),
+                                                formattedTime,
+
+                                                style: AppTextStyle.bodySmall,
                                               ),
                                             ],
                                           ),
@@ -195,84 +191,38 @@ class SupplierDuesView extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    item.accountName
-                                                        .toString(),
-                                                  
+                                                    item.accountName.toString(),
+
                                                     style:
-                                                        AppTextStyle.bodyMedium,
+                                                        AppTextStyle.labelLarge,
                                                   ),
-                                                  Text(
-                                                    item.phoneNo,
-                                                    style:
-                                                        AppTextStyle.bodySmall,
+                                                  SizedBox(height: 4,),
+                                                  Row(
+                                                    children: [
+                                                      Text("Phone: ",style: AppTextStyle.bodySmall,),
+                                                      Text(
+                                                        item.phoneNo,
+                                                        style:
+                                                            AppTextStyle.bodySmall,
+                                                      ),
+                                                    ],
                                                   ),
 
                                                   const SizedBox(height: 10),
-                                                  Text(
-                                                    "${item.payDue.toString()} Tk",
-                                                  ),
                                                 ],
                                               ),
                                               Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
+
+                                                crossAxisAlignment: CrossAxisAlignment.end,
                                                 children: [
-                                                  if (item.amount == 0)
-                                                    Text(
-                                                      "Paid",
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: const Color(
-                                                              0xff50AA53,
-                                                            ),
-                                                          ),
-                                                    ),
-
-                                                  // if (item.due ==
-                                                  //     item.netAmount)
-                                                  //   Text(
-                                                  //     "Unpaid",
-                                                  //     style: AppTextStyle
-                                                  //         .bodyMedium
-                                                  //         .copyWith(
-                                                  //           color: const Color(
-                                                  //             0xfff5a848,
-                                                  //           ),
-                                                  //         ),
-                                                  //   ),
-                                                  // if (item.due != 0 &&
-                                                  //     item.due !=
-                                                  //         item.netAmount)
-                                                  //   Text(
-                                                  //     "Partial",
-                                                  //     style: AppTextStyle
-                                                  //         .bodyMedium
-                                                  //         .copyWith(
-                                                  //           color: AppColors
-                                                  //               .primaryColor2,
-                                                  //         ),
-                                                  //   ),
-                                                  // if (item.due != 0)
-                                                  //   Text(
-                                                  //     item.due.toString(),
-                                                  //     style: AppTextStyle
-                                                  //         .bodyMedium
-                                                  //         .copyWith(
-                                                  //           color: AppColors
-                                                  //               .primaryColor2,
-                                                  //         ),
-                                                  //   ),
-
-                                                  // if (item.due == item.netAmount)
-                                                  //   Text(
-                                                  //     item.netAmount.toString(),
-                                                  //     style:
-                                                  //         AppTextStyle.bodyMedium,
-                                                  //   ),
+                                                  Text(
+                                                    "${item.amount.toString()} Tk",
+                                                    style: AppTextStyle.labelLarge,
+                                                  ),
+                                                  Text("Payable", style: AppTextStyle.bodyMedium.copyWith(
+                                                    color: AppColors.errorTextColor,
+                                                    fontWeight: FontWeight.w500
+                                                  ),),
                                                 ],
                                               ),
                                             ],

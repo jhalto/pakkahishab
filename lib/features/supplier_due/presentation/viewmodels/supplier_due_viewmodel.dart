@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
-import 'package:pakkahishab/features/due/data/models/due_model.dart';
-import 'package:pakkahishab/features/due/data/repositories/supplier_due_repository.dart';
+import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_model.dart';
+import 'package:pakkahishab/features/supplier_due/data/models/due_supplier_model.dart';
+import 'package:pakkahishab/features/supplier_due/data/repositories/supplier_due_repository.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_detail_model.dart';
-import 'package:pakkahishab/features/purchase/data/models/supplier_model.dart';
 
 final supplierDueViewModelProvider =
     NotifierProvider.autoDispose<SupplierDuesNotifier, SupplierDueState>(
@@ -14,8 +14,8 @@ final supplierDueViewModelProvider =
 
 final class SupplierDueState {
   final PurchaseDetailsResponse? purchaseDetails;
-  final SupplierResponse? supplier;
-  final List<Supplier>? filteredSuppliers;
+  final DueSupplierResponse? supplier;
+  final List<DueSupplier>? filteredSuppliers;
   final bool loading;
   final String totalItem;
   final String totalPrice;
@@ -35,7 +35,7 @@ final class SupplierDueState {
   const SupplierDueState({
     this.purchaseDetails,
     this.supplier,
-    this.filteredSuppliers,
+    this.filteredSuppliers = const [],
     this.loading = false,
     this.totalItem = "0",
     this.totalPrice = "0",
@@ -53,8 +53,8 @@ final class SupplierDueState {
 
   SupplierDueState copyWith({
     PurchaseDetailsResponse? purchaseDetails,
-    SupplierResponse? supplier,
-    List<Supplier>? filteredSuppliers,
+    DueSupplierResponse? supplier,
+    List<DueSupplier>? filteredSuppliers,
     bool? loading,
     String? totalItem,
     String? totalPrice,
@@ -221,22 +221,26 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
 
   // bool supplierLoading = false;
 
-  Future<void> getSupplier() async {
+  Future<void> getDueSupplier() async {
     state = state.copyWith(detailLoading: true);
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
-      final response = await _repo.getSupplier(
+      final response = await _repo.getDueSupplier(
         phone: phone.toString(),
         pin: pin.toString(),
         code: code.toString(),
       );
+      print("supplierDueViewModel");
 
       print(code.toString());
       if (response['statusCode'] == 200) {
-        final responseData = SupplierResponse.fromJson(response['data']);
+        final responseData = DueSupplierResponse.fromJson(response['data']);
+        if (state.filteredSuppliers?.isNotEmpty ?? false) {
+          state = state.copyWith(filteredSuppliers: []);
+        }
         state = state.copyWith(
           supplier: responseData,
           filteredSuppliers: responseData.items,
@@ -261,7 +265,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
     } else {
       final filtered = allSuppliers
           .where(
-            (supplier) => supplier.supplierName.toLowerCase().contains(
+            (supplier) => supplier.accountName.toLowerCase().contains(
               query.toLowerCase(),
             ),
           )
