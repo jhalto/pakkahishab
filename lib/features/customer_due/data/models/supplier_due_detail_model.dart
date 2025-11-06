@@ -1,11 +1,11 @@
-class PurchaseDetailsResponse {
-  final List<PurchaseDetailsItem> items;
+class SupplierDueDetailsResponse {
+  final List<SupplierDueDetailsItem> items;
   final bool hasMore;
   final int limit;
   final int offset;
   final int count;
 
-  PurchaseDetailsResponse({
+  SupplierDueDetailsResponse({
     required this.items,
     required this.hasMore,
     required this.limit,
@@ -13,12 +13,11 @@ class PurchaseDetailsResponse {
     required this.count,
   });
 
-  factory PurchaseDetailsResponse.fromJson(Map<String, dynamic> json) {
-    return PurchaseDetailsResponse(
-      items: (json['items'] as List<dynamic>?)
-              ?.map((e) => PurchaseDetailsItem.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
+  factory SupplierDueDetailsResponse.fromJson(Map<String, dynamic> json) {
+    return SupplierDueDetailsResponse(
+      items: (json['items'] as List<dynamic>? ?? [])
+          .map((e) => SupplierDueDetailsItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
       hasMore: json['hasMore'] ?? false,
       limit: json['limit'] ?? 0,
       offset: json['offset'] ?? 0,
@@ -37,42 +36,40 @@ class PurchaseDetailsResponse {
   }
 }
 
-class PurchaseDetailsItem {
+class SupplierDueDetailsItem {
+  final String accountName;
+  final double amount;
+  final String accountNo;
+  final String phoneNo;
   final String purchaseNo;
   final DateTime? purchaseDate;
-  final String supplierName;
-  final String product;
-  final int quantity;
-  final int unitPrice;
-  final int subTotal;
+  final String supplierId;
   final String password;
   final String mobile;
 
-  PurchaseDetailsItem({
+  SupplierDueDetailsItem({
+    required this.accountName,
+    required this.amount,
+    required this.accountNo,
+    required this.phoneNo,
     required this.purchaseNo,
     required this.purchaseDate,
-    required this.supplierName,
-    required this.product,
-    required this.quantity,
-    required this.unitPrice,
-    required this.subTotal,
+    required this.supplierId,
     required this.password,
     required this.mobile,
   });
 
-  factory PurchaseDetailsItem.fromJson(Map<String, dynamic> json) {
-    return PurchaseDetailsItem(
+  factory SupplierDueDetailsItem.fromJson(Map<String, dynamic> json) {
+    return SupplierDueDetailsItem(
+      accountName: json['account_name'] ?? '',
+      amount: (json['amount'] ?? 0).toDouble(),
+      accountNo: json['account_no'] ?? '',
+      phoneNo: json['phone_no'] ?? '',
       purchaseNo: json['purchase_no'] ?? '',
       purchaseDate: json['purchase_date'] != null
           ? DateTime.tryParse(json['purchase_date'])
           : null,
-      supplierName: json['supplier_name'] ?? '',
-      product: json['product'] ?? '',
-      quantity: json['quantity'] ?? 0,
-      unitPrice: (json['unit_price'] ?? 0),
-        
-      subTotal: (json['sub_total'] ?? 0),
-         
+      supplierId: json['supplier_id'] ?? '',
       password: json['password'] ?? '',
       mobile: json['mobile'] ?? '',
     );
@@ -80,13 +77,13 @@ class PurchaseDetailsItem {
 
   Map<String, dynamic> toJson() {
     return {
+      'account_name': accountName,
+      'amount': amount,
+      'account_no': accountNo,
+      'phone_no': phoneNo,
       'purchase_no': purchaseNo,
       'purchase_date': purchaseDate?.toIso8601String(),
-      'supplier_name': supplierName,
-      'product': product,
-      'quantity': quantity,
-      'unit_price': unitPrice,
-      'sub_total': subTotal,
+      'supplier_id': supplierId,
       'password': password,
       'mobile': mobile,
     };

@@ -9,10 +9,13 @@ import 'package:pakkahishab/core/utils/custom_box_shadow.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
+import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_detail_model.dart';
+import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_model.dart';
+import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
 
 class SupplierDueDetails extends StatelessWidget {
-  PurchaseItem purchase;
-  SupplierDueDetails({super.key, required this.purchase});
+final SupplierDueItem supplierDue;
+ const SupplierDueDetails({super.key,required this.supplierDue});
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +23,12 @@ class SupplierDueDetails extends StatelessWidget {
       appBar: CustomAppbarBack(title: "Purchase Details"),
       body: Consumer(
         builder: (context, ref, child) {
-          if (ref.watch(purchaseViewModelProvider).detailLoading) {
+          if (ref.watch(supplierDueViewModelProvider).detailLoading) {
             return Center(child: loader);
           }
-          final data = ref.watch(purchaseViewModelProvider).purchaseDetails;
+          final data = ref.watch(supplierDueViewModelProvider).supplierDueDetails;
           final item = ref
-              .watch(purchaseViewModelProvider)
+              .watch(supplierDueViewModelProvider)
               .purchaseDetails!
               .items
               .first;
@@ -61,7 +64,7 @@ class SupplierDueDetails extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Text("Total Payable: ${purchase.due.toString()}"),
+                      child: Text("Total Payable: ${supplierDue.payDue}"),
                     ),
 
                     Padding(
@@ -131,11 +134,11 @@ class SupplierDueDetails extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Consumer(
                   builder: (context, ref, child) {
-                    final vm = ref.watch(purchaseViewModelProvider);
+                    final vm = ref.watch(supplierDueViewModelProvider);
                     return ListView.builder(
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
-                      itemCount: vm.purchaseDetails!.items.length,
+                      itemCount: vm.supplierDueDetails!.items.length,
                       itemBuilder: (context, index) {
                         final product = vm.purchaseDetails!.items[index];
                         return Padding(
@@ -149,24 +152,28 @@ class SupplierDueDetails extends StatelessWidget {
                                   Expanded(
                                     child: Text(
                                       product.product,
+                                      
                                       textAlign: TextAlign.start,
                                     ),
                                   ),
                                   Expanded(
                                     child: Text(
                                       product.quantity.toString(),
+                                      
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                   Expanded(
                                     child: Text(
                                       product.unitPrice.toString(),
+                                      
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                   Expanded(
                                     child: Text(
                                       product.subTotal.toString(),
+                                      
                                       textAlign: TextAlign.end,
                                     ),
                                   ),
@@ -228,7 +235,8 @@ class SupplierDueDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                purchase.netAmount.toString(),
+                                // supplierDue.netAmount.toString(),
+                                 "",
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -269,7 +277,8 @@ class SupplierDueDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                purchase.netAmount.toString(),
+                                // supplierDue..toString(),
+                                "",
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -310,7 +319,8 @@ class SupplierDueDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                purchase.paidPrice.toString(),
+                                // supplierDue.paidPrice.toString(),
+                                "",
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -348,7 +358,8 @@ class SupplierDueDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                purchase.due.toString(),
+                                // purchase.due.toString(),
+                                "",
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),

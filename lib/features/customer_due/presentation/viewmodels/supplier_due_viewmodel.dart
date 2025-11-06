@@ -15,7 +15,6 @@ final supplierDueViewModelProvider =
 
 final class SupplierDueState {
   final SupplierDueDetailsResponse? supplierDueDetails;
-  final PurchaseDetailsResponse? purchaseDetails;
   final DueSupplierResponse? supplier;
   final List<DueSupplier>? filteredSuppliers;
   final bool loading;
@@ -36,7 +35,6 @@ final class SupplierDueState {
 
   const SupplierDueState({
     this.supplierDueDetails,
-    this.purchaseDetails,
     this.supplier,
     this.filteredSuppliers = const [],
     this.loading = false,
@@ -56,7 +54,6 @@ final class SupplierDueState {
 
   SupplierDueState copyWith({
     SupplierDueDetailsResponse? supplierDueDetails,
-    PurchaseDetailsResponse? purchaseDetails,
     DueSupplierResponse? supplier,
     List<DueSupplier>? filteredSuppliers,
     bool? loading,
@@ -75,7 +72,6 @@ final class SupplierDueState {
   }) {
     return SupplierDueState(
       supplierDueDetails : supplierDueDetails ?? this.supplierDueDetails,
-      purchaseDetails: purchaseDetails ?? this.purchaseDetails,
       supplier: supplier ?? this.supplier,
       filteredSuppliers: filteredSuppliers ?? this.filteredSuppliers,
       loading: loading ?? this.loading,
@@ -214,11 +210,6 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
       if (response['statusCode'] == 200) {
         final supplierDueData = SupplierDueDetailsResponse.fromJson(response['data']);
         state = state.copyWith(supplierDueDetails: supplierDueData);
-        if(state.supplierDueDetails!.items.isNotEmpty){
-           final purchaseNo = state.supplierDueDetails!.items.first.phoneNo;
-           fetchSupplierDuePurchaseDetails(purchaseNo: purchaseNo);
-        }
-        
         return true; // ✅ signal success
       }
     } catch (e) {
@@ -286,42 +277,5 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
 
   void updatePaymentMethod(String value) {
     state = state.copyWith(paymentMethod: value);
-  }
-
-
-   Future<bool> fetchSupplierDuePurchaseDetails({
-    bool loadMore = false,
-    int? page,
-    required String purchaseNo,
-  }) async {
-    final phone = await SharedPreferencesHelper.getString('phone');
-    final pin = await SharedPreferencesHelper.getString('pin') ?? '';
-    final code = await SharedPreferencesHelper.getString('code');
-
-    try {
-      state = state.copyWith(detailLoading: true);
-
-      final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
-      final int newOffset = (newPage - 1) * 10;
-
-      final response = await _repo.getSupplierDuePurchaseDetails(
-        phone: phone ?? '',
-        pin: pin,
-        code: code ?? '',
-        offset: newOffset.toString(),
-        purchaseNo: purchaseNo,
-      );
-
-      if (response['statusCode'] == 200) {
-        final purchaseData = PurchaseDetailsResponse.fromJson(response['data']);
-        state = state.copyWith(purchaseDetails: purchaseData);
-        return true; // ✅ signal success
-      }
-    } catch (e) {
-      debugPrint("Error fetching purchases: $e");
-    } finally {
-      state = state.copyWith(detailLoading: false);
-    }
-    return false;
   }
 }
