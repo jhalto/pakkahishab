@@ -176,33 +176,37 @@ class BodyTopPart extends StatelessWidget {
                   Expanded(
                     child: Material(
                       color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        onTap: () {
-                          Navigator.pushNamed(context, Routes.supplierDues);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Column(
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.totalPayable,
-                                style: AppTextStyle.bodyMedium.copyWith(
-                                  color: AppColors.primaryColor4,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: InkWell(
+                          
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          onTap: () {
+                            Navigator.pushNamed(context, Routes.supplierDues);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Column(
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.totalPayable,
+                                  style: AppTextStyle.bodyMedium.copyWith(
+                                    color: AppColors.primaryColor4,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Consumer(
-                                builder: (context, ref, child) {
-                                  return Text(
-                                    ref.watch(homeProvider).totalPayable,
-                                    style: AppTextStyle.titleMedium.copyWith(
-                                      color: AppColors.primaryColor4,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                                const SizedBox(height: 4),
+                                Consumer(
+                                  builder: (context, ref, child) {
+                                    return Text(
+                                      ref.watch(homeProvider).totalPayable,
+                                      style: AppTextStyle.titleMedium.copyWith(
+                                        color: AppColors.primaryColor4,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
