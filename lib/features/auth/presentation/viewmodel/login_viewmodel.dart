@@ -113,7 +113,7 @@ class LoginNotifier extends Notifier<LoginState> {
           ),
           SharedPreferencesHelper.saveString('phone', response['Mobile']),
           SharedPreferencesHelper.saveString('email', response['Email']),
-          SharedPreferencesHelper.saveString('code', response['School_code']),
+          SharedPreferencesHelper.saveString('code', response['School_code'].toString()),
           SharedPreferencesHelper.saveString('pin',  state.password),
         ]);
         state = state.copyWith(phone: '', password: '');

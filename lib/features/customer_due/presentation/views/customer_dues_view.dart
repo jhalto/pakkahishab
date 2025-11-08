@@ -6,17 +6,18 @@ import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
+import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
+import 'package:pakkahishab/features/customer_due/presentation/widgets/customer_due_appbar_back_with_search.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
-import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
 
-class SupplierDuesView extends StatelessWidget {
-  const SupplierDuesView({super.key, e});
+class CustomerDuesView extends StatelessWidget {
+  const CustomerDuesView({super.key, e});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
-      appBar: SupplierDueAppbarBackWithSearch(title: "Supplier Dues"),
+      appBar: CustomerDueAppbarBackWithSearch(title: "Customer Dues"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -24,12 +25,12 @@ class SupplierDuesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(supplierDueViewModelProvider.notifier)
+                    .read(customerDueViewModelProvider.notifier)
                     .refreshPurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final dueState = ref.watch(supplierDueViewModelProvider);
+                  final dueState = ref.watch(customerDueViewModelProvider);
                   final totalItem = dueState.duesList.isNotEmpty
                       ? dueState.duesList.first.totalSupplier
                       : 0;
@@ -95,12 +96,14 @@ class SupplierDuesView extends StatelessWidget {
                           itemCount: dueState.duesList.length,
                           itemBuilder: (context, index) {
                             final item = dueState.duesList[index];
-                            final formattedDate = DateFormat(
+                            final formattedDate = formatDateTime(
+                              item.followUpDate,
                               'dd MMM',
-                            ).format(item.followUpDate);
-                            final formattedTime = DateFormat(
-                              'hh:mma ',
-                            ).format(item.followUpDate);
+                            );
+                            final formattedTime = formatDateTime(
+                              item.followUpDate,
+                              'hh:mma',
+                            );
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 5,
@@ -192,14 +195,18 @@ class SupplierDuesView extends StatelessWidget {
                                                     style:
                                                         AppTextStyle.labelLarge,
                                                   ),
-                                                  SizedBox(height: 4,),
+                                                  SizedBox(height: 4),
                                                   Row(
                                                     children: [
-                                                      Text("Phone: ",style: AppTextStyle.bodySmall,),
+                                                      Text(
+                                                        "Phone: ",
+                                                        style: AppTextStyle
+                                                            .bodySmall,
+                                                      ),
                                                       Text(
                                                         item.phoneNo,
-                                                        style:
-                                                            AppTextStyle.bodySmall,
+                                                        style: AppTextStyle
+                                                            .bodySmall,
                                                       ),
                                                     ],
                                                   ),
@@ -208,17 +215,25 @@ class SupplierDuesView extends StatelessWidget {
                                                 ],
                                               ),
                                               Column(
-
-                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
                                                 children: [
                                                   Text(
                                                     "${item.amount.toString()} Tk",
-                                                    style: AppTextStyle.labelLarge,
+                                                    style:
+                                                        AppTextStyle.labelLarge,
                                                   ),
-                                                  Text("Payable", style: AppTextStyle.bodyMedium.copyWith(
-                                                    color: AppColors.errorTextColor,
-                                                    fontWeight: FontWeight.w500
-                                                  ),),
+                                                  Text(
+                                                    "Payable",
+                                                    style: AppTextStyle
+                                                        .bodyMedium
+                                                        .copyWith(
+                                                          color: AppColors
+                                                              .errorTextColor,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                  ),
                                                 ],
                                               ),
                                             ],
@@ -547,4 +562,8 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
       ),
     );
   }
+}
+
+String formatDateTime(DateTime? date, String pattern) {
+  return date != null ? DateFormat(pattern).format(date) : '-';
 }

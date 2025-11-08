@@ -1,16 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pakkahishab/features/supplier_due/data/services/supplier_due_services.dart';
+import 'package:pakkahishab/features/customer_due/data/services/customer_due_services.dart';
 
-final supplierDueRepositoryProvider = Provider<SupplierDueRepository>((ref) {
-  final service = ref.read(supplierDueServiceProvider);
-  return SupplierDueRepository(service);
+final customerDueRepositoryProvider = Provider<CustomerDueRepository>((ref) {
+  final service = ref.read(customerDueServiceProvider);
+  return CustomerDueRepository(service);
 });
 
-class SupplierDueRepository {
-  final SupplierDueServices _supplierDueServices;
-  SupplierDueRepository(this._supplierDueServices);
+class CustomerDueRepository {
+  final CustomerDueServices _services;
+  CustomerDueRepository(this._services);
 
-  Future<Map<String, dynamic>> getSupplierDues({
+  Future<Map<String, dynamic>> getCustomerDues({
     required String phone,
     required String pin,
     required String offset,
@@ -18,7 +18,7 @@ class SupplierDueRepository {
     String? dueDate,
     String? supplierId,
   }) async {
-    final dueData = await _supplierDueServices.getSupplierDues(
+    final dueData = await _services.getCustomerDues(
       phone: phone,
       pin: pin,
       offset: offset,
@@ -37,7 +37,7 @@ class SupplierDueRepository {
     required String code,
     required String supplierId,
   }) async {
-    final purchaseData = await _supplierDueServices.getSupplierDueDetails(
+    final purchaseData = await _services.getSupplierDueDetails(
       supplierId: supplierId,
       phone: phone,
       pin: pin,
@@ -54,7 +54,7 @@ class SupplierDueRepository {
     required String code,
   }) async {
     print("supplier_repository");
-    final response = await _supplierDueServices.getDueSupplier(
+    final response = await _services.getDueSupplier(
       phone: phone,
       pin: pin,
       code: code

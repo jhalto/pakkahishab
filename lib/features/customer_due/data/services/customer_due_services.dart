@@ -3,12 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/urls.dart';
 
-final supplierDueServiceProvider = Provider<SupplierDueServices>(
-  (ref) => SupplierDueServices(),
+final customerDueServiceProvider = Provider<CustomerDueServices>(
+  (ref) => CustomerDueServices(),
 );
 
-class SupplierDueServices {
-  Future<Map<String, dynamic>> getSupplierDues({
+class CustomerDueServices {
+  Future<Map<String, dynamic>> getCustomerDues({
     required String phone,
     required String pin,
     required String offset,
@@ -33,7 +33,8 @@ class SupplierDueServices {
       (key, value) => value == null || value.toString().isEmpty,
     );
 
-    final String url = "${Urls.baseUrl}Get_PA_Supplier_due/";
+    final String url = "${Urls.baseUrl}Get_PA_Customer_Due/";
+    https://erp.bdtender.tech:8443/ords/dev/PakkahisabApp/Get_PA_Customer_Due/?school_code=1&mobile=01779660821&password=demo&voucher_date=2025-09-16&offset=0&limit=10
 
     try {
       final response = await dio.get(url, queryParameters: queryParams);

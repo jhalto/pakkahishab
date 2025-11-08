@@ -7,6 +7,7 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
+import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_due_details.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
 
 class SupplierDuesView extends StatelessWidget {
@@ -109,20 +110,20 @@ class SupplierDuesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (_) => SupplierDueDetails(
-                                  //       supplierDue: item,
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => SupplierDueDetails(
+                                        supplierDue: item,
 
-                                  //     ),
-                                  //   ),
-                                  // );
+                                      ),
+                                    ),
+                                  );
 
-                                  // final success = await ref
-                                  //     .read(supplierDueViewModelProvider.notifier)
-                                  //     .getSupplierDueDetails(supplierId: item.supplierId);
-                                  // print(success);
+                                  final success = await ref
+                                      .read(supplierDueViewModelProvider.notifier)
+                                      .getSupplierDueDetails(supplierId: item.supplierId);
+                                  print(success);
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(

@@ -2,18 +2,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
+import 'package:pakkahishab/features/customer_due/data/repositories/customer_due_repository.dart';
 import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_detail_model.dart';
 import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_model.dart';
 import 'package:pakkahishab/features/supplier_due/data/models/due_supplier_model.dart';
-import 'package:pakkahishab/features/supplier_due/data/repositories/supplier_due_repository.dart';
-import 'package:pakkahishab/features/purchase/data/models/purchase_detail_model.dart';
 
-final supplierDueViewModelProvider =
-    NotifierProvider.autoDispose<SupplierDuesNotifier, SupplierDueState>(
-      () => SupplierDuesNotifier(),
+final customerDueViewModelProvider =
+    NotifierProvider.autoDispose<CustomerDuesNotifier, CustomerDueState>(
+      () => CustomerDuesNotifier(),
     );
 
-final class SupplierDueState {
+final class CustomerDueState {
   final SupplierDueDetailsResponse? supplierDueDetails;
   final DueSupplierResponse? supplier;
   final List<DueSupplier>? filteredSuppliers;
@@ -27,13 +26,13 @@ final class SupplierDueState {
   final String phone;
   final String pin;
   final String offset;
-  final List<SupplierDueItem> duesList;
+  final List<CustomerDueItem> duesList;
   final String? supplierId;
   final String? paymentMethod;
   // final String purchaseDate;
   // final String supplierId;
 
-  const SupplierDueState({
+  const CustomerDueState({
     this.supplierDueDetails,
     this.supplier,
     this.filteredSuppliers = const [],
@@ -52,7 +51,7 @@ final class SupplierDueState {
     this.paymentMethod,
   });
 
-  SupplierDueState copyWith({
+  CustomerDueState copyWith({
     SupplierDueDetailsResponse? supplierDueDetails,
     DueSupplierResponse? supplier,
     List<DueSupplier>? filteredSuppliers,
@@ -66,11 +65,11 @@ final class SupplierDueState {
     String? phone,
     String? pin,
     String? offset,
-    List<SupplierDueItem>? duesList,
+    List<CustomerDueItem>? duesList,
     String? supplierId,
     String? paymentMethod,
   }) {
-    return SupplierDueState(
+    return CustomerDueState(
       supplierDueDetails : supplierDueDetails ?? this.supplierDueDetails,
       supplier: supplier ?? this.supplier,
       filteredSuppliers: filteredSuppliers ?? this.filteredSuppliers,
@@ -91,20 +90,20 @@ final class SupplierDueState {
   }
 }
 
-class SupplierDuesNotifier extends Notifier<SupplierDueState> {
-  late final SupplierDueRepository _repo;
+class CustomerDuesNotifier extends Notifier<CustomerDueState> {
+  late final CustomerDueRepository _repo;
 
   @override
-  SupplierDueState build() {
-    _repo = ref.read(supplierDueRepositoryProvider);
-    fetchSupplierDues(); // call async stuff manually
-    return const SupplierDueState();
+  CustomerDueState build() {
+    _repo = ref.read(customerDueRepositoryProvider);
+    fetchCustomerDues(); // call async stuff manually
+    return const CustomerDueState();
   }
 
   TextEditingController searchSupplierController = TextEditingController();
   String paymentMethod = "Cash";
 
-  Future<void> fetchSupplierDues({
+  Future<void> fetchCustomerDues({
     bool loadMore = false,
     int? page,
     String? dueDate,
@@ -120,7 +119,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
       final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
       final int newOffset = (newPage - 1) * 10;
 
-      final result = await _repo.getSupplierDues(
+      final result = await _repo.getCustomerDues(
         phone: phone ?? '',
         pin: pin ?? '',
         code: code ?? '',
@@ -133,12 +132,12 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
       }
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
-      final totalItem = result['data']['items'][0]['total_count'] ?? 0;
+      final totalItem = result['data']['count'] ?? 0;
       print(totalItem);
       state = state.copyWith(totalPage: (totalItem / 10).ceil());
       print(state.totalPage);
       final newItems = items
-          .map<SupplierDueItem>((e) => SupplierDueItem.fromJson(e))
+          .map<CustomerDueItem>((e) => CustomerDueItem.fromJson(e))
           .toList();
       print(newItems.length);
       final allammount = [];
@@ -172,11 +171,11 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
 
   Future<void> refreshPurchases() async {
     state = state.copyWith(supplierId: "");
-    await fetchSupplierDues();
+    await fetchCustomerDues();
   }
 
   void goToPage(int page) {
-    fetchSupplierDues(page: page);
+    fetchCustomerDues(page: page);
   }
 
   // void refreshPurchases() {

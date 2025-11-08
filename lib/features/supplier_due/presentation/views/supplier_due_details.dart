@@ -7,20 +7,18 @@ import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/utils/custom_box_shadow.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
-import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_detail_model.dart';
 import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_model.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
 
 class SupplierDueDetails extends StatelessWidget {
-final SupplierDueItem supplierDue;
+final CustomerDueItem supplierDue;
  const SupplierDueDetails({super.key,required this.supplierDue});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarBack(title: "Purchase Details"),
+      appBar: CustomAppbarBack(title: "Supplier Details"),
       body: Consumer(
         builder: (context, ref, child) {
           if (ref.watch(supplierDueViewModelProvider).detailLoading) {
@@ -29,9 +27,8 @@ final SupplierDueItem supplierDue;
           final data = ref.watch(supplierDueViewModelProvider).supplierDueDetails;
           final item = ref
               .watch(supplierDueViewModelProvider)
-              .purchaseDetails!
-              .items
-              .first;
+              .purchaseDetails!.items.first;
+            
 
           return Column(
             children: [
@@ -46,7 +43,7 @@ final SupplierDueItem supplierDue;
                   children: [
                     Text("Bill No: ${item.purchaseNo}"),
                     Text(
-                      "Date: ${DateFormat("dd:mm:yyyy").format(item.purchaseDate!)}",
+                      "Date: ${DateFormat("dd:MM:yyyy").format(item.purchaseDate!)}",
                     ),
                   ],
                 ),
@@ -138,7 +135,7 @@ final SupplierDueItem supplierDue;
                     return ListView.builder(
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
-                      itemCount: vm.supplierDueDetails!.items.length,
+                      itemCount: vm.purchaseDetails!.items.length,
                       itemBuilder: (context, index) {
                         final product = vm.purchaseDetails!.items[index];
                         return Padding(

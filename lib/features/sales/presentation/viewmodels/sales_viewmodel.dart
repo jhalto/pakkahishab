@@ -172,7 +172,7 @@ class SalesNotifier extends Notifier<SalesState> {
     required String saleNo,
   }) async {
     final phone = await SharedPreferencesHelper.getString('phone');
-    final pin = await SharedPreferencesHelper.getString('pin') ?? '';
+    final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
@@ -183,7 +183,7 @@ class SalesNotifier extends Notifier<SalesState> {
 
       final response = await _repo.getSaleDetails(
         phone: phone ?? '',
-        pin: pin,
+        pin: pin ??"",
         code: code ?? '',
         offset: newOffset.toString(),
         saleNo: saleNo,
