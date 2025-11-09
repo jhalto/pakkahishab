@@ -16,7 +16,7 @@ class CustomerDueRepository {
     required String offset,
     required String code,
     String? dueDate,
-    String? supplierId,
+    String? customerId,
   }) async {
     final dueData = await _services.getCustomerDues(
       phone: phone,
@@ -24,21 +24,72 @@ class CustomerDueRepository {
       offset: offset,
       code: code,
       dueDate: dueDate,
-      supplierId: supplierId,
+      customerId: customerId,
     );
     print(dueData.length);
     return dueData;
   }
 
-  Future<Map<String, dynamic>> getSupplierDueDetails({
+  // Future<Map<String, dynamic>> getSupplierDueDetails({
+  //   required String phone,
+  //   required String pin,
+  //   required String offset,
+  //   required String code,
+  //   required String supplierId,
+  // }) async {
+  //   final purchaseData = await _services.getSupplierDueDetails(
+  //     supplierId: supplierId,
+  //     phone: phone,
+  //     pin: pin,
+  //     offset: offset,
+  //     code: code,
+  //   );
+  //   print(purchaseData.length);
+  //   return purchaseData;
+  // }
+
+  Future<Map<String, dynamic>> getDueCustomer({
+    required String phone,
+    required String pin,
+    required String code,
+  }) async {
+    print("supplier_repository");
+    final response = await _services.getDueCustomer(
+      phone: phone,
+      pin: pin,
+      code: code
+    );
+    return response;
+  }
+   Future<Map<String, dynamic>> getCustomerSales({
     required String phone,
     required String pin,
     required String offset,
     required String code,
-    required String supplierId,
+    String? saleDate,
+    String? customerId,
   }) async {
-    final purchaseData = await _services.getSupplierDueDetails(
-      supplierId: supplierId,
+    final purchaseData = await _services.getCustomerSales(
+      phone: phone,
+      pin: pin,
+      offset: offset,
+      code: code,
+      saledate: saleDate,
+      customerId: customerId,
+    );
+    print(purchaseData.length);
+    return purchaseData;
+  }
+
+  Future<Map<String, dynamic>> getCustomerSaleDetails({
+    required String phone,
+    required String pin,
+    required String offset,
+    required String code,
+    required String saleNo,
+  }) async {
+    final purchaseData = await _services.getCustomerSaleDetails(
+      saleNo: saleNo,
       phone: phone,
       pin: pin,
       offset: offset,
@@ -46,19 +97,5 @@ class CustomerDueRepository {
     );
     print(purchaseData.length);
     return purchaseData;
-  }
-
-  Future<Map<String, dynamic>> getDueSupplier({
-    required String phone,
-    required String pin,
-    required String code,
-  }) async {
-    print("supplier_repository");
-    final response = await _services.getDueSupplier(
-      phone: phone,
-      pin: pin,
-      code: code
-    );
-    return response;
   }
 }

@@ -1,6 +1,6 @@
 
 class SupplierDueModel {
-  final List<CustomerDueItem> items;
+  final List<SupplierDueItem> items;
   final bool hasMore;
   final int limit;
   final int offset;
@@ -17,7 +17,7 @@ class SupplierDueModel {
   factory SupplierDueModel.fromJson(Map<String, dynamic> json) {
     return SupplierDueModel(
       items: (json['items'] as List)
-          .map((item) => CustomerDueItem.fromJson(item))
+          .map((item) => SupplierDueItem.fromJson(item))
           .toList(),
       hasMore: json['hasMore'] ?? false,
       limit: json['limit'] ?? 0,
@@ -37,7 +37,7 @@ class SupplierDueModel {
   }
 }
 
-class CustomerDueItem {
+class SupplierDueItem {
   final String supplierId;
   final DateTime followUpDate;
   final String accountName;
@@ -50,7 +50,7 @@ class CustomerDueItem {
   final String password;
   final String mobile;
 
-  CustomerDueItem({
+  SupplierDueItem({
     required this.supplierId,
     required this.followUpDate,
     required this.accountName,
@@ -64,8 +64,8 @@ class CustomerDueItem {
     required this.mobile,
   });
 
-  factory CustomerDueItem.fromJson(Map<String, dynamic> json) {
-    return CustomerDueItem(
+  factory SupplierDueItem.fromJson(Map<String, dynamic> json) {
+    return SupplierDueItem(
       supplierId: json['supplier_id'] ?? '',
       followUpDate:DateTime.parse(json['follow_up_date']),
       accountName: json['account_name'] ?? '',

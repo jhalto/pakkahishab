@@ -82,18 +82,18 @@ class SupplierDueRepository {
   Future<Map<String, dynamic>> getSupplierPurchase({
     required String phone,
     required String pin,
-    required String offset,
+    required String supplierId,
     required String code,
     String? purchaseNo,
 
   
     
   }) async {
-    final purchaseData = await _supplierDueServices.getSupplierPurchase(
+    final purchaseData = await _supplierDueServices.getSupplierPurchaseMaster(
       purchaseNo: purchaseNo,
       phone: phone,
       pin: pin,
-      offset: offset,
+      supplierId: supplierId,
       code: code,
     );
     print(purchaseData.length);

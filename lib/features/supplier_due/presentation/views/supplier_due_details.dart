@@ -12,19 +12,21 @@ import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_model
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
 
 class SupplierDueDetails extends StatelessWidget {
-final CustomerDueItem supplierDue;
+final SupplierDueItem supplierDue;
  const SupplierDueDetails({super.key,required this.supplierDue});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarBack(title: "Supplier Details"),
+      appBar: CustomAppbarBack(title: "Supplier Due Details"),
       body: Consumer(
         builder: (context, ref, child) {
           if (ref.watch(supplierDueViewModelProvider).detailLoading) {
             return Center(child: loader);
           }
           final data = ref.watch(supplierDueViewModelProvider).supplierDueDetails;
+          
+          final purchaseMaseter = ref.watch(supplierDueViewModelProvider).purchaseList.first;
           final item = ref
               .watch(supplierDueViewModelProvider)
               .purchaseDetails!.items.first;
@@ -61,7 +63,7 @@ final CustomerDueItem supplierDue;
                   children: [
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Text("Total Payable: ${supplierDue.payDue}"),
+                      child: Text("Total Payable: ${purchaseMaseter.due.toStringAsFixed(0)}"),
                     ),
 
                     Padding(
@@ -232,8 +234,8 @@ final CustomerDueItem supplierDue;
                                 ),
                               ),
                               child: Text(
-                                // supplierDue.netAmount.toString(),
-                                 "",
+                                purchaseMaseter.netAmount.toString(),
+                                
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -274,8 +276,8 @@ final CustomerDueItem supplierDue;
                                 ),
                               ),
                               child: Text(
-                                // supplierDue..toString(),
-                                "",
+                                purchaseMaseter.netAmount.toString(),
+                              
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -316,8 +318,8 @@ final CustomerDueItem supplierDue;
                                 ),
                               ),
                               child: Text(
-                                // supplierDue.paidPrice.toString(),
-                                "",
+                                purchaseMaseter.paidPrice.toString(),
+                                
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -355,8 +357,8 @@ final CustomerDueItem supplierDue;
                                 ),
                               ),
                               child: Text(
-                                // purchase.due.toString(),
-                                "",
+                                purchaseMaseter.due.toString(),
+                              
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),

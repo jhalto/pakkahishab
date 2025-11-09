@@ -2,10 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
+import 'package:pakkahishab/features/customer_due/data/models/customer_due_model.dart';
+import 'package:pakkahishab/features/customer_due/data/models/due_customer_model.dart';
 import 'package:pakkahishab/features/customer_due/data/repositories/customer_due_repository.dart';
+import 'package:pakkahishab/features/sales/data/models/sale_details_model.dart';
+import 'package:pakkahishab/features/sales/data/models/sales_model.dart';
 import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_detail_model.dart';
-import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_model.dart';
-import 'package:pakkahishab/features/supplier_due/data/models/due_supplier_model.dart';
 
 final customerDueViewModelProvider =
     NotifierProvider.autoDispose<CustomerDuesNotifier, CustomerDueState>(
@@ -14,8 +16,10 @@ final customerDueViewModelProvider =
 
 final class CustomerDueState {
   final SupplierDueDetailsResponse? supplierDueDetails;
-  final DueSupplierResponse? supplier;
-  final List<DueSupplier>? filteredSuppliers;
+  final List<SalesItem> salesList;
+  final SalesDetailsResponse? salesDetails;
+  final DueCustomerResponse? customer;
+  final List<DueCustomer>? filteredCustomers;
   final bool loading;
   final String totalItem;
   final String totalPrice;
@@ -27,15 +31,17 @@ final class CustomerDueState {
   final String pin;
   final String offset;
   final List<CustomerDueItem> duesList;
-  final String? supplierId;
+  final String? customerId;
   final String? paymentMethod;
   // final String purchaseDate;
   // final String supplierId;
 
   const CustomerDueState({
     this.supplierDueDetails,
-    this.supplier,
-    this.filteredSuppliers = const [],
+    this.salesList = const [],
+    this.salesDetails,
+    this.customer,
+    this.filteredCustomers = const [],
     this.loading = false,
     this.totalItem = "0",
     this.totalPrice = "0",
@@ -47,14 +53,16 @@ final class CustomerDueState {
     this.pin = '',
     this.offset = '0',
     this.duesList = const [],
-    this.supplierId,
+    this.customerId,
     this.paymentMethod,
   });
 
   CustomerDueState copyWith({
     SupplierDueDetailsResponse? supplierDueDetails,
-    DueSupplierResponse? supplier,
-    List<DueSupplier>? filteredSuppliers,
+    SalesDetailsResponse? salesDetails,
+    List<SalesItem>? salesList,
+    DueCustomerResponse? customer,
+    List<DueCustomer>? filteredCustomers,
     bool? loading,
     String? totalItem,
     String? totalPrice,
@@ -66,13 +74,15 @@ final class CustomerDueState {
     String? pin,
     String? offset,
     List<CustomerDueItem>? duesList,
-    String? supplierId,
+    String? customerId,
     String? paymentMethod,
   }) {
     return CustomerDueState(
       supplierDueDetails : supplierDueDetails ?? this.supplierDueDetails,
-      supplier: supplier ?? this.supplier,
-      filteredSuppliers: filteredSuppliers ?? this.filteredSuppliers,
+      salesDetails: salesDetails ?? this.salesDetails,
+      salesList: salesList ?? this.salesList,
+      customer: customer ?? this.customer,
+      filteredCustomers: filteredCustomers ?? this.filteredCustomers,
       loading: loading ?? this.loading,
       totalItem: totalItem ?? this.totalItem,
       totalPrice: totalPrice ?? this.totalPrice,
@@ -84,7 +94,7 @@ final class CustomerDueState {
       pin: pin ?? this.pin,
       offset: offset ?? this.offset,
       duesList: duesList ?? this.duesList,
-      supplierId: supplierId ?? this.supplierId,
+      customerId: customerId ?? this.customerId,
       paymentMethod: paymentMethod ?? this.paymentMethod,
     );
   }
@@ -100,7 +110,7 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
     return const CustomerDueState();
   }
 
-  TextEditingController searchSupplierController = TextEditingController();
+  TextEditingController searchCustomerController = TextEditingController();
   String paymentMethod = "Cash";
 
   Future<void> fetchCustomerDues({
@@ -124,8 +134,8 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
         pin: pin ?? '',
         code: code ?? '',
         offset: newOffset.toString(),
-        dueDate: dueDate,
-        supplierId: state.supplierId,
+        dueDate: dueDate ?? '',
+        customerId: state.customerId ?? '',
       );
       if (kDebugMode) {
         print(result);
@@ -165,12 +175,12 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
     }
   }
 
-  void updateSupplierId(String supplierId) {
-    state = state.copyWith(supplierId: supplierId);
+  void updateCustomerId(String customerId) {
+    state = state.copyWith(customerId: customerId);
   }
 
   Future<void> refreshPurchases() async {
-    state = state.copyWith(supplierId: "");
+    state = state.copyWith(customerId: "");
     await fetchCustomerDues();
   }
 
@@ -183,69 +193,70 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
   //   fetchPurchases();
   // }
 
-  Future<bool> getSupplierDueDetails({
-    bool loadMore = false,
-    int? page,
-    required String supplierId,
-  }) async {
-    final phone = await SharedPreferencesHelper.getString('phone');
-    final pin = await SharedPreferencesHelper.getString('pin') ?? '';
-    final code = await SharedPreferencesHelper.getString('code');
+  // Future<bool> getSupplierDueDetails({
+  //   bool loadMore = false,
+  //   int? page,
+  //   required String supplierId,
+  // }) async {
+  //   final phone = await SharedPreferencesHelper.getString('phone');
+  //   final pin = await SharedPreferencesHelper.getString('pin') ?? '';
+  //   final code = await SharedPreferencesHelper.getString('code');
 
-    try {
-      state = state.copyWith(detailLoading: true);
+  //   try {
+  //     state = state.copyWith(detailLoading: true);
 
-      final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
-      final int newOffset = (newPage - 1) * 10;
+  //     final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
+  //     final int newOffset = (newPage - 1) * 10;
 
-      final response = await _repo.getSupplierDueDetails(
-        phone: phone ?? '',
-        pin: pin,
-        code: code ?? '',
-        offset: newOffset.toString(),
-        supplierId: supplierId,
-      );
+  //     final response = await _repo.getSupplierDueDetails(
+  //       phone: phone ?? '',
+  //       pin: pin,
+  //       code: code ?? '',
+  //       offset: newOffset.toString(),
+  //       supplierId: supplierId,
+  //     );
 
-      if (response['statusCode'] == 200) {
-        final supplierDueData = SupplierDueDetailsResponse.fromJson(response['data']);
-        state = state.copyWith(supplierDueDetails: supplierDueData);
-        return true; // ✅ signal success
-      }
-    } catch (e) {
-      debugPrint("Error fetching purchases: $e");
-    } finally {
-      state = state.copyWith(detailLoading: false);
-    }
-    return false;
-  }
+  //     if (response['statusCode'] == 200) {
+  //       final supplierDueData = SupplierDueDetailsResponse.fromJson(response['data']);
+  //       state = state.copyWith(supplierDueDetails: supplierDueData);
+  //       return true; // ✅ signal success
+  //     }
+  //   } catch (e) {
+  //     debugPrint("Error fetching purchases: $e");
+  //   } finally {
+  //     state = state.copyWith(detailLoading: false);
+  //   }
+  //   return false;
+  // }
 
   // bool supplierLoading = false;
 
-  Future<void> getDueSupplier() async {
+  Future<void> getDueCustomer() async {
     state = state.copyWith(detailLoading: true);
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
-      final response = await _repo.getDueSupplier(
+      final response = await _repo.getDueCustomer(
         phone: phone.toString(),
         pin: pin.toString(),
         code: code.toString(),
       );
-      print("supplierDueViewModel");
+      print("customer");
 
       print(code.toString());
       if (response['statusCode'] == 200) {
-        final responseData = DueSupplierResponse.fromJson(response['data']);
-        if (state.filteredSuppliers?.isNotEmpty ?? false) {
-          state = state.copyWith(filteredSuppliers: []);
+        final responseData = DueCustomerResponse.fromJson(response['data']);
+        if (state.filteredCustomers?.isNotEmpty ?? false) {
+          state = state.copyWith(filteredCustomers: []);
         }
         state = state.copyWith(
-          supplier: responseData,
-          filteredSuppliers: responseData.items,
+          customer: responseData,
+          filteredCustomers: responseData.items,
         );
-        print("done");
+
+        print(state.filteredCustomers);
       } else {
         print("error $response");
       }
@@ -256,25 +267,107 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
     }
   }
 
-  void searchSupplier(String query) {
-    final allSuppliers = state.supplier?.items ?? [];
+  void searchCustomer(String query) {
+    final allCustomers = state.customer?.items ?? [];
 
     if (query.isEmpty) {
       // if query is empty, show all suppliers
-      state = state.copyWith(filteredSuppliers: allSuppliers);
+      state = state.copyWith(filteredCustomers: allCustomers);
     } else {
-      final filtered = allSuppliers
+      final filtered = allCustomers
           .where(
-            (supplier) => supplier.accountName.toLowerCase().contains(
+            (supplier) => supplier.customerName.toLowerCase().contains(
               query.toLowerCase(),
             ),
           )
           .toList();
-      state = state.copyWith(filteredSuppliers: filtered);
+      state = state.copyWith(filteredCustomers: filtered);
     }
   }
 
   void updatePaymentMethod(String value) {
     state = state.copyWith(paymentMethod: value);
+  }
+  Future<void> fetchCustomerSales({
+    bool loadMore = false,
+    int? page,
+    String? saleDate,
+  }) async {
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
+
+    try {
+      state = state.copyWith(loading: true);
+
+      // if user taps a page number, use that page’s offset
+      final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
+      final int newOffset = (newPage - 1) * 10;
+
+      final result = await _repo.getCustomerSales(
+        phone: phone ?? '',
+        pin: pin ?? '',
+        code: code ?? '',
+        offset: newOffset.toString(),
+        saleDate: saleDate,
+        customerId: state.customerId,
+      );
+
+      final items = (result['data']['items'] ?? []) as List;
+      final hasMore = result['data']['hasMore'] ?? false;
+      final totalItem = result['data']['items'][0]['total_count'] ?? 0;
+      print(totalItem);
+      state = state.copyWith(totalPage: (totalItem / 10).ceil());
+      print(state.totalPage);
+      final newItems = items
+          .map<SalesItem>((e) => SalesItem.fromJson(e))
+          .toList();
+
+      state = state.copyWith(
+        salesList: newItems,
+        offset: newOffset.toString(),
+        currentPage: newPage,
+        hasMore: hasMore,
+      );
+    } catch (e) {
+      debugPrint("Error fetching purchases: $e");
+    } finally {
+      state = state.copyWith(loading: false);
+    }
+  }
+   Future<bool> fetchCustomerSalesDetails({
+    bool loadMore = false,
+    int? page,
+    required String saleNo,
+  }) async {
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
+
+    try {
+      state = state.copyWith(detailLoading: true);
+
+      final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
+      final int newOffset = (newPage - 1) * 10;
+
+      final response = await _repo.getCustomerSaleDetails(
+        phone: phone ?? '',
+        pin: pin ??"",
+        code: code ?? '',
+        offset: newOffset.toString(),
+        saleNo: saleNo,
+      );
+
+      if (response['statusCode'] == 200) {
+        final salesData = SalesDetailsResponse.fromJson(response['data']);
+        state = state.copyWith(salesDetails: salesData);
+        return true; // ✅ signal success
+      }
+    } catch (e) {
+      debugPrint("Error fetching purchases: $e");
+    } finally {
+      state = state.copyWith(detailLoading: false);
+    }
+    return false;
   }
 }

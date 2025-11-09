@@ -8,7 +8,7 @@ import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
 import 'package:pakkahishab/features/customer_due/presentation/widgets/customer_due_appbar_back_with_search.dart';
-import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
+
 
 class CustomerDuesView extends StatelessWidget {
   const CustomerDuesView({super.key, e});
@@ -204,7 +204,7 @@ class CustomerDuesView extends StatelessWidget {
                                                             .bodySmall,
                                                       ),
                                                       Text(
-                                                        item.phoneNo,
+                                                        item.mobile,
                                                         style: AppTextStyle
                                                             .bodySmall,
                                                       ),
@@ -479,8 +479,8 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(supplierDueViewModelProvider);
-    final notifier = ref.read(supplierDueViewModelProvider.notifier);
+    final purchaseState = ref.watch(customerDueViewModelProvider);
+    final notifier = ref.read(customerDueViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
+import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_detail_model.dart';
 import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_model.dart';
 import 'package:pakkahishab/features/supplier_due/data/models/due_supplier_model.dart';
@@ -29,7 +30,8 @@ final class SupplierDueState {
   final String phone;
   final String pin;
   final String offset;
-  final List<CustomerDueItem> duesList;
+  final List<SupplierDueItem> duesList;
+  final List<PurchaseItem> purchaseList;
   final String? supplierId;
   final String? paymentMethod;
   final String? purchaseNetAmount;
@@ -52,6 +54,7 @@ final class SupplierDueState {
     this.pin = '',
     this.offset = '0',
     this.duesList = const [],
+    this.purchaseList = const [],
     this.supplierId,
     this.paymentMethod,
     this.purchaseNetAmount,
@@ -72,13 +75,14 @@ final class SupplierDueState {
     String? phone,
     String? pin,
     String? offset,
-    List<CustomerDueItem>? duesList,
+    List<SupplierDueItem>? duesList,
+    List<PurchaseItem>? purchaseList,
     String? supplierId,
     String? paymentMethod,
     String? purchaseNetAmount,
   }) {
     return SupplierDueState(
-      supplierDueDetails : supplierDueDetails ?? this.supplierDueDetails,
+      supplierDueDetails: supplierDueDetails ?? this.supplierDueDetails,
       purchaseDetails: purchaseDetails ?? this.purchaseDetails,
       supplier: supplier ?? this.supplier,
       filteredSuppliers: filteredSuppliers ?? this.filteredSuppliers,
@@ -93,9 +97,10 @@ final class SupplierDueState {
       pin: pin ?? this.pin,
       offset: offset ?? this.offset,
       duesList: duesList ?? this.duesList,
+      purchaseList: purchaseList ?? this.purchaseList,
       supplierId: supplierId ?? this.supplierId,
       paymentMethod: paymentMethod ?? this.paymentMethod,
-      purchaseNetAmount: purchaseNetAmount ?? this.purchaseNetAmount
+      purchaseNetAmount: purchaseNetAmount ?? this.purchaseNetAmount,
     );
   }
 }
@@ -123,6 +128,8 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
+
+      print("fetching supplier");
       state = state.copyWith(loading: true);
 
       // if user taps a page number, use that page’s offset
@@ -147,7 +154,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
       state = state.copyWith(totalPage: (totalItem / 10).ceil());
       print(state.totalPage);
       final newItems = items
-          .map<CustomerDueItem>((e) => CustomerDueItem.fromJson(e))
+          .map<SupplierDueItem>((e) => SupplierDueItem.fromJson(e))
           .toList();
       print(newItems.length);
       final allammount = [];
@@ -217,13 +224,23 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
       );
 
       if (response['statusCode'] == 200) {
-        final supplierDueData = SupplierDueDetailsResponse.fromJson(response['data']);
+        final supplierDueData = SupplierDueDetailsResponse.fromJson(
+          response['data'],
+        );
         state = state.copyWith(supplierDueDetails: supplierDueData);
-        if(state.supplierDueDetails!.items.isNotEmpty){
-           final purchaseNo = state.supplierDueDetails!.items.first.purchaseNo;
-         await  fetchSupplierDuePurchaseDetails(purchaseNo: purchaseNo);
+        if (state.supplierDueDetails!.items.isNotEmpty) {
+          final purchaseNo = state.supplierDueDetails!.items.first.purchaseNo;
+          final supplierId = state.supplierDueDetails!.items.first.supplierId;
+          await fetchSupplierPurchasesMaster(
+            purchaseNo: purchaseNo,
+            supplierId: supplierId,
+          );
         }
-        
+        if (state.supplierDueDetails!.items.isNotEmpty) {
+          final purchaseNo = state.supplierDueDetails!.items.first.purchaseNo;
+          await fetchSupplierDuePurchaseDetails(purchaseNo: purchaseNo);
+        }
+
         return true; // ✅ signal success
       }
     } catch (e) {
@@ -293,8 +310,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
     state = state.copyWith(paymentMethod: value);
   }
 
-
-   Future<bool> fetchSupplierDuePurchaseDetails({
+  Future<bool> fetchSupplierDuePurchaseDetails({
     bool loadMore = false,
     int? page,
     required String purchaseNo,
@@ -319,16 +335,14 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
       int total = 0;
       if (response['statusCode'] == 200) {
         final purchaseData = PurchaseDetailsResponse.fromJson(response['data']);
-         
-        for(var i in purchaseData.items){
-           print(i.subTotal);
 
-           total += i.subTotal;
+        for (var i in purchaseData.items) {
+          print(i.subTotal);
 
-           print(total);
+          total += i.subTotal;
 
-
-        }     
+          print(total);
+        }
 
         state = state.copyWith(purchaseDetails: purchaseData);
         return true; // ✅ signal success
@@ -341,40 +355,36 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
     return false;
   }
 
-  //  Future<void> fetchPurchases({
-  //   bool loadMore = false,
-  //   int? page,
-  //   String? purchaseDate,
-  // }) async {
-  //   final phone = await SharedPreferencesHelper.getString('phone');
-  //   final pin = await SharedPreferencesHelper.getString('pin');
-  //   final code = await SharedPreferencesHelper.getString('code');
+  Future<void> fetchSupplierPurchasesMaster({
+    required String purchaseNo,
+    required String supplierId,
+  }) async {
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
 
-  //   try {
-  //     state = state.copyWith(loading: true);
+    try {
+      state = state.copyWith(loading: true);
 
-  //     // if user taps a page number, use that page’s offset
-  //     final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
-  //     final int newOffset = (newPage - 1) * 10;
+      final result = await _repo.getSupplierPurchase(
+        phone: phone ?? '',
+        pin: pin ?? '',
+        code: code ?? '',
+        supplierId: supplierId,
+        purchaseNo: purchaseNo,
+      );
+      final items = (result['data']['items'] ?? []) as List;
+      final newItems = items
+          .map<PurchaseItem>((e) => PurchaseItem.fromJson(e))
+          .toList();
 
-  //     final result = await _repo.getPurchases(
-  //       phone: phone ?? '',
-  //       pin: pin ?? '',
-  //       code: code ?? '',
-  //       offset: newOffset.toString(),
-  //       purchaseDate: purchaseDate,
-  //       supplierId: state.supplierId,
-  //     );
+      print(state.totalPage);
 
-      
-  //     print(state.totalPage);
-      
-
-      
-  //   } catch (e) {
-  //     debugPrint("Error fetching purchases: $e");
-  //   } finally {
-  //     state = state.copyWith(loading: false);
-  //   }
-  // }
+      state = state.copyWith(purchaseList: newItems);
+    } catch (e) {
+      debugPrint("Error fetching purchases: $e");
+    } finally {
+      state = state.copyWith(loading: false);
+    }
+  }
 }

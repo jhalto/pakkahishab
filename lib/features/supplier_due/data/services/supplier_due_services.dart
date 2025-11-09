@@ -137,12 +137,12 @@ class SupplierDueServices {
     }
   }
 
-   Future<Map<String, dynamic>> getSupplierPurchase({
+   Future<Map<String, dynamic>> getSupplierPurchaseMaster({
     required String phone,
     required String pin,
-    required String offset,
+  
     required String code,
-    String? purchasedate,
+
     String? supplierId,
     String? purchaseNo,
   }) async {
@@ -153,14 +153,11 @@ class SupplierDueServices {
       'school_code': code,
       'mobile': phone,
       'password': pin,
-      'offset': offset,
-      'limit': '10',
-      'purchase_date': purchasedate,
       'supplier_id': supplierId,
       'purchase_no': purchaseNo,
     };
     print(supplierId);
-    print(purchasedate);
+  
     // ✅ Remove any null or empty parameters before request
     queryParams.removeWhere(
       (key, value) => value == null || value.toString().isEmpty,
