@@ -37,37 +37,37 @@ class DueCustomerResponse {
 }
 
 class DueCustomer {
-  final String customerId;
-  final String customerName;
-  final int schoolCode;
-  final String password;
+  final String accountNo;
+  final String accountName;
   final String mobile;
+  final String password;
+  final int schoolCode;
 
   DueCustomer({
-    required this.customerId,
-    required this.customerName,
-    required this.schoolCode,
-    required this.password,
+    required this.accountNo,
+    required this.accountName,
     required this.mobile,
+    required this.password,
+    required this.schoolCode,
   });
 
   factory DueCustomer.fromJson(Map<String, dynamic> json) {
     return DueCustomer(
-      customerId: json['customer_id'] as String,
-      customerName: json['customer_name'] as String,
-      schoolCode: json['school_code'] as int,
-      password: json['password'] as String,
+      accountNo: json['account_no'] as String,
+      accountName: json['account_name'] as String,
       mobile: json['mobile'] as String,
+      password: json['password'] as String,
+      schoolCode: json['school_code'] as int,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'customer_id': customerId,
-      'customer_name': customerName,
-      'school_code': schoolCode,
-      'password': password,
+      'account_no': accountNo,
+      'account_name': accountName,
       'mobile': mobile,
+      'password': password,
+      'school_code': schoolCode,
     };
   }
 }

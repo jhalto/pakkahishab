@@ -30,23 +30,22 @@ class CustomerDueRepository {
     return dueData;
   }
 
-  // Future<Map<String, dynamic>> getSupplierDueDetails({
-  //   required String phone,
-  //   required String pin,
-  //   required String offset,
-  //   required String code,
-  //   required String supplierId,
-  // }) async {
-  //   final purchaseData = await _services.getSupplierDueDetails(
-  //     supplierId: supplierId,
-  //     phone: phone,
-  //     pin: pin,
-  //     offset: offset,
-  //     code: code,
-  //   );
-  //   print(purchaseData.length);
-  //   return purchaseData;
-  // }
+  Future<Map<String, dynamic>> getCustomerDueDetails({
+    required String phone,
+    required String pin,
+    required String offset,
+    required String code,
+    required String customerId,
+  }) async {
+    final purchaseData = await _services.getCustomerDueDetails(
+      customerId: customerId,
+      phone: phone,
+      pin: pin,
+      offset: offset,
+      code: code,
+    );
+    return purchaseData;
+  }
 
   Future<Map<String, dynamic>> getDueCustomer({
     required String phone,

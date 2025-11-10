@@ -6,17 +6,18 @@ import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
-import 'package:pakkahishab/features/customer_due/presentation/widgets/customer_due_appbar_back_with_search.dart';
+import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
+import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_due_details.dart';
+import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
 
-class CustomerDuesView extends StatelessWidget {
-  const CustomerDuesView({super.key, e});
+class SupplierAllDuesView extends StatelessWidget {
+  const SupplierAllDuesView({super.key, e});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
-      appBar: CustomerDueAppbarBackWithSearch(title: "Customer Dues"),
+      appBar: SupplierDueAppbarBackWithSearch(title: "Supplier Dues History"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -24,25 +25,28 @@ class CustomerDuesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(customerDueViewModelProvider.notifier)
+                    .read(supplierDueViewModelProvider.notifier)
                     .refreshPurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final dueState = ref.watch(customerDueViewModelProvider);
-                  final totalItem = dueState.duesList.isNotEmpty
-                      ? dueState.duesList.first.totalSupplier
-                      : 0;
-                  final totalPrice = dueState.duesList.isNotEmpty
-                      ? dueState.duesList.first.totalAmount
-                      : 0;
-                  if (dueState.loading) {
+                  final dueState = ref.watch(supplierDueViewModelProvider);
+                  // final totalItem = dueState.duesList.isNotEmpty
+                  //     ? dueState.duesList.first.totalSupplier
+                  //     : 0;
+                  // final totalPrice = dueState.duesList.isNotEmpty
+                  //     ? dueState.duesList.first.totalAmount
+                  //     : 0;
+
+                  if (dueState.detailLoading) {
                     return Center(child: loader);
                   }
 
-                  if (dueState.duesList.isEmpty) {
+                  if (dueState.supplierDueDetails == null) {
                     return Center(child: Text("No Dues"));
                   }
+                  final totalDuesCount =
+                      dueState.supplierDueDetails!.items.length;
                   return Column(
                     children: [
                       Container(
@@ -60,7 +64,8 @@ class CustomerDuesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      totalItem.toString(),
+                                      dueState.supplierTotalDuesCount
+                                          .toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
                                   ],
@@ -79,7 +84,7 @@ class CustomerDuesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      totalPrice.toString(),
+                                      dueState.supplierTotalDues.toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
                                   ],
@@ -92,17 +97,16 @@ class CustomerDuesView extends StatelessWidget {
                       const SizedBox(height: 8),
                       Expanded(
                         child: ListView.builder(
-                          itemCount: dueState.duesList.length,
+                          itemCount: dueState.supplierDueDetails!.items.length,
                           itemBuilder: (context, index) {
-                            final item = dueState.duesList[index];
-                            final formattedDate = formatDateTime(
-                              item.followUpDate,
-                              'dd MMM',
-                            );
-                            final formattedTime = formatDateTime(
-                              item.followUpDate,
-                              'hh:mma',
-                            );
+                            final item =
+                                dueState.supplierDueDetails!.items[index];
+                            // final formattedDate = DateFormat(
+                            //   'dd MMM',
+                            // ).format(item.followUpDate);
+                            // final formattedTime = DateFormat(
+                            //   'hh:mma ',
+                            // ).format(item.followUpDate);
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 5,
@@ -111,20 +115,14 @@ class CustomerDuesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (_) => SupplierDueDetails(
-                                  //       supplierDue: item,
+                                  ref.read(supplierDueViewModelProvider.notifier).fetchSupplierPurchasesMaster(purchaseNo: item.purchaseNo, supplierId: item.supplierId);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => SupplierDueDetails(),
+                                    ),
+                                  );
 
-                                  //     ),
-                                  //   ),
-                                  // );
-
-                                  // final success = await ref
-                                  //     .read(supplierDueViewModelProvider.notifier)
-                                  //     .getSupplierDueDetails(supplierId: item.supplierId);
-                                  // print(success);
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(
@@ -152,26 +150,27 @@ class CustomerDuesView extends StatelessWidget {
                                           ),
                                           child: Column(
                                             children: [
-                                              Text(
-                                                "Follow Up",
-                                                style: AppTextStyle.bodyMedium
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryColor2,
-                                                      fontSize: 14.sp,
-                                                    ),
-                                              ),
-                                              SizedBox(height: 2),
-                                              Text(
-                                                formattedDate,
+                                              // Text(
+                                              //   "Follow Up",
+                                              //   style: AppTextStyle.bodyMedium
+                                              //       .copyWith(
+                                              //         color: AppColors
+                                              //             .primaryColor2,
+                                              //         fontSize: 14.sp,
+                                              //       ),
+                                              // ),
+                                              // SizedBox(height: 2),
+                                              // Text(
+                                              //   formattedDate,
 
-                                                style: AppTextStyle.labelLarge,
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                formattedTime,
-                                                style: AppTextStyle.bodySmall,
-                                              ),
+                                              //   style: AppTextStyle.labelLarge,
+                                              // ),
+                                              // const SizedBox(height: 4),
+                                              // Text(
+                                              //   formattedTime,
+
+                                              //   style: AppTextStyle.bodySmall,
+                                              // ),
                                             ],
                                           ),
                                         ),
@@ -202,7 +201,7 @@ class CustomerDuesView extends StatelessWidget {
                                                             .bodySmall,
                                                       ),
                                                       Text(
-                                                        item.phoneNo.toString(),
+                                                        item.phoneNo,
                                                         style: AppTextStyle
                                                             .bodySmall,
                                                       ),
@@ -477,8 +476,8 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(customerDueViewModelProvider);
-    final notifier = ref.read(customerDueViewModelProvider.notifier);
+    final purchaseState = ref.watch(supplierDueViewModelProvider);
+    final notifier = ref.read(supplierDueViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;
@@ -560,8 +559,4 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
       ),
     );
   }
-}
-
-String formatDateTime(DateTime? date, String pattern) {
-  return date != null ? DateFormat(pattern).format(date) : '-';
 }

@@ -35,7 +35,6 @@ class CustomerDueServices {
 
     final String url = "${Urls.baseUrl}Get_PA_Customer_Due/";
 
-
     try {
       final response = await dio.get(url, queryParameters: queryParams);
 
@@ -58,10 +57,10 @@ class CustomerDueServices {
     required String pin,
     required String offset,
     required String code,
-    required String supplierId,
+    required String customerId,
   }) async {
     final url =
-        "${Urls.baseUrl}Get_PA_Customer_due_details/?school_code=$code&password=$pin&mobile=$phone&password=$pin&offset=$offset&limit=10&Cus=$supplierId";
+        "${Urls.baseUrl}Get_PA_Customer_due_details/?school_code=$code&password=$pin&mobile=$phone&password=$pin&offset=$offset&limit=10&Cus=$customerId";
 
     final Dio dio = Dio();
 
@@ -81,7 +80,7 @@ class CustomerDueServices {
     required String code,
   }) async {
     final url =
-        "${Urls.baseUrl}Customer_name/?school_code=$code&mobile=$phone&password=$pin";
+        "${Urls.baseUrl}Get_Accountname_Customer/?school_code=$code&mobile=$phone&password=$pin";
     Dio dio = Dio();
     try {
       final response = await dio.get(url);
@@ -95,7 +94,6 @@ class CustomerDueServices {
       return {"statusCode": 666, "data": "Catch Error $e"};
     }
   }
-
 
   Future<Map<String, dynamic>> getCustomerSales({
     required String phone,

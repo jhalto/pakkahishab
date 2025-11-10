@@ -252,19 +252,19 @@ class CustomerDueAppbarBackWithSearch extends StatelessWidget
                                                           .withAlpha(20),
                                                       onTap: () {
                                                         print(
-                                                          customer.customerId,
+                                                          customer.accountNo,
                                                         );
                                                         notifier
                                                             .updateCustomerId(
                                                               customer
-                                                                  .customerId,
+                                                                  .accountNo,
                                                             );
                                                         notifier
                                                             .fetchCustomerDues();
                                                         Navigator.pop(context);
                                                       },
                                                       title: Text(
-                                                        customer.customerName,
+                                                        customer.accountName,
                                                       ),
                                                       subtitle: Text(
                                                         customer.mobile,
@@ -324,7 +324,7 @@ class CustomerDueAppbarBackWithSearch extends StatelessWidget
                                   .fetchCustomerDues(dueDate: formattedDate);
                             }
                           },
-                          child: const Text("Purchase Date"),
+                          child: const Text("Selling Date"),
                         ),
                       ],
                     );

@@ -43,7 +43,7 @@ class SaleDetails extends StatelessWidget {
                   children: [
                     Text("Bill No: ${item.salesNo}"),
                     Text(
-                      "Date: ${DateFormat("dd:mm:yyyy").format(item.salesDate)}",
+                      "Date: ${DateFormat("dd:MM:yyyy").format(item.salesDate)}",
                     ),
                   ],
                 ),

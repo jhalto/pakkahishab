@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_detail_model.dart';
@@ -35,6 +34,8 @@ final class SupplierDueState {
   final String? supplierId;
   final String? paymentMethod;
   final String? purchaseNetAmount;
+  final String? supplierTotalDues;
+  final String? supplierTotalDuesCount;
   // final String purchaseDate;
   // final String supplierId;
 
@@ -58,6 +59,8 @@ final class SupplierDueState {
     this.supplierId,
     this.paymentMethod,
     this.purchaseNetAmount,
+    this.supplierTotalDues,
+    this.supplierTotalDuesCount,
   });
 
   SupplierDueState copyWith({
@@ -80,6 +83,8 @@ final class SupplierDueState {
     String? supplierId,
     String? paymentMethod,
     String? purchaseNetAmount,
+    String? supplierTotalDues,
+    String? supplierTotalDuesCount,
   }) {
     return SupplierDueState(
       supplierDueDetails: supplierDueDetails ?? this.supplierDueDetails,
@@ -101,6 +106,8 @@ final class SupplierDueState {
       supplierId: supplierId ?? this.supplierId,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       purchaseNetAmount: purchaseNetAmount ?? this.purchaseNetAmount,
+      supplierTotalDues: supplierTotalDues ?? this.supplierTotalDues,
+      supplierTotalDuesCount: supplierTotalDuesCount ?? this.supplierTotalDuesCount
     );
   }
 }
@@ -128,7 +135,6 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
-
       print("fetching supplier");
       state = state.copyWith(loading: true);
 
@@ -199,7 +205,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
   //   state = const PurchaseState();
   //   fetchPurchases();
   // }
-
+   
   Future<bool> getSupplierDueDetails({
     bool loadMore = false,
     int? page,
@@ -227,14 +233,25 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
         final supplierDueData = SupplierDueDetailsResponse.fromJson(
           response['data'],
         );
-        state = state.copyWith(supplierDueDetails: supplierDueData);
+        
+
+        final allammount = [];
+        for (var i in supplierDueData.items) {
+          allammount.add(i.amount);
+
+          print("${i.amount}\n");
+        }
+        print(allammount);
+        final totalPriceSum = allammount.fold<num>(
+          0,
+          (sum, element) => sum + element,
+        );
+        state = state.copyWith(supplierDueDetails: supplierDueData, supplierTotalDues: totalPriceSum.toString(), supplierTotalDuesCount: supplierDueData.items.length.toString());
+        print(totalPriceSum);
+
         if (state.supplierDueDetails!.items.isNotEmpty) {
-          final purchaseNo = state.supplierDueDetails!.items.first.purchaseNo;
-          final supplierId = state.supplierDueDetails!.items.first.supplierId;
-          await fetchSupplierPurchasesMaster(
-            purchaseNo: purchaseNo,
-            supplierId: supplierId,
-          );
+
+     
         }
         if (state.supplierDueDetails!.items.isNotEmpty) {
           final purchaseNo = state.supplierDueDetails!.items.first.purchaseNo;
@@ -345,6 +362,10 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
         }
 
         state = state.copyWith(purchaseDetails: purchaseData);
+        if (state.supplierDueDetails!.items.isNotEmpty) {
+          final purchaseNo = state.supplierDueDetails!.items.first.purchaseNo;
+          await fetchSupplierDuePurchaseDetails(purchaseNo: purchaseNo);
+        }
         return true; // ✅ signal success
       }
     } catch (e) {

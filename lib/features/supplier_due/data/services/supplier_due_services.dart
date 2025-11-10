@@ -69,7 +69,7 @@ class SupplierDueServices {
     try {
       final response = await dio.get(url);
 
-      print(response);
+      print("supplier due detailts:  $response");
       return {"statusCode": response.statusCode, "data": response.data};
     } catch (e) {
       return {"statusCode": 666, "data": "Catch error $e"};

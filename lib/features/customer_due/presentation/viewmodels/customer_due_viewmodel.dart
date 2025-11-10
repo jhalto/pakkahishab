@@ -193,41 +193,41 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
   //   fetchPurchases();
   // }
 
-  // Future<bool> getSupplierDueDetails({
-  //   bool loadMore = false,
-  //   int? page,
-  //   required String supplierId,
-  // }) async {
-  //   final phone = await SharedPreferencesHelper.getString('phone');
-  //   final pin = await SharedPreferencesHelper.getString('pin') ?? '';
-  //   final code = await SharedPreferencesHelper.getString('code');
+  Future<bool> getCustomerDueDetails({
+    bool loadMore = false,
+    int? page,
+    required String customerId,
+  }) async {
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin') ?? '';
+    final code = await SharedPreferencesHelper.getString('code');
 
-  //   try {
-  //     state = state.copyWith(detailLoading: true);
+    try {
+      state = state.copyWith(detailLoading: true);
 
-  //     final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
-  //     final int newOffset = (newPage - 1) * 10;
+      final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
+      final int newOffset = (newPage - 1) * 10;
 
-  //     final response = await _repo.getSupplierDueDetails(
-  //       phone: phone ?? '',
-  //       pin: pin,
-  //       code: code ?? '',
-  //       offset: newOffset.toString(),
-  //       supplierId: supplierId,
-  //     );
+      final response = await _repo.getCustomerDueDetails(
+        phone: phone ?? '',
+        pin: pin,
+        code: code ?? '',
+        offset: newOffset.toString(),
+        customerId: customerId,
+      );
 
-  //     if (response['statusCode'] == 200) {
-  //       final supplierDueData = SupplierDueDetailsResponse.fromJson(response['data']);
-  //       state = state.copyWith(supplierDueDetails: supplierDueData);
-  //       return true; // ✅ signal success
-  //     }
-  //   } catch (e) {
-  //     debugPrint("Error fetching purchases: $e");
-  //   } finally {
-  //     state = state.copyWith(detailLoading: false);
-  //   }
-  //   return false;
-  // }
+      if (response['statusCode'] == 200) {
+        final supplierDueData = SupplierDueDetailsResponse.fromJson(response['data']);
+        state = state.copyWith(supplierDueDetails: supplierDueData);
+        return true; // ✅ signal success
+      }
+    } catch (e) {
+      debugPrint("Error fetching purchases: $e");
+    } finally {
+      state = state.copyWith(detailLoading: false);
+    }
+    return false;
+  }
 
   // bool supplierLoading = false;
 
@@ -276,7 +276,7 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
     } else {
       final filtered = allCustomers
           .where(
-            (supplier) => supplier.customerName.toLowerCase().contains(
+            (customer) => customer.accountName.toLowerCase().contains(
               query.toLowerCase(),
             ),
           )
@@ -288,7 +288,7 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
   void updatePaymentMethod(String value) {
     state = state.copyWith(paymentMethod: value);
   }
-  Future<void> fetchCustomerSales({
+  Future<void> fetchCustomerDueSales({
     bool loadMore = false,
     int? page,
     String? saleDate,

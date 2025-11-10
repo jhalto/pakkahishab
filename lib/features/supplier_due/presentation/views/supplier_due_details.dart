@@ -12,8 +12,8 @@ import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_model
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
 
 class SupplierDueDetails extends StatelessWidget {
-final SupplierDueItem supplierDue;
- const SupplierDueDetails({super.key,required this.supplierDue});
+
+ const SupplierDueDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
