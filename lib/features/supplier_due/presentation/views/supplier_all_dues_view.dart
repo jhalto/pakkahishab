@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_due_details.dart';
@@ -38,7 +37,7 @@ class SupplierAllDuesView extends StatelessWidget {
                   //     ? dueState.duesList.first.totalAmount
                   //     : 0;
 
-                  if (dueState.detailLoading) {
+                  if (dueState.loading) {
                     return Center(child: loader);
                   }
 
@@ -116,12 +115,7 @@ class SupplierAllDuesView extends StatelessWidget {
                               child: InkWell(
                                 onTap: () async {
                                   ref.read(supplierDueViewModelProvider.notifier).fetchSupplierPurchasesMaster(purchaseNo: item.purchaseNo, supplierId: item.supplierId);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => SupplierDueDetails(),
-                                    ),
-                                  );
+                                  navigateWithSlide(context: context, page: SupplierDueDetails());
 
                                 },
                                 child: Ink(

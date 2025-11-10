@@ -1,24 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
-import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
+import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
+import 'package:pakkahishab/features/customer_due/presentation/widgets/customer_due_appbar_back_with_search.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
-import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_all_dues_view.dart';
-import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
 
-class SupplierDuesView extends StatelessWidget {
-  const SupplierDuesView({super.key, e});
+class CustomerAllDuesView extends StatelessWidget {
+  const CustomerAllDuesView({super.key, e});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
-      appBar: SupplierDueAppbarBackWithSearch(title: "Supplier Dues"),
+      appBar: CustomerDueAppbarBackWithSearch(title: "Customer All Dues"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -26,25 +23,28 @@ class SupplierDuesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(supplierDueViewModelProvider.notifier)
+                    .read(customerDueViewModelProvider.notifier)
                     .refreshPurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final dueState = ref.watch(supplierDueViewModelProvider);
-                  final totalItem = dueState.duesList.isNotEmpty
-                      ? dueState.duesList.first.totalSupplier
-                      : 0;
-                  final totalPrice = dueState.duesList.isNotEmpty
-                      ? dueState.duesList.first.totalAmount
-                      : 0;
+                  final dueState = ref.watch(customerDueViewModelProvider);
+                  // final totalItem = dueState.duesList.isNotEmpty
+                  //     ? dueState.duesList.first.totalSupplier
+                  //     : 0;
+                  // final totalPrice = dueState.duesList.isNotEmpty
+                  //     ? dueState.duesList.first.totalAmount
+                  //     : 0;
+
                   if (dueState.loading) {
                     return Center(child: loader);
                   }
 
-                  if (dueState.duesList.isEmpty) {
+                  if (dueState.customerDueDetails == null) {
                     return Center(child: Text("No Dues"));
                   }
+                  final totalDuesCount =
+                      dueState.customerDueDetails!.items.length;
                   return Column(
                     children: [
                       Container(
@@ -62,7 +62,8 @@ class SupplierDuesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      totalItem.toString(),
+                                      dueState.customerTotalDuesCount
+                                          .toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
                                   ],
@@ -81,7 +82,7 @@ class SupplierDuesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      totalPrice.toString(),
+                                      dueState.customerTotalDues.toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
                                   ],
@@ -94,15 +95,16 @@ class SupplierDuesView extends StatelessWidget {
                       const SizedBox(height: 8),
                       Expanded(
                         child: ListView.builder(
-                          itemCount: dueState.duesList.length,
+                          itemCount: dueState.customerDueDetails!.items.length,
                           itemBuilder: (context, index) {
-                            final item = dueState.duesList[index];
-                            final formattedDate = DateFormat(
-                              'dd MMM',
-                            ).format(item.followUpDate);
-                            final formattedTime = DateFormat(
-                              'hh:mma ',
-                            ).format(item.followUpDate);
+                            final item =
+                                dueState.customerDueDetails!.items[index];
+                            // final formattedDate = DateFormat(
+                            //   'dd MMM',
+                            // ).format(item.followUpDate);
+                            // final formattedTime = DateFormat(
+                            //   'hh:mma ',
+                            // ).format(item.followUpDate);
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 5,
@@ -111,36 +113,9 @@ class SupplierDuesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (_) => SupplierAllDuesView(),
-                                  //   ),
-                                  // );
+                                  // ref.read(supplierDueViewModelProvider.notifier).fetchSupplierPurchasesMaster(purchaseNo: item.purchaseNo, supplierId: item.supplierId);
+                                  // navigateWithSlide(context: context, page: SupplierDueDetails());
 
-                                  // final success = await ref
-                                  //     .read(
-                                  //       supplierDueViewModelProvider.notifier,
-                                  //     )
-                                  //     .getSupplierDueDetails(
-                                  //       supplierId: item.supplierId,
-                                  //     );
-
-                                  // Navigate immediately with custom transition
-
-                                  // Fire the API call in the background
-
-                                  navigateWithSlide(
-                                    context: context,
-                                    page: SupplierAllDuesView(),
-                                  );
-                                  ref
-                                      .read(
-                                        supplierDueViewModelProvider.notifier,
-                                      )
-                                      .getSupplierDueDetails(
-                                        supplierId: item.supplierId,
-                                      );
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(
@@ -168,27 +143,27 @@ class SupplierDuesView extends StatelessWidget {
                                           ),
                                           child: Column(
                                             children: [
-                                              Text(
-                                                "Follow Up",
-                                                style: AppTextStyle.bodyMedium
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryColor2,
-                                                      fontSize: 14.sp,
-                                                    ),
-                                              ),
-                                              SizedBox(height: 2),
-                                              Text(
-                                                formattedDate,
+                                              // Text(
+                                              //   "Follow Up",
+                                              //   style: AppTextStyle.bodyMedium
+                                              //       .copyWith(
+                                              //         color: AppColors
+                                              //             .primaryColor2,
+                                              //         fontSize: 14.sp,
+                                              //       ),
+                                              // ),
+                                              // SizedBox(height: 2),
+                                              // Text(
+                                              //   formattedDate,
 
-                                                style: AppTextStyle.labelLarge,
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                formattedTime,
+                                              //   style: AppTextStyle.labelLarge,
+                                              // ),
+                                              // const SizedBox(height: 4),
+                                              // Text(
+                                              //   formattedTime,
 
-                                                style: AppTextStyle.bodySmall,
-                                              ),
+                                              //   style: AppTextStyle.bodySmall,
+                                              // ),
                                             ],
                                           ),
                                         ),

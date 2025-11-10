@@ -8,7 +8,6 @@ import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/utils/custom_box_shadow.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
-import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_model.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
 
 class SupplierDueDetails extends StatelessWidget {
@@ -21,7 +20,7 @@ class SupplierDueDetails extends StatelessWidget {
       appBar: CustomAppbarBack(title: "Supplier Due Details"),
       body: Consumer(
         builder: (context, ref, child) {
-          if (ref.watch(supplierDueViewModelProvider).detailLoading) {
+          if (ref.watch(supplierDueViewModelProvider).loading) {
             return Center(child: loader);
           }
           final data = ref.watch(supplierDueViewModelProvider).supplierDueDetails;

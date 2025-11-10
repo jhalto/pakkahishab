@@ -5,8 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
+import 'package:pakkahishab/features/customer_due/presentation/views/customer_all_dues_view.dart';
 import 'package:pakkahishab/features/customer_due/presentation/widgets/customer_due_appbar_back_with_search.dart';
 
 class CustomerDuesView extends StatelessWidget {
@@ -111,20 +113,17 @@ class CustomerDuesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (_) => SupplierDueDetails(
-                                  //       supplierDue: item,
-
-                                  //     ),
-                                  //   ),
-                                  // );
-
-                                  // final success = await ref
-                                  //     .read(supplierDueViewModelProvider.notifier)
-                                  //     .getSupplierDueDetails(supplierId: item.supplierId);
-                                  // print(success);
+                                  navigateWithSlide(
+                                    context: context,
+                                    page: CustomerAllDuesView(),
+                                  );
+                                  await ref
+                                      .read(
+                                        customerDueViewModelProvider.notifier,
+                                      )
+                                      .getCustomerDueDetails(
+                                        customerId: item.customerId,
+                                      );
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(

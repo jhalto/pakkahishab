@@ -107,7 +107,8 @@ final class SupplierDueState {
       paymentMethod: paymentMethod ?? this.paymentMethod,
       purchaseNetAmount: purchaseNetAmount ?? this.purchaseNetAmount,
       supplierTotalDues: supplierTotalDues ?? this.supplierTotalDues,
-      supplierTotalDuesCount: supplierTotalDuesCount ?? this.supplierTotalDuesCount
+      supplierTotalDuesCount:
+          supplierTotalDuesCount ?? this.supplierTotalDuesCount,
     );
   }
 }
@@ -205,7 +206,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
   //   state = const PurchaseState();
   //   fetchPurchases();
   // }
-   
+
   Future<bool> getSupplierDueDetails({
     bool loadMore = false,
     int? page,
@@ -216,7 +217,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
-      state = state.copyWith(detailLoading: true);
+      state = state.copyWith(loading: true);
 
       final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
       final int newOffset = (newPage - 1) * 10;
@@ -233,7 +234,6 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
         final supplierDueData = SupplierDueDetailsResponse.fromJson(
           response['data'],
         );
-        
 
         final allammount = [];
         for (var i in supplierDueData.items) {
@@ -246,24 +246,19 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
           0,
           (sum, element) => sum + element,
         );
-        state = state.copyWith(supplierDueDetails: supplierDueData, supplierTotalDues: totalPriceSum.toString(), supplierTotalDuesCount: supplierDueData.items.length.toString());
+        state = state.copyWith(
+          supplierDueDetails: supplierDueData,
+          supplierTotalDues: totalPriceSum.toString(),
+          supplierTotalDuesCount: supplierDueData.items.length.toString(),
+        );
         print(totalPriceSum);
-
-        if (state.supplierDueDetails!.items.isNotEmpty) {
-
-     
-        }
-        if (state.supplierDueDetails!.items.isNotEmpty) {
-          final purchaseNo = state.supplierDueDetails!.items.first.purchaseNo;
-          await fetchSupplierDuePurchaseDetails(purchaseNo: purchaseNo);
-        }
 
         return true; // ✅ signal success
       }
     } catch (e) {
       debugPrint("Error fetching purchases: $e");
     } finally {
-      state = state.copyWith(detailLoading: false);
+      state = state.copyWith(loading: false);
     }
     return false;
   }
@@ -301,7 +296,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
     } catch (e) {
       print(e);
     } finally {
-      state = state.copyWith(detailLoading: false);
+      state = state.copyWith(loading: false);
     }
   }
 
@@ -337,7 +332,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
-      state = state.copyWith(detailLoading: true);
+      state = state.copyWith(loading: true);
 
       final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
       final int newOffset = (newPage - 1) * 10;
@@ -362,16 +357,16 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
         }
 
         state = state.copyWith(purchaseDetails: purchaseData);
-        if (state.supplierDueDetails!.items.isNotEmpty) {
-          final purchaseNo = state.supplierDueDetails!.items.first.purchaseNo;
-          await fetchSupplierDuePurchaseDetails(purchaseNo: purchaseNo);
-        }
+        // if (state.supplierDueDetails!.items.isNotEmpty) {
+        //   final purchaseNo = state.supplierDueDetails!.items.first.purchaseNo;
+        //   await fetchSupplierDuePurchaseDetails(purchaseNo: purchaseNo);
+        // }
         return true; // ✅ signal success
       }
     } catch (e) {
       debugPrint("Error fetching purchases: $e");
     } finally {
-      state = state.copyWith(detailLoading: false);
+      state = state.copyWith(loading: false);
     }
     return false;
   }
@@ -400,8 +395,9 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
           .toList();
 
       print(state.totalPage);
-
+        
       state = state.copyWith(purchaseList: newItems);
+      await fetchSupplierDuePurchaseDetails(purchaseNo: purchaseNo);
     } catch (e) {
       debugPrint("Error fetching purchases: $e");
     } finally {
