@@ -1,11 +1,11 @@
-class DueSupplierResponse {
-  final List<DueSupplier> items;
+class DueCustomerResponse {
+  final List<DueCustomer> items;
   final bool hasMore;
   final int limit;
   final int offset;
   final int count;
 
-  DueSupplierResponse({
+  DueCustomerResponse({
     required this.items,
     required this.hasMore,
     required this.limit,
@@ -13,10 +13,10 @@ class DueSupplierResponse {
     required this.count,
   });
 
-  factory DueSupplierResponse.fromJson(Map<String, dynamic> json) {
-    return DueSupplierResponse(
+  factory DueCustomerResponse.fromJson(Map<String, dynamic> json) {
+    return DueCustomerResponse(
       items: (json['items'] as List<dynamic>)
-          .map((item) => DueSupplier.fromJson(item as Map<String, dynamic>))
+          .map((item) => DueCustomer.fromJson(item as Map<String, dynamic>))
           .toList(),
       hasMore: json['hasMore'] as bool,
       limit: json['limit'] as int,
@@ -36,37 +36,37 @@ class DueSupplierResponse {
   }
 }
 
-class DueSupplier {
+class DueCustomer {
+  final String accountNo;
+  final String accountName;
   final String mobile;
   final String password;
-  final String accountName;
-  final String accountNo;
   final int schoolCode;
 
-  DueSupplier({
+  DueCustomer({
+    required this.accountNo,
+    required this.accountName,
     required this.mobile,
     required this.password,
-    required this.accountName,
-    required this.accountNo,
     required this.schoolCode,
   });
 
-  factory DueSupplier.fromJson(Map<String, dynamic> json) {
-    return DueSupplier(
+  factory DueCustomer.fromJson(Map<String, dynamic> json) {
+    return DueCustomer(
+      accountNo: json['account_no'] as String,
+      accountName: json['account_name'] as String,
       mobile: json['mobile'] as String,
       password: json['password'] as String,
-      accountName: json['account_name'] as String,
-      accountNo: json['account_no'] as String,
       schoolCode: json['school_code'] as int,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'account_no': accountNo,
+      'account_name': accountName,
       'mobile': mobile,
       'password': password,
-      'account_name': accountName,
-      'account_no': accountNo,
       'school_code': schoolCode,
     };
   }

@@ -179,7 +179,6 @@ class BodyTopPart extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: InkWell(
-                          
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                           onTap: () {
                             Navigator.pushNamed(context, Routes.supplierDues);
@@ -217,26 +216,41 @@ class BodyTopPart extends StatelessWidget {
                     child: VerticalDivider(color: AppColors.primaryColor2),
                   ),
                   Expanded(
-                    child: Column(
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.totalReceivable,
-                          style: AppTextStyle.bodyMedium.copyWith(
-                            color: AppColors.primaryColor4,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: InkWell(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          onTap: () {
+                            Navigator.pushNamed(context, Routes.customerDues);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Column(
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.totalReceivable,
+                                  style: AppTextStyle.bodyMedium.copyWith(
+                                    color: AppColors.primaryColor4,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Consumer(
+                                  builder: (context, ref, child) {
+                                    return Text(
+                                      ref.watch(homeProvider).totalReceivable,
+                                      style: AppTextStyle.titleMedium.copyWith(
+                                        color: AppColors.primaryColor4,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 2),
-                        Consumer(
-                          builder: (context, ref, child) {
-                            return Text(
-                              ref.watch(homeProvider).totalReceivable,
-                              style: AppTextStyle.titleMedium.copyWith(
-                                color: AppColors.primaryColor4,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],

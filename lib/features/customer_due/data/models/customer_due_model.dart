@@ -1,12 +1,11 @@
-
-class SupplierDueModel {
-  final List<SupplierDueItem> items;
+class CustomerDueModel {
+  final List<CustomerDueItem> items;
   final bool hasMore;
   final int limit;
   final int offset;
   final int count;
 
-  SupplierDueModel({
+  CustomerDueModel({
     required this.items,
     required this.hasMore,
     required this.limit,
@@ -14,10 +13,10 @@ class SupplierDueModel {
     required this.count,
   });
 
-  factory SupplierDueModel.fromJson(Map<String, dynamic> json) {
-    return SupplierDueModel(
+  factory CustomerDueModel.fromJson(Map<String, dynamic> json) {
+    return CustomerDueModel(
       items: (json['items'] as List)
-          .map((item) => SupplierDueItem.fromJson(item))
+          .map((item) => CustomerDueItem.fromJson(item))
           .toList(),
       hasMore: json['hasMore'] ?? false,
       limit: json['limit'] ?? 0,
@@ -37,21 +36,21 @@ class SupplierDueModel {
   }
 }
 
-class SupplierDueItem {
-  final String supplierId;
-  final DateTime followUpDate;
+class CustomerDueItem {
+  final String customerId;
+  final DateTime? followUpDate;
   final String accountName;
   final int amount;
   final int totalSupplier;
   final int totalAmount;
   final String accountNo;
   final String payDue;
-  final String phoneNo;
+  final String? phoneNo;
   final String password;
   final String mobile;
 
-  SupplierDueItem({
-    required this.supplierId,
+  CustomerDueItem({
+    required this.customerId,
     required this.followUpDate,
     required this.accountName,
     required this.amount,
@@ -64,17 +63,20 @@ class SupplierDueItem {
     required this.mobile,
   });
 
-  factory SupplierDueItem.fromJson(Map<String, dynamic> json) {
-    return SupplierDueItem(
-      supplierId: json['supplier_id'] ?? '',
-      followUpDate:DateTime.parse(json['follow_up_date']),
+  factory CustomerDueItem.fromJson(Map<String, dynamic> json) {
+    return CustomerDueItem(
+      customerId: json['customer_id'] ?? '',
+      followUpDate: json['follow_up_date'] != null
+          ? DateTime.tryParse(json['follow_up_date'])
+          : null,
       accountName: json['account_name'] ?? '',
       amount: json['amount'] ?? 0,
       totalAmount: json['total_amount'] ?? 0,
-      totalSupplier: json['total_suppliers']??0,
-      accountNo: json['account_no'] ?? '',
+      totalSupplier: json['total_suppliers'] ?? 0,
+      // ✅ Safely handle both int and string types for account_no
+      accountNo: json['account_no']?.toString() ?? '',
       payDue: json['pay_due'] ?? '',
-      phoneNo: json['phone_no'] ?? '',
+      phoneNo: json['phone_no']?.toString(),
       password: json['password'] ?? '',
       mobile: json['mobile'] ?? '',
     );
@@ -82,8 +84,8 @@ class SupplierDueItem {
 
   Map<String, dynamic> toJson() {
     return {
-      'supplier_id': supplierId,
-      'follow_up_date': followUpDate,
+      'customer_id': customerId,
+      'follow_up_date': followUpDate?.toIso8601String(),
       'account_name': accountName,
       'amount': amount,
       'total_suppliers': totalSupplier,

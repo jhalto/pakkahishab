@@ -5,14 +5,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
-import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
+import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
 
-class SupplierDueAppbarBackWithSearch extends StatelessWidget
+class CustomerDueAppbarBackWithSearch extends StatelessWidget
     implements PreferredSizeWidget {
   final String title;
   final ValueChanged<String>? onSearchChanged;
 
-  SupplierDueAppbarBackWithSearch({
+  CustomerDueAppbarBackWithSearch({
     super.key,
     required this.title,
     this.onSearchChanged,
@@ -57,8 +57,6 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
           actions: [
             Consumer(
               builder: (context, ref, child) {
-              
-
                 return InkWell(
                   borderRadius: BorderRadius.all(Radius.circular(50)),
                   onTap: () {
@@ -81,15 +79,15 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                       items: [
                         PopupMenuItem(
                           onTap: () async {
-                            print("SupplierDueAppBar");
+                            print("CusomterDueAppBar");
                             final notifier = ref.read(
-                              supplierDueViewModelProvider.notifier,
+                              customerDueViewModelProvider.notifier,
                             );
-                            final vm = ref.read(supplierDueViewModelProvider);
+                            final vm = ref.read(customerDueViewModelProvider);
 
-                            if (vm.supplier == null ||
-                                (vm.supplier?.items.isEmpty ?? true)) {
-                              notifier.getDueSupplier();
+                            if (vm.customer == null ||
+                                (vm.customer?.items.isEmpty ?? true)) {
+                              notifier.getDueCustomer();
                             }
 
                             if (!context.mounted) return;
@@ -114,7 +112,7 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                         Consumer(
                                           builder: (context, ref, child) {
                                             final vmn = ref.watch(
-                                              supplierDueViewModelProvider
+                                              customerDueViewModelProvider
                                                   .notifier,
                                             );
 
@@ -123,7 +121,7 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                                 Expanded(
                                                   child: TextField(
                                                     controller: vmn
-                                                        .searchSupplierController,
+                                                        .searchCustomerController,
                                                     autofocus: true,
 
                                                     style: const TextStyle(
@@ -143,7 +141,7 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                                       filled: true,
 
                                                       labelText:
-                                                          'Search supplier',
+                                                          'Search Customer',
                                                       hintStyle: TextStyle(
                                                         color: Colors.white70,
                                                       ),
@@ -177,7 +175,7 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                                           ),
                                                     ),
                                                     onChanged: (value) {
-                                                      vmn.searchSupplier(value);
+                                                      vmn.searchCustomer(value);
                                                     },
                                                   ),
                                                 ),
@@ -189,14 +187,14 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                           child: Consumer(
                                             builder: (context, ref, child) {
                                               final notifier = ref.read(
-                                                supplierDueViewModelProvider
+                                                customerDueViewModelProvider
                                                     .notifier,
                                               );
                                               final vm = ref.watch(
-                                                supplierDueViewModelProvider,
+                                                customerDueViewModelProvider,
                                               );
-                                              final supplierList =
-                                                  vm.filteredSuppliers ?? [];
+                                              final customerList =
+                                                  vm.filteredCustomers ?? [];
                                               if (vm.detailLoading) {
                                                 return Center(
                                                   child: Padding(
@@ -208,20 +206,20 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                                   ),
                                                 );
                                               }
-                                              if (supplierList.isEmpty) {
+                                              if (customerList.isEmpty) {
                                                 return Center(
                                                   child: Padding(
                                                     padding: EdgeInsets.all(
                                                       16.0,
                                                     ),
                                                     child: Text(
-                                                      'No suppliers available',
+                                                      'No Customer available',
                                                     ),
                                                   ),
                                                 );
                                               }
                                               return ListView.separated(
-                                                itemCount: supplierList.length,
+                                                itemCount: customerList.length,
                                                 separatorBuilder:
                                                     (context, index) =>
                                                         const Divider(
@@ -232,8 +230,8 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                                           endIndent: 16,
                                                         ),
                                                 itemBuilder: (context, index) {
-                                                  final supplier =
-                                                      supplierList[index];
+                                                  final customer =
+                                                      customerList[index];
                                                   return Material(
                                                     color: Colors.transparent,
                                                     borderRadius:
@@ -253,20 +251,23 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                                           .blackColor
                                                           .withAlpha(20),
                                                       onTap: () {
+                                                        print(
+                                                          customer.accountNo,
+                                                        );
                                                         notifier
-                                                            .updateSupplierId(
-                                                              supplier
+                                                            .updateCustomerId(
+                                                              customer
                                                                   .accountNo,
                                                             );
                                                         notifier
-                                                            .fetchSupplierDues();
+                                                            .fetchCustomerDues();
                                                         Navigator.pop(context);
                                                       },
                                                       title: Text(
-                                                        supplier.accountName,
+                                                        customer.accountName,
                                                       ),
                                                       subtitle: Text(
-                                                        supplier.mobile,
+                                                        customer.mobile,
                                                       ),
                                                     ),
                                                   );
@@ -283,7 +284,7 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                             );
                           },
 
-                          child: const Text("Supplier"),
+                          child: const Text("Customer"),
                         ),
 
                         // ---- Purchase Date filter ----
@@ -319,11 +320,11 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                               ).format(selectedDate);
 
                               ref
-                                  .read(supplierDueViewModelProvider.notifier)
-                                  .fetchSupplierDues(dueDate: formattedDate);
+                                  .read(customerDueViewModelProvider.notifier)
+                                  .fetchCustomerDues(dueDate: formattedDate);
                             }
                           },
-                          child: const Text("Purchase Date"),
+                          child: const Text("Selling Date"),
                         ),
                       ],
                     );

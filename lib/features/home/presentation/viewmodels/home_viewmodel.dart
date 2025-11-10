@@ -17,18 +17,18 @@ class HomeState {
   final String company;
 
   final List<IconData> icons;
-  final String cashInHand;
-  final String cashAtBank;
-  final String totalPurchase;
-  final String totalSales;
-  final String totalPayable;
-  final String totalReceivable;
-  final String expenses;
-  final String income;
-  final String stock;
-  final String advance;
-  final String loan;
-  final String mobileBanking;
+   String cashInHand ;
+   String cashAtBank ;
+   String totalPurchase;
+   String totalSales;
+   String totalPayable;
+   String totalReceivable;
+   String expenses;
+   String income;
+   String stock;
+   String advance;
+   String loan;
+   String mobileBanking;
   final String filter;
 
   HomeState({
@@ -161,83 +161,82 @@ class HomeNotifier extends StateNotifier<HomeState> {
     Navigator.pushNamedAndRemoveUntil(context, Routes.login, (route) => false);
   }
 
-  Future<void> fetchDashBoard(String filter) async {
-    try {
-      final dashboardResponse = await repository.fetchDashBoard(filter);
-      if (dashboardResponse != null) {
-        var updatedState = state;
+ Future<void> fetchDashBoard(String filter) async {
+  final schoolCode = await SharedPreferencesHelper.getString('code');
+  
+  // Don't hit API if schoolCode is null or empty
+  if (schoolCode == null || schoolCode.isEmpty) return;
 
-        for (var item in dashboardResponse.items) {
-          switch (item.metric.toLowerCase()) {
-            case 'purchase':
-              updatedState = updatedState.copyWith(
-                totalPurchase: item.amount.toString(),
-              );
-              break;
-            case 'sales':
-              updatedState = updatedState.copyWith(
-                totalSales: item.amount.toString(),
-              );
-              break;
-            case 'expense':
-              updatedState = updatedState.copyWith(
-                expenses: item.amount.toString(),
-              );
-              break;
-            case 'income':
-              updatedState = updatedState.copyWith(
-                income: item.amount.toString(),
-              );
-              break;
-            case 'cash':
-              updatedState = updatedState.copyWith(
-                cashInHand: item.amount.toString(),
-              );
-              break;
-            case 'stock':
-              updatedState = updatedState.copyWith(
-                stock: item.amount.toString(),
-              );
-              break;
-            case 'supplier_due':
-              updatedState = updatedState.copyWith(
-                totalPayable: item.amount.toString(),
-              );
-              break;
-            case 'customer_due':
-              updatedState = updatedState.copyWith(
-                totalReceivable: item.amount.toString(),
-              );
-              break;
-            case 'bank':
-              updatedState = updatedState.copyWith(
-                cashAtBank: item.amount.toString(),
-              );
-              break;
-            case 'mobile_banking':
-              updatedState = updatedState.copyWith(
-                mobileBanking: item.amount.toString(),
-              );
-              break;
-            case 'advance':
-              updatedState = updatedState.copyWith(
-                advance: item.amount.toString(),
-              );
-              break;
-            case 'loan':
-              updatedState = updatedState.copyWith(
-                loan: item.amount.toString(),
-              );
-              break;
-          }
+  try {
+    final dashboardResponse = await repository.fetchDashBoard(
+      filter,
+      schoolCode: schoolCode,
+    );
+
+    // Initialize all metrics to 0
+    var updatedState = state.copyWith(
+      totalPurchase: '0',
+      totalSales: '0',
+      expenses: '0',
+      income: '0',
+      cashInHand: '0',
+      stock: '0',
+      totalPayable: '0',
+      totalReceivable: '0',
+      cashAtBank: '0',
+      mobileBanking: '0',
+      advance: '0',
+      loan: '0',
+    );
+
+    if (dashboardResponse != null && dashboardResponse.items.isNotEmpty) {
+      for (var item in dashboardResponse.items) {
+        switch (item.metric.toLowerCase()) {
+          case 'purchase':
+            updatedState = updatedState.copyWith(totalPurchase: item.amount.toString());
+            break;
+          case 'sales':
+            updatedState = updatedState.copyWith(totalSales: item.amount.toString());
+            break;
+          case 'expense':
+            updatedState = updatedState.copyWith(expenses: item.amount.toString());
+            break;
+          case 'income':
+            updatedState = updatedState.copyWith(income: item.amount.toString());
+            break;
+          case 'cash':
+            updatedState = updatedState.copyWith(cashInHand: item.amount.toString());
+            break;
+          case 'stock':
+            updatedState = updatedState.copyWith(stock: item.amount.toString());
+            break;
+          case 'supplier_due':
+            updatedState = updatedState.copyWith(totalPayable: item.amount.toString());
+            break;
+          case 'customer_due':
+            updatedState = updatedState.copyWith(totalReceivable: item.amount.toString());
+            break;
+          case 'bank':
+            updatedState = updatedState.copyWith(cashAtBank: item.amount.toString());
+            break;
+          case 'mobile_banking':
+            updatedState = updatedState.copyWith(mobileBanking: item.amount.toString());
+            break;
+          case 'advance':
+            updatedState = updatedState.copyWith(advance: item.amount.toString());
+            break;
+          case 'loan':
+            updatedState = updatedState.copyWith(loan: item.amount.toString());
+            break;
         }
-
-        state = updatedState; // ✅ Only one rebuild
       }
-    } catch (e) {
-      print("Error fetching dashboard: $e");
     }
+
+    state = updatedState; // ✅ Only one rebuild
+  } catch (e) {
+    print("Error fetching dashboard: $e");
   }
+}
 
   //   String getAmountByMetric(String metric) {
   //   try {

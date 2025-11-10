@@ -43,7 +43,7 @@ class PurchaseDetails extends StatelessWidget {
                   children: [
                     Text("Bill No: ${item.purchaseNo}"),
                     Text(
-                      "Date: ${DateFormat("dd:mm:yyyy").format(item.purchaseDate!)}",
+                      "Date: ${DateFormat("dd:MM:yyyy").format(item.purchaseDate!)}",
                     ),
                   ],
                 ),
@@ -360,7 +360,135 @@ class PurchaseDetails extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              Padding(
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 10),
+              //   child: Container(
+              //     width: double.infinity,
+              //     padding: const EdgeInsets.all(10),
+              //     decoration: BoxDecoration(
+              //       color: Colors.white,
+              //       borderRadius: BorderRadius.circular(10),
+              //       border: Border.all(color: Colors.grey.shade300),
+              //     ),
+              //     child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         const Text(
+              //           "Select Payment Method",
+              //           style: TextStyle(
+              //             fontWeight: FontWeight.w500,
+              //             fontSize: 16,
+              //           ),
+              //         ),
+              //         const SizedBox(height: 10),
+              //         Consumer(
+              //           builder: (context, ref, child) {
+              //             final vm = ref.watch(purchaseViewModelProvider);
+              //             final vmn = ref.watch(
+              //               purchaseViewModelProvider.notifier,
+              //             );
+              //             return Container(
+              //               padding: const EdgeInsets.symmetric(horizontal: 12),
+              //               decoration: BoxDecoration(
+              //                 border: Border.all(color: Colors.grey.shade400),
+              //                 borderRadius: BorderRadius.circular(8),
+              //               ),
+              //               child: Row(
+              //                 children: [
+              //                   Expanded(
+              //                     child: Column(
+              //                       children: [
+              //                         SizedBox(height: 10,),
+              //                         Container(
+              //                            padding: const EdgeInsets.symmetric(horizontal: 12),
+              //                           decoration: BoxDecoration(
+              //                             border: Border.all(
+              //                               color: Colors.grey.shade400,
+              //                             ),
+              //                             borderRadius: BorderRadius.circular(
+              //                               8,
+              //                             ),
+              //                           ),
+              //                           child: DropdownButton<String>(
+              //                             borderRadius: BorderRadius.all(
+              //                               Radius.circular(10),
+              //                             ),
+              //                             dropdownColor: AppColors.whiteColor,
+
+              //                             iconSize: 28,
+              //                             iconEnabledColor:
+              //                                 AppColors.primaryColor,
+              //                             isExpanded: true,
+              //                             underline: const SizedBox(),
+              //                             value: vm.paymentMethod,
+              //                             hint: const Text("Choose method"),
+              //                             items: const [
+              //                               DropdownMenuItem(
+              //                                 value: "Cash",
+              //                                 child: Text("Cash"),
+              //                               ),
+              //                               DropdownMenuItem(
+              //                                 value: "Bkash",
+              //                                 child: Text("Bkash"),
+              //                               ),
+              //                             ],
+              //                             onChanged: (value) {
+              //                               vmn.updatePaymentMethod(value!);
+              //                             },
+              //                           ),
+              //                         ),
+              //                         SizedBox(height: 10,),
+              //                         TextField(
+                                        
+              //                           decoration: InputDecoration(
+                                        
+              //                             enabledBorder: OutlineInputBorder(
+              //                               borderRadius: BorderRadius.all(
+              //                                 Radius.circular(10),
+                                          
+              //                               ),
+              //                               borderSide: BorderSide(
+              //                                 color: AppColors.dotColor
+              //                               )
+              //                             ),
+              //                             focusedBorder: OutlineInputBorder(
+              //                               borderRadius: BorderRadius.all(
+              //                                 Radius.circular(10),
+                                               
+              //                               ),
+              //                               borderSide: BorderSide(
+              //                                 color: AppColors.primaryColor
+              //                               )
+              //                             ),
+              //                           ),
+              //                         ),
+              //                         SizedBox(height: 10,)
+              //                       ],
+              //                     ),
+              //                   ),
+              //                   Column(
+              //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //                     children: [
+              //                       IconButton(
+              //                         onPressed: () {},
+              //                         icon: Icon(
+              //                           Icons.delete_outline,
+              //                           color: AppColors.dotColor,
+              //                         ),
+              //                       ),
+              //                       IconButton(onPressed: (){}, icon: Icon(Icons.add))
+              //                     ],
+              //                   ),
+              //                 ],
+              //               ),
+              //             );
+              //           },
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+                Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Container(
                   width: double.infinity,
@@ -373,12 +501,28 @@ class PurchaseDetails extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Select Payment Method",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Payment",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
+                          ),
+                           Container(
+                            color: AppColors.primaryColor,
+                          
+                             child: Text(
+                              purchase.purchaseType.toString() == '1'?"Cash":"Credit",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                                                       ),
+                           ),
+                        ],
                       ),
                       const SizedBox(height: 10),
                       Consumer(

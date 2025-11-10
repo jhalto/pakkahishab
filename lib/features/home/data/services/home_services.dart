@@ -9,10 +9,10 @@ final homeServiceProvider = Provider<HomeServices>((ref) {
 });
 
 class HomeServices {
-  Future<Map<String, dynamic>> getDashboardCount(String filter) async {
-    final url = "${Urls.baseUrl}Homepage_Dashboard/?date_filter=$filter&school_code=1";
+  Future<Map<String, dynamic>> getDashboardCount(String filter,{required String schoolCode}) async {
+    final url = "${Urls.baseUrl}Homepage_Dashboard/?date_filter=$filter&school_code=$schoolCode";
     final Dio dio = Dio();
-
+    print(url);
     final response = await dio.get(url);
 
     return response.data;
