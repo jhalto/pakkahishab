@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
+import 'package:pakkahishab/features/customer_due/presentation/views/customer_due_details.dart';
 import 'package:pakkahishab/features/customer_due/presentation/widgets/customer_due_appbar_back_with_search.dart';
+import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_due_details.dart';
 
 class CustomerAllDuesView extends StatelessWidget {
   const CustomerAllDuesView({super.key, e});
@@ -107,7 +110,8 @@ class CustomerAllDuesView extends StatelessWidget {
                               child: InkWell(
                                 onTap: () async {
                                   // ref.read(supplierDueViewModelProvider.notifier).fetchSupplierPurchasesMaster(purchaseNo: item.purchaseNo, supplierId: item.supplierId);
-                                  // navigateWithSlide(context: context, page: SupplierDueDetails());
+                                  navigateWithSlide(page: CustomerDueDetails(), context: context);
+                                  ref.read(customerDueViewModelProvider.notifier).fetchCustomerDueSales(customerId: item.customerId);
 
                                 },
                                 child: Ink(
@@ -130,34 +134,17 @@ class CustomerAllDuesView extends StatelessWidget {
                                   child: IntrinsicHeight(
                                     child: Row(
                                       children: [
-                                        Container(
-                                          padding: const EdgeInsets.only(
-                                            left: 8,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              // Text(
-                                              //   "Follow Up",
-                                              //   style: AppTextStyle.bodyMedium
-                                              //       .copyWith(
-                                              //         color: AppColors
-                                              //             .primaryColor2,
-                                              //         fontSize: 14.sp,
-                                              //       ),
-                                              // ),
-                                              // SizedBox(height: 2),
-                                              // Text(
-                                              //   formattedDate,
-
-                                              //   style: AppTextStyle.labelLarge,
-                                              // ),
-                                              // const SizedBox(height: 4),
-                                              // Text(
-                                              //   formattedTime,
-
-                                              //   style: AppTextStyle.bodySmall,
-                                              // ),
-                                            ],
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 10),
+                                          child: Container(
+                                            padding: EdgeInsets.all(10),
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: AppColors.primaryColor
+                                            ),
+                                            
+                                            child: Text(item.accountName[0], style: AppTextStyle.titleSmall)
                                           ),
                                         ),
                                         const VerticalDivider(

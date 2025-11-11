@@ -27,12 +27,12 @@ class SupplierDuesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(supplierDueViewModelProvider.notifier)
+                    .read(CustomerDueViewModelProvider.notifier)
                     .refreshPurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final dueState = ref.watch(supplierDueViewModelProvider);
+                  final dueState = ref.watch(CustomerDueViewModelProvider);
                   final totalItem = dueState.duesList.isNotEmpty
                       ? dueState.duesList.first.totalSupplier
                       : 0;
@@ -137,7 +137,7 @@ class SupplierDuesView extends StatelessWidget {
                                   );
                                   ref
                                       .read(
-                                        supplierDueViewModelProvider.notifier,
+                                        CustomerDueViewModelProvider.notifier,
                                       )
                                       .getSupplierDueDetails(
                                         supplierId: item.supplierId,
@@ -497,8 +497,8 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(supplierDueViewModelProvider);
-    final notifier = ref.read(supplierDueViewModelProvider.notifier);
+    final purchaseState = ref.watch(CustomerDueViewModelProvider);
+    final notifier = ref.read(CustomerDueViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;

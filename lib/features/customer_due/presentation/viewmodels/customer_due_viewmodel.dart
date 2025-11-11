@@ -317,6 +317,7 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
     bool loadMore = false,
     int? page,
     String? saleDate,
+    String? customerId,
   }) async {
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
@@ -335,7 +336,7 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
         code: code ?? '',
         offset: newOffset.toString(),
         saleDate: saleDate,
-        customerId: state.customerId,
+        customerId: customerId,
       );
 
       final items = (result['data']['items'] ?? []) as List;

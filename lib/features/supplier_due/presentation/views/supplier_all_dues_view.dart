@@ -25,12 +25,12 @@ class SupplierAllDuesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(supplierDueViewModelProvider.notifier)
+                    .read(CustomerDueViewModelProvider.notifier)
                     .refreshPurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final dueState = ref.watch(supplierDueViewModelProvider);
+                  final dueState = ref.watch(CustomerDueViewModelProvider);
                   // final totalItem = dueState.duesList.isNotEmpty
                   //     ? dueState.duesList.first.totalSupplier
                   //     : 0;
@@ -115,9 +115,18 @@ class SupplierAllDuesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  ref.read(supplierDueViewModelProvider.notifier).fetchSupplierPurchasesMaster(purchaseNo: item.purchaseNo, supplierId: item.supplierId);
-                                  navigateWithSlide(context: context, page: SupplierDueDetails());
-
+                                  ref
+                                      .read(
+                                        CustomerDueViewModelProvider.notifier,
+                                      )
+                                      .fetchSupplierPurchasesMaster(
+                                        purchaseNo: item.purchaseNo,
+                                        supplierId: item.supplierId,
+                                      );
+                                  navigateWithSlide(
+                                    context: context,
+                                    page: SupplierDueDetails(),
+                                  );
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(
@@ -428,7 +437,6 @@ class SupplierAllDuesView extends StatelessWidget {
     );
   }
 }
-
 
 class PurchasesPagination extends ConsumerStatefulWidget {
   const PurchasesPagination({super.key});

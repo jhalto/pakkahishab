@@ -61,7 +61,6 @@ class CustomerDueServices {
   }) async {
     final url =
         "${Urls.baseUrl}Get_PA_Customer_due_details/?school_code=$code&password=$pin&mobile=$phone&password=$pin&offset=$offset&limit=10&CUSTOMER=$customerId";
-        https://erp.bdtender.tech:8443/ords/dev/PakkahisabApp/Get_PA_Customer_due_details/?school_code=3&mobile=01602441508&password=nadim&CUSTOMER=C00002&offset=0&limit=10
 
     final Dio dio = Dio();
 
@@ -113,7 +112,6 @@ class CustomerDueServices {
       'password': pin,
       'offset': offset,
       'limit': '10',
-      'SALES_DATE': saledate,
       'customer_id': customerId,
     };
     print(customerId);

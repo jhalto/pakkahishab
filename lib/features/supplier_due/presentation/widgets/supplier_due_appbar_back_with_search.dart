@@ -83,9 +83,9 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                           onTap: () async {
                             print("SupplierDueAppBar");
                             final notifier = ref.read(
-                              supplierDueViewModelProvider.notifier,
+                              CustomerDueViewModelProvider.notifier,
                             );
-                            final vm = ref.read(supplierDueViewModelProvider);
+                            final vm = ref.read(CustomerDueViewModelProvider);
 
                             if (vm.supplier == null ||
                                 (vm.supplier?.items.isEmpty ?? true)) {
@@ -114,7 +114,7 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                         Consumer(
                                           builder: (context, ref, child) {
                                             final vmn = ref.watch(
-                                              supplierDueViewModelProvider
+                                              CustomerDueViewModelProvider
                                                   .notifier,
                                             );
 
@@ -189,11 +189,11 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                                           child: Consumer(
                                             builder: (context, ref, child) {
                                               final notifier = ref.read(
-                                                supplierDueViewModelProvider
+                                                CustomerDueViewModelProvider
                                                     .notifier,
                                               );
                                               final vm = ref.watch(
-                                                supplierDueViewModelProvider,
+                                                CustomerDueViewModelProvider,
                                               );
                                               final supplierList =
                                                   vm.filteredSuppliers ?? [];
@@ -319,7 +319,7 @@ class SupplierDueAppbarBackWithSearch extends StatelessWidget
                               ).format(selectedDate);
 
                               ref
-                                  .read(supplierDueViewModelProvider.notifier)
+                                  .read(CustomerDueViewModelProvider.notifier)
                                   .fetchSupplierDues(dueDate: formattedDate);
                             }
                           },
