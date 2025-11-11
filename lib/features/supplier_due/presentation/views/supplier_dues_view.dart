@@ -7,6 +7,7 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
+import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_all_dues_view.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
@@ -331,7 +332,9 @@ class SupplierDuesView extends StatelessWidget {
                           },
                         ),
                       ),
-                      PurchasesPagination(),
+                      Consumer(builder: (context, ref, child) {
+                        return ref.watch(customerDueViewModelProvider).totalPage== 1?SizedBox(): PurchasesPagination();
+                      },)
                     ],
                   );
                 },
@@ -440,14 +443,14 @@ class SupplierDuesView extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: AppColors.primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(100),
-        ),
-        child: Icon(CupertinoIcons.add, color: AppColors.whiteColor),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      //   backgroundColor: AppColors.primaryColor,
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadiusGeometry.circular(100),
+      //   ),
+      //   child: Icon(CupertinoIcons.add, color: AppColors.whiteColor),
+      // ),
     );
   }
 }
@@ -499,6 +502,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;
+    print("supplier dues page= $totalPage");
 
     if (totalPage == 0) return const SizedBox();
 

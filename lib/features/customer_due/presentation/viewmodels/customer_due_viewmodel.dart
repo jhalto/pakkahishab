@@ -10,7 +10,7 @@ import 'package:pakkahishab/features/sales/data/models/sale_details_model.dart';
 import 'package:pakkahishab/features/sales/data/models/sales_model.dart';
 
 final customerDueViewModelProvider =
-    NotifierProvider.autoDispose<CustomerDuesNotifier, CustomerDueState>(
+    NotifierProvider<CustomerDuesNotifier, CustomerDueState>(
       () => CustomerDuesNotifier(),
     );
 
@@ -114,6 +114,7 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
   @override
   CustomerDueState build() {
     _repo = ref.read(customerDueRepositoryProvider);
+    print("notifier build");
     fetchCustomerDues(); // call async stuff manually
     return const CustomerDueState();
   }
@@ -223,17 +224,32 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
         offset: newOffset.toString(),
         customerId: customerId,
       );
-
+      
       if (response['statusCode'] == 200) {
         final customerDueData = CustomerDueDetailsResponse.fromJson(response['data']);
-        state = state.copyWith(customerDueDetails: customerDueData);
+
+        final totalDuesCount = [];
+        var totalDues = 0.0;
+
+        for( var i in customerDueData.items){
+            totalDuesCount.add(i.amount);
+            totalDues += i.amount;
+        }
+         
+       print('After update: ${state.customerTotalDues}, ${state.customerTotalDuesCount}');
+     
+
+        state = state.copyWith(customerDueDetails: customerDueData, customerTotalDues: totalDues.toString(), customerTotalDuesCount: customerDueData.items.length.toString());
+        
+
+        print('After update: ${state.customerTotalDues}, ${state.customerTotalDuesCount}');
         return true; // ✅ signal success
       }
        
     } catch (e) {
       debugPrint("Error fetching purchases: $e");
     } finally {
-      state = state.copyWith(detailLoading: false);
+      state = state.copyWith(loading: false);
     }
     return false;
   }

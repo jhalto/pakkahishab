@@ -5,6 +5,7 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
+import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_due_details.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
@@ -58,7 +59,7 @@ class SupplierAllDuesView extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "Purchases",
+                                      "Due Purchases",
                                       style: AppTextStyle.labelLarge,
                                     ),
                                     const SizedBox(height: 2),
@@ -428,6 +429,7 @@ class SupplierAllDuesView extends StatelessWidget {
   }
 }
 
+
 class PurchasesPagination extends ConsumerStatefulWidget {
   const PurchasesPagination({super.key});
 
@@ -438,30 +440,54 @@ class PurchasesPagination extends ConsumerStatefulWidget {
 
 class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
   final ScrollController _scrollController = ScrollController();
-  final Map<int, GlobalKey> _pageKeys = {};
+  int? _previousPage;
+
+  // Approximate width of each page button (adjust based on your design)
+  static const double buttonWidth = 40.0;
+  static const double buttonSpacing = 8.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Scroll to current page after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final currentPage = ref.read(customerDueViewModelProvider).currentPage;
+      if (currentPage > 1) {
+        _scrollToPageImmediate(currentPage);
+      }
+    });
+  }
+
+  void _scrollToPageImmediate(int page) {
+    if (!_scrollController.hasClients) return;
+
+    final itemWidth = buttonWidth + buttonSpacing;
+    final buttonPosition = (page - 1) * itemWidth;
+    final viewportWidth = _scrollController.position.viewportDimension;
+    final targetOffset =
+        buttonPosition - (viewportWidth / 2) + (buttonWidth / 2);
+
+    // Jump immediately without animation for initial positioning
+    _scrollController.jumpTo(
+      targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
+    );
+  }
 
   void _scrollToPage(int page) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final key = _pageKeys[page];
-      if (key == null) return;
+    if (!mounted) return;
 
-      final context = key.currentContext;
-      if (context == null) return;
+    // Use a longer delay to ensure the UI has updated
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (!mounted || !_scrollController.hasClients) return;
 
-      final box = context.findRenderObject() as RenderBox;
-      final scrollableBox =
-          _scrollController.position.context.storageContext.findRenderObject()
-              as RenderBox;
-
-      // Get offset of page relative to scrollable
-      final offset =
-          _scrollController.offset +
-          box.localToGlobal(Offset.zero, ancestor: scrollableBox).dx +
-          box.size.width / 2 -
-          scrollableBox.size.width / 2;
+      final itemWidth = buttonWidth + buttonSpacing;
+      final buttonPosition = (page - 1) * itemWidth;
+      final viewportWidth = _scrollController.position.viewportDimension;
+      final targetOffset =
+          buttonPosition - (viewportWidth / 2) + (buttonWidth / 2);
 
       _scrollController.animateTo(
-        offset.clamp(0.0, _scrollController.position.maxScrollExtent),
+        targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -470,11 +496,18 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(supplierDueViewModelProvider);
-    final notifier = ref.read(supplierDueViewModelProvider.notifier);
+    final purchaseState = ref.watch(customerDueViewModelProvider);
+    final notifier = ref.read(customerDueViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;
+    print("total purchase view page = $totalPage");
+
+    // Detect page change and scroll to it
+    if (_previousPage != null && _previousPage != currentPage) {
+      _scrollToPage(currentPage);
+    }
+    _previousPage = currentPage;
 
     if (totalPage == 0) return const SizedBox();
 
@@ -483,36 +516,31 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 60),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
             icon: const Icon(Icons.arrow_back_ios, size: 18),
             onPressed: currentPage > 1
-                ? () {
-                    notifier.goToPage(currentPage - 1);
-                    _scrollToPage(currentPage - 1);
-                  }
+                ? () => notifier.goToPage(currentPage - 1)
                 : null,
           ),
 
-          Expanded(
+          Flexible(
             child: SingleChildScrollView(
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: pages.map((page) {
-                  _pageKeys.putIfAbsent(page, () => GlobalKey());
                   final isActive = page == currentPage;
                   return Padding(
-                    key: _pageKeys[page],
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: InkWell(
-                      onTap: () {
-                        notifier.goToPage(page);
-                        _scrollToPage(page);
-                      },
+                      onTap: () => notifier.goToPage(page),
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         alignment: Alignment.center,
+                        constraints: const BoxConstraints(minWidth: 40),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 6,
@@ -543,14 +571,17 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
           IconButton(
             icon: const Icon(Icons.arrow_forward_ios, size: 18),
             onPressed: currentPage < totalPage
-                ? () {
-                    notifier.goToPage(currentPage + 1);
-                    _scrollToPage(currentPage + 1);
-                  }
+                ? () => notifier.goToPage(currentPage + 1)
                 : null,
           ),
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

@@ -156,7 +156,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
       }
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
-      final totalItem = result['data']['items'][0]['total_count'] ?? 0;
+      final totalItem = result['data']['count'] ?? 0;
       print(totalItem);
       state = state.copyWith(totalPage: (totalItem / 10).ceil());
       print(state.totalPage);
@@ -246,10 +246,16 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
           0,
           (sum, element) => sum + element,
         );
+        final items = (response['data']['items'] ?? []) as List;
+        final hasMore = response['data']['hasMore'] ?? false;
+        final totalItem = response['data']['count'] ?? 0;
+        print(totalItem);
+
         state = state.copyWith(
           supplierDueDetails: supplierDueData,
           supplierTotalDues: totalPriceSum.toString(),
           supplierTotalDuesCount: supplierDueData.items.length.toString(),
+          totalPage: (totalItem / 10).ceil(),
         );
         print(totalPriceSum);
 
@@ -395,7 +401,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
           .toList();
 
       print(state.totalPage);
-        
+
       state = state.copyWith(purchaseList: newItems);
       await fetchSupplierDuePurchaseDetails(purchaseNo: purchaseNo);
     } catch (e) {

@@ -357,7 +357,10 @@ class PurchasesView extends StatelessWidget {
                           },
                         ),
                       ),
-                      PurchasesPagination(),
+                      Consumer(builder: (context, ref, child) {
+                        return ref.watch(purchaseViewModelProvider).totalPage== 1?SizedBox(): PurchasesPagination();
+                      },)
+                     
                     ],
                   );
                 },
@@ -549,6 +552,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;
+    print("total purchase view page = $totalPage");
 
     // Detect page change and scroll to it
     if (_previousPage != null && _previousPage != currentPage) {
