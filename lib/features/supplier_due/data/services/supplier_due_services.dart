@@ -62,7 +62,6 @@ class SupplierDueServices {
     final url =
         "${Urls.baseUrl}Get_PA_Supplier_due_details/?school_code=$code&password=$pin&mobile=$phone&password=$pin&offset=$offset&limit=10&SUPPLIER=$supplierId";
 
-        // https://erp.bdtender.tech:8443/ords/dev/PakkahisabApp/Get_PA_Supplier_due_details/?school_code=1&mobile=01779660821&password=demo&offset=0&limit=10&SUPPLIER=S00002
 
     final Dio dio = Dio();
 

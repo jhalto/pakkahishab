@@ -1,11 +1,11 @@
-class SupplierDueDetailsResponse {
-  final List<SupplierDueDetailsItem> items;
+class CustomerDueDetailsResponse {
+  final List<CustomerDueDetailsItem> items;
   final bool hasMore;
   final int limit;
   final int offset;
   final int count;
 
-  SupplierDueDetailsResponse({
+  CustomerDueDetailsResponse({
     required this.items,
     required this.hasMore,
     required this.limit,
@@ -13,10 +13,10 @@ class SupplierDueDetailsResponse {
     required this.count,
   });
 
-  factory SupplierDueDetailsResponse.fromJson(Map<String, dynamic> json) {
-    return SupplierDueDetailsResponse(
+  factory CustomerDueDetailsResponse.fromJson(Map<String, dynamic> json) {
+    return CustomerDueDetailsResponse(
       items: (json['items'] as List<dynamic>? ?? [])
-          .map((e) => SupplierDueDetailsItem.fromJson(e as Map<String, dynamic>))
+          .map((e) => CustomerDueDetailsItem.fromJson(e as Map<String, dynamic>))
           .toList(),
       hasMore: json['hasMore'] ?? false,
       limit: json['limit'] ?? 0,
@@ -36,40 +36,40 @@ class SupplierDueDetailsResponse {
   }
 }
 
-class SupplierDueDetailsItem {
+class CustomerDueDetailsItem {
   final String accountName;
   final double amount;
   final String accountNo;
   final String phoneNo;
-  final String purchaseNo;
-  final DateTime? purchaseDate;
-  final String supplierId;
+  final String salesNo;
+  final DateTime? salesDate;
+  final String customerId;
   final String password;
   final String mobile;
 
-  SupplierDueDetailsItem({
+  CustomerDueDetailsItem({
     required this.accountName,
     required this.amount,
     required this.accountNo,
     required this.phoneNo,
-    required this.purchaseNo,
-    required this.purchaseDate,
-    required this.supplierId,
+    required this.salesNo,
+    required this.salesDate,
+    required this.customerId,
     required this.password,
     required this.mobile,
   });
 
-  factory SupplierDueDetailsItem.fromJson(Map<String, dynamic> json) {
-    return SupplierDueDetailsItem(
+  factory CustomerDueDetailsItem.fromJson(Map<String, dynamic> json) {
+    return CustomerDueDetailsItem(
       accountName: json['account_name'] ?? '',
       amount: (json['amount'] ?? 0).toDouble(),
       accountNo: json['account_no'] ?? '',
       phoneNo: json['phone_no'] ?? '',
-      purchaseNo: json['purchase_no'] ?? '',
-      purchaseDate: json['purchase_date'] != null
-          ? DateTime.tryParse(json['purchase_date'])
+      salesNo: json['sales_no'] ?? '',
+      salesDate: json['sales_date'] != null
+          ? DateTime.tryParse(json['sales_date'])
           : null,
-      supplierId: json['supplier_id'] ?? '',
+      customerId: json['customer_id'] ?? '',
       password: json['password'] ?? '',
       mobile: json['mobile'] ?? '',
     );
@@ -81,9 +81,9 @@ class SupplierDueDetailsItem {
       'amount': amount,
       'account_no': accountNo,
       'phone_no': phoneNo,
-      'purchase_no': purchaseNo,
-      'purchase_date': purchaseDate?.toIso8601String(),
-      'supplier_id': supplierId,
+      'sales_no': salesNo,
+      'sales_date': salesDate?.toIso8601String(),
+      'customer_id': customerId,
       'password': password,
       'mobile': mobile,
     };

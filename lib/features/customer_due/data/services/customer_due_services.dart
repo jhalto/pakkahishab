@@ -60,7 +60,7 @@ class CustomerDueServices {
     required String customerId,
   }) async {
     final url =
-        "${Urls.baseUrl}Get_PA_Customer_due_details/?school_code=$code&password=$pin&mobile=$phone&password=$pin&offset=$offset&limit=10&Cus=$customerId";
+        "${Urls.baseUrl}Get_PA_Customer_due_details/?school_code=$code&password=$pin&mobile=$phone&password=$pin&offset=$offset&limit=10&CUSTOMER=$customerId";
 
     final Dio dio = Dio();
 
@@ -112,7 +112,6 @@ class CustomerDueServices {
       'password': pin,
       'offset': offset,
       'limit': '10',
-      'SALES_DATE': saledate,
       'customer_id': customerId,
     };
     print(customerId);

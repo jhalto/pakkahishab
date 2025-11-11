@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
+import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_all_dues_view.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
@@ -25,12 +27,12 @@ class SupplierDuesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(supplierDueViewModelProvider.notifier)
+                    .read(CustomerDueViewModelProvider.notifier)
                     .refreshPurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final dueState = ref.watch(supplierDueViewModelProvider);
+                  final dueState = ref.watch(CustomerDueViewModelProvider);
                   final totalItem = dueState.duesList.isNotEmpty
                       ? dueState.duesList.first.totalSupplier
                       : 0;
@@ -56,7 +58,7 @@ class SupplierDuesView extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "Total Item",
+                                      "Suppliers",
                                       style: AppTextStyle.labelLarge,
                                     ),
                                     const SizedBox(height: 2),
@@ -75,7 +77,7 @@ class SupplierDuesView extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "Total Price",
+                                      "Total Due",
                                       style: AppTextStyle.labelLarge,
                                     ),
                                     const SizedBox(height: 2),
@@ -110,21 +112,36 @@ class SupplierDuesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => SupplierAllDuesView(
-                                      
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (_) => SupplierAllDuesView(),
+                                  //   ),
+                                  // );
 
-                                      ),
-                                    ),
+                                  // final success = await ref
+                                  //     .read(
+                                  //       supplierDueViewModelProvider.notifier,
+                                  //     )
+                                  //     .getSupplierDueDetails(
+                                  //       supplierId: item.supplierId,
+                                  //     );
+
+                                  // Navigate immediately with custom transition
+
+                                  // Fire the API call in the background
+
+                                  navigateWithSlide(
+                                    context: context,
+                                    page: SupplierAllDuesView(),
                                   );
-
-
-                                  final success = await ref
-                                      .read(supplierDueViewModelProvider.notifier)
-                                      .getSupplierDueDetails(supplierId: item.supplierId);
-                                  print(success);
+                                  ref
+                                      .read(
+                                        CustomerDueViewModelProvider.notifier,
+                                      )
+                                      .getSupplierDueDetails(
+                                        supplierId: item.supplierId,
+                                      );
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(
@@ -194,14 +211,18 @@ class SupplierDuesView extends StatelessWidget {
                                                     style:
                                                         AppTextStyle.labelLarge,
                                                   ),
-                                                  SizedBox(height: 4,),
+                                                  SizedBox(height: 4),
                                                   Row(
                                                     children: [
-                                                      Text("Phone: ",style: AppTextStyle.bodySmall,),
+                                                      Text(
+                                                        "Phone: ",
+                                                        style: AppTextStyle
+                                                            .bodySmall,
+                                                      ),
                                                       Text(
                                                         item.phoneNo,
-                                                        style:
-                                                            AppTextStyle.bodySmall,
+                                                        style: AppTextStyle
+                                                            .bodySmall,
                                                       ),
                                                     ],
                                                   ),
@@ -210,17 +231,25 @@ class SupplierDuesView extends StatelessWidget {
                                                 ],
                                               ),
                                               Column(
-
-                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
                                                 children: [
                                                   Text(
                                                     "${item.amount.toString()} Tk",
-                                                    style: AppTextStyle.labelLarge,
+                                                    style:
+                                                        AppTextStyle.labelLarge,
                                                   ),
-                                                  Text("Payable", style: AppTextStyle.bodyMedium.copyWith(
-                                                    color: AppColors.errorTextColor,
-                                                    fontWeight: FontWeight.w500
-                                                  ),),
+                                                  Text(
+                                                    "Payable",
+                                                    style: AppTextStyle
+                                                        .bodyMedium
+                                                        .copyWith(
+                                                          color: AppColors
+                                                              .errorTextColor,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                  ),
                                                 ],
                                               ),
                                             ],
@@ -303,7 +332,9 @@ class SupplierDuesView extends StatelessWidget {
                           },
                         ),
                       ),
-                      PurchasesPagination(),
+                      Consumer(builder: (context, ref, child) {
+                        return ref.watch(customerDueViewModelProvider).totalPage== 1?SizedBox(): PurchasesPagination();
+                      },)
                     ],
                   );
                 },
@@ -412,14 +443,14 @@ class SupplierDuesView extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: AppColors.primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(100),
-        ),
-        child: Icon(CupertinoIcons.add, color: AppColors.whiteColor),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      //   backgroundColor: AppColors.primaryColor,
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadiusGeometry.circular(100),
+      //   ),
+      //   child: Icon(CupertinoIcons.add, color: AppColors.whiteColor),
+      // ),
     );
   }
 }
@@ -466,11 +497,12 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(supplierDueViewModelProvider);
-    final notifier = ref.read(supplierDueViewModelProvider.notifier);
+    final purchaseState = ref.watch(CustomerDueViewModelProvider);
+    final notifier = ref.read(CustomerDueViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;
+    print("supplier dues page= $totalPage");
 
     if (totalPage == 0) return const SizedBox();
 
