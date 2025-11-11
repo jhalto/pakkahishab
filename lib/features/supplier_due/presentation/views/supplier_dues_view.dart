@@ -57,7 +57,7 @@ class SupplierDuesView extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "Total Item",
+                                      "Suppliers",
                                       style: AppTextStyle.labelLarge,
                                     ),
                                     const SizedBox(height: 2),
@@ -76,7 +76,7 @@ class SupplierDuesView extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "Total Price",
+                                      "Total Due",
                                       style: AppTextStyle.labelLarge,
                                     ),
                                     const SizedBox(height: 2),

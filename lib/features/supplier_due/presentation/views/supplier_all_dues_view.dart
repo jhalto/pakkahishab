@@ -16,7 +16,7 @@ class SupplierAllDuesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
-      appBar: SupplierDueAppbarBackWithSearch(title: "Supplier Dues History"),
+      appBar: SupplierDueAppbarBackWithSearch(title: "Supplier Due History"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -58,7 +58,7 @@ class SupplierAllDuesView extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "Total Item",
+                                      "Purchases",
                                       style: AppTextStyle.labelLarge,
                                     ),
                                     const SizedBox(height: 2),
@@ -78,7 +78,7 @@ class SupplierAllDuesView extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "Total Price",
+                                      "Total Due",
                                       style: AppTextStyle.labelLarge,
                                     ),
                                     const SizedBox(height: 2),
