@@ -7,8 +7,8 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
+
 import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_all_dues_view.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
 
@@ -27,12 +27,12 @@ class SupplierDuesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(CustomerDueViewModelProvider.notifier)
+                    .read(customerDueViewModelProvider.notifier)
                     .refreshPurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final dueState = ref.watch(CustomerDueViewModelProvider);
+                  final dueState = ref.watch(customerDueViewModelProvider);
                   final totalItem = dueState.duesList.isNotEmpty
                       ? dueState.duesList.first.totalSupplier
                       : 0;
@@ -137,7 +137,7 @@ class SupplierDuesView extends StatelessWidget {
                                   );
                                   ref
                                       .read(
-                                        CustomerDueViewModelProvider.notifier,
+                                        customerDueViewModelProvider.notifier,
                                       )
                                       .getSupplierDueDetails(
                                         supplierId: item.supplierId,
@@ -175,7 +175,7 @@ class SupplierDuesView extends StatelessWidget {
                                                     .copyWith(
                                                       color: AppColors
                                                           .primaryColor2,
-                                                      fontSize: 14.sp,
+                                                      fontSize: 12.sp,
                                                     ),
                                               ),
                                               SizedBox(height: 2),
@@ -497,8 +497,8 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(CustomerDueViewModelProvider);
-    final notifier = ref.read(CustomerDueViewModelProvider.notifier);
+    final purchaseState = ref.watch(customerDueViewModelProvider);
+    final notifier = ref.read(customerDueViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;

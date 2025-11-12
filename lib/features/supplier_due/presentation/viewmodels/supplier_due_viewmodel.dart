@@ -9,7 +9,7 @@ import 'package:pakkahishab/features/supplier_due/data/models/due_supplier_model
 import 'package:pakkahishab/features/supplier_due/data/repositories/supplier_due_repository.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_detail_model.dart';
 
-final CustomerDueViewModelProvider =
+final customerDueViewModelProvider =
     NotifierProvider.autoDispose<SupplierDuesNotifier, SupplierDueState>(
       () => SupplierDuesNotifier(),
     );

@@ -127,7 +127,7 @@ class CustomerDueServices {
       final response = await dio.get(url, queryParameters: queryParams);
 
       print("Request URL: ${response.realUri}");
-      print("Response: ${response.data}");
+      print("Customer Sales Response: ${response.data}");
 
       return {"statusCode": response.statusCode, "data": response.data};
     } on DioException catch (e) {

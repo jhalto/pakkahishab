@@ -348,7 +348,7 @@ class CustomerDuesNotifier extends Notifier<CustomerDueState> {
       final newItems = items
           .map<SalesItem>((e) => SalesItem.fromJson(e))
           .toList();
-
+      await fetchCustomerSalesDetails(saleNo: newItems.first.salesNo);  
       state = state.copyWith(
         salesList: newItems,
         offset: newOffset.toString(),

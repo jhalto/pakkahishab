@@ -28,7 +28,7 @@ class SalesView extends StatelessWidget {
               child: Consumer(
                 builder: (outerContext, ref, child) {
                   final saleState = ref.watch(salesViewModelProvider);
-                  final salesNotifier = ref.watch(salesViewModelProvider);
+                 
                   if (saleState.loading) {
                     return Center(child: loader);
                   }

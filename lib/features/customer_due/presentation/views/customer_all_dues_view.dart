@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
@@ -8,7 +10,7 @@ import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
 import 'package:pakkahishab/features/customer_due/presentation/views/customer_due_details.dart';
 import 'package:pakkahishab/features/customer_due/presentation/widgets/customer_due_appbar_back_with_search.dart';
-import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_due_details.dart';
+
 
 class CustomerAllDuesView extends StatelessWidget {
   const CustomerAllDuesView({super.key, e});
@@ -95,12 +97,12 @@ class CustomerAllDuesView extends StatelessWidget {
                           itemBuilder: (context, index) {
                             final item =
                                 dueState.customerDueDetails!.items[index];
-                            // final formattedDate = DateFormat(
-                            //   'dd MMM',
-                            // ).format(item.followUpDate);
-                            // final formattedTime = DateFormat(
-                            //   'hh:mma ',
-                            // ).format(item.followUpDate);
+                          final formattedDate = item.salesDate != null
+                              ? DateFormat('dd MMM').format(item.salesDate!)
+                              : '';
+                          final formattedTime = item.salesDate != null
+                              ? DateFormat('hh:mma').format(item.salesDate!)
+                              : '';
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 5,
@@ -136,15 +138,28 @@ class CustomerAllDuesView extends StatelessWidget {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.only(left: 10),
-                                          child: Container(
-                                            padding: EdgeInsets.all(10),
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: AppColors.primaryColor
-                                            ),
-                                            
-                                            child: Text(item.accountName[0], style: AppTextStyle.titleSmall)
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                             Text(
+                                                formattedDate,
+                                                style: AppTextStyle.bodyMedium
+                                                    .copyWith(
+                                                      color: AppColors
+                                                          .primaryColor2,
+                                                      fontSize: 16.sp,
+                                                    ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                formattedTime,
+                                                style: AppTextStyle.bodySmall
+                                                    .copyWith(
+                                                      color: AppColors
+                                                          .primaryColor2,
+                                                    ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                         const VerticalDivider(

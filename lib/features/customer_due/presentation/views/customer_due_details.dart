@@ -7,29 +7,30 @@ import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/utils/custom_box_shadow.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-// import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
+import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
-import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
-// import 'package:pakkahishab/features/supplier_due/data/models/supplier_due_detail_model.dart';
+
 
 class CustomerDueDetails extends StatelessWidget {
+
  const CustomerDueDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarBack(title: "Details"),
+      appBar: CustomAppbarBack(title: "Supplier Due Details"),
       body: Consumer(
         builder: (context, ref, child) {
-          if (ref.watch(CustomerDueViewModelProvider).detailLoading) {
+          if (ref.watch(customerDueViewModelProvider).loading) {
             return Center(child: loader);
           }
-          final data = ref.watch(CustomerDueViewModelProvider).supplierDueDetails;
+          final data = ref.watch(customerDueViewModelProvider).customerDueDetails;
+          
+          final saleMaseter = ref.watch(customerDueViewModelProvider).salesList.first;
           final item = ref
-              .watch(CustomerDueViewModelProvider)
-              .supplierDueDetails!
-              .items
-              .first;
+              .watch(customerDueViewModelProvider)
+              .salesDetails!.items.first;
+            
 
           return Column(
             children: [
@@ -42,9 +43,9 @@ class CustomerDueDetails extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Bill No: ${item.purchaseNo}"),
+                    Text("Bill No: ${item.salesNo}"),
                     Text(
-                      "Date: ${DateFormat("dd:mm:yyyy").format(item.purchaseDate!)}",
+                      "Date: ${DateFormat("dd:MM:yyyy").format(item.salesDate)}",
                     ),
                   ],
                 ),
@@ -60,10 +61,10 @@ class CustomerDueDetails extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Align(
-                    //   alignment: Alignment.centerRight,
-                    //   child: Text("Total Payable: ${supplierDue.payDue}"),
-                    // ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text("Total Payable: ${saleMaseter.due.toStringAsFixed(0)}"),
+                    ),
 
                     Padding(
                       padding: const EdgeInsets.only(left: 6.0),
@@ -78,7 +79,7 @@ class CustomerDueDetails extends StatelessWidget {
                         border: Border.all(color: AppColors.dotColor),
                       ),
                       child: Text(
-                        item.accountName,
+                        item.customerName,
                         style: AppTextStyle.titleSmall,
                       ),
                     ),
@@ -132,13 +133,13 @@ class CustomerDueDetails extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Consumer(
                   builder: (context, ref, child) {
-                    final vm = ref.watch(CustomerDueViewModelProvider);
+                    final vm = ref.watch(customerDueViewModelProvider);
                     return ListView.builder(
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
-                      itemCount: vm.supplierDueDetails!.items.length,
+                      itemCount: vm.salesDetails!.items.length,
                       itemBuilder: (context, index) {
-                        final product = vm.supplierDueDetails!.items[index];
+                        final product = vm.salesDetails!.items[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 6),
                           child: Column(
@@ -149,29 +150,29 @@ class CustomerDueDetails extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      product.accountName,
-                                     
+                                      product.product.toString(),
+                                      
                                       textAlign: TextAlign.start,
                                     ),
                                   ),
                                   Expanded(
                                     child: Text(
-                                      // product.quantity.toString(),
-                                      "",
+                                      product.quantity.toString(),
+                                      
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                   Expanded(
                                     child: Text(
-                                      // product.unitPrice.toString(),
-                                      "",
+                                      product.unitPrice.toString(),
+                                      
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
                                   Expanded(
                                     child: Text(
-                                      // product.subTotal.toString(),
-                                      "",
+                                      product.subTotal.toString(),
+                                      
                                       textAlign: TextAlign.end,
                                     ),
                                   ),
@@ -233,8 +234,8 @@ class CustomerDueDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                // supplierDue.netAmount.toString(),
-                                 "",
+                                saleMaseter.netAmount.toString(),
+                                
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -275,8 +276,8 @@ class CustomerDueDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                // supplierDue..toString(),
-                                "",
+                              saleMaseter.netAmount.toString(),
+                              
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -317,8 +318,8 @@ class CustomerDueDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                // supplierDue.paidPrice.toString(),
-                                "",
+                                saleMaseter.paidPrice.toString(),
+                                
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),
@@ -356,8 +357,8 @@ class CustomerDueDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                // purchase.due.toString(),
-                                "",
+                                saleMaseter.due.toString(),
+                              
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),

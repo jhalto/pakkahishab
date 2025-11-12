@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/customer_due/presentation/viewmodels/customer_due_viewmodel.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
+
 import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_due_details.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
+import 'package:intl/intl.dart';
 
 class SupplierAllDuesView extends StatelessWidget {
   const SupplierAllDuesView({super.key, e});
@@ -25,18 +27,13 @@ class SupplierAllDuesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(CustomerDueViewModelProvider.notifier)
+                    .read(customerDueViewModelProvider.notifier)
                     .refreshPurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final dueState = ref.watch(CustomerDueViewModelProvider);
-                  // final totalItem = dueState.duesList.isNotEmpty
-                  //     ? dueState.duesList.first.totalSupplier
-                  //     : 0;
-                  // final totalPrice = dueState.duesList.isNotEmpty
-                  //     ? dueState.duesList.first.totalAmount
-                  //     : 0;
+                  final dueState = ref.watch(customerDueViewModelProvider);
+                  
 
                   if (dueState.loading) {
                     return Center(child: loader);
@@ -45,8 +42,7 @@ class SupplierAllDuesView extends StatelessWidget {
                   if (dueState.supplierDueDetails == null) {
                     return Center(child: Text("No Dues"));
                   }
-                  final totalDuesCount =
-                      dueState.supplierDueDetails!.items.length;
+                 
                   return Column(
                     children: [
                       Container(
@@ -101,12 +97,12 @@ class SupplierAllDuesView extends StatelessWidget {
                           itemBuilder: (context, index) {
                             final item =
                                 dueState.supplierDueDetails!.items[index];
-                            // final formattedDate = DateFormat(
-                            //   'dd MMM',
-                            // ).format(item.followUpDate);
-                            // final formattedTime = DateFormat(
-                            //   'hh:mma ',
-                            // ).format(item.followUpDate);
+                            final formattedDate = item.purchaseDate != null
+                                ? DateFormat('dd MMM').format(item.purchaseDate!)
+                                : '';
+                            final formattedTime = item.purchaseDate != null
+                                ? DateFormat('hh:mma ').format(item.purchaseDate!)
+                                : '';
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 5,
@@ -117,7 +113,7 @@ class SupplierAllDuesView extends StatelessWidget {
                                 onTap: () async {
                                   ref
                                       .read(
-                                        CustomerDueViewModelProvider.notifier,
+                                        customerDueViewModelProvider.notifier,
                                       )
                                       .fetchSupplierPurchasesMaster(
                                         purchaseNo: item.purchaseNo,
@@ -154,27 +150,24 @@ class SupplierAllDuesView extends StatelessWidget {
                                           ),
                                           child: Column(
                                             children: [
-                                              // Text(
-                                              //   "Follow Up",
-                                              //   style: AppTextStyle.bodyMedium
-                                              //       .copyWith(
-                                              //         color: AppColors
-                                              //             .primaryColor2,
-                                              //         fontSize: 14.sp,
-                                              //       ),
-                                              // ),
-                                              // SizedBox(height: 2),
-                                              // Text(
-                                              //   formattedDate,
-
-                                              //   style: AppTextStyle.labelLarge,
-                                              // ),
-                                              // const SizedBox(height: 4),
-                                              // Text(
-                                              //   formattedTime,
-
-                                              //   style: AppTextStyle.bodySmall,
-                                              // ),
+                                             Text(
+                                                formattedDate,
+                                                style: AppTextStyle.bodyLarge
+                                                    .copyWith(
+                                                      color: AppColors
+                                                          .primaryColor2,
+                                                    
+                                                    ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                formattedTime,
+                                                style: AppTextStyle.bodySmall
+                                                    .copyWith(
+                                                      color: AppColors
+                                                          .primaryColor2,
+                                                    ),
+                                              ),
                                             ],
                                           ),
                                         ),
