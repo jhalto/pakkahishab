@@ -6,14 +6,15 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 class CustomFeatureWidget extends StatelessWidget {
   Widget title;
   Widget consumer;
+  VoidCallback? onTap;
 
-  CustomFeatureWidget({super.key, required this.title, required this.consumer});
+  CustomFeatureWidget({super.key, required this.title, required this.consumer, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         child: Ink(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(

@@ -5,21 +5,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
-import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
+import 'package:pakkahishab/features/income/presentation/viewmodels/income_viewmodel.dart';
+import 'package:pakkahishab/features/income/presentation/widgets/income_appbar_back_with_search.dart';
 
-import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_all_dues_view.dart';
-import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
 
-class SupplierDuesView extends StatelessWidget {
-  const SupplierDuesView({super.key, e});
+class IncomeView extends StatelessWidget {
+  const IncomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfff5f5f5),
-      appBar: SupplierDueAppbarBackWithSearch(title: "Supplier Dues"),
+      appBar: IncomeAppbarBackWithSearch(title: "Incomes"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -27,24 +24,18 @@ class SupplierDuesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(customerDueViewModelProvider.notifier)
-                    .refreshPurchases();
+                    .read(incomeViewModelProvider.notifier)
+                    .refreshSales();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final dueState = ref.watch(customerDueViewModelProvider);
-                  final totalItem = dueState.duesList.isNotEmpty
-                      ? dueState.duesList.first.totalSupplier
-                      : 0;
-                  final totalPrice = dueState.duesList.isNotEmpty
-                      ? dueState.duesList.first.totalAmount
-                      : 0;
-                  if (dueState.loading) {
+                  final incomeState = ref.watch(incomeViewModelProvider);
+
+                  if (incomeState.loading) {
                     return Center(child: loader);
                   }
-
-                  if (dueState.duesList.isEmpty) {
-                    return Center(child: Text("No Dues"));
+                  if (incomeState.incomeList.isEmpty) {
+                    return Center(child: Text("No Incomes"));
                   }
                   return Column(
                     children: [
@@ -58,12 +49,18 @@ class SupplierDuesView extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "Suppliers",
+                                      "Total Item",
                                       style: AppTextStyle.labelLarge,
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      totalItem.toString(),
+                                      incomeState.incomeList.isEmpty
+                                          ? "0"
+                                          : ref
+                                                .watch(incomeViewModelProvider)
+                                                .incomeList
+                                                .length
+                                                .toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
                                   ],
@@ -77,12 +74,21 @@ class SupplierDuesView extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "Total Due",
+                                      "Total Price",
                                       style: AppTextStyle.labelLarge,
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      totalPrice.toString(),
+                                      incomeState.incomeList.isEmpty
+                                          ? "0"
+                                          : ref
+                                                .watch(
+                                                  incomeViewModelProvider,
+                                                )
+                                                .incomeList
+                                                .first
+                                                .totalIncome
+                                                .toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
                                   ],
@@ -95,18 +101,21 @@ class SupplierDuesView extends StatelessWidget {
                       const SizedBox(height: 8),
                       Expanded(
                         child: ListView.builder(
-                          itemCount: dueState.duesList.length,
+                          itemCount: incomeState.incomeList.length,
                           itemBuilder: (context, index) {
-                            final item = dueState.duesList[index];
+                            final item = incomeState.incomeList[index];
+                            final parsedDate = DateFormat(
+                              "dd/MM/yyyy",
+                            ).parse(item.voucherDate);
                             final formattedDate = DateFormat(
                               'dd MMM',
-                            ).format(item.followUpDate);
+                            ).format(parsedDate);
                             final formattedTime = DateFormat(
-                              'hh:mma ',
-                            ).format(item.followUpDate);
+                              'hh:mma',
+                            ).format(parsedDate);
                             return Padding(
                               padding: const EdgeInsets.only(
-                                bottom: 5,
+                                bottom: 2,
                                 left: 10,
                                 right: 10,
                               ),
@@ -115,33 +124,11 @@ class SupplierDuesView extends StatelessWidget {
                                   // Navigator.push(
                                   //   context,
                                   //   MaterialPageRoute(
-                                  //     builder: (_) => SupplierAllDuesView(),
+                                  //     builder: (_) => ExpensesDetails(expenseItem: item,),
                                   //   ),
                                   // );
 
-                                  // final success = await ref
-                                  //     .read(
-                                  //       supplierDueViewModelProvider.notifier,
-                                  //     )
-                                  //     .getSupplierDueDetails(
-                                  //       supplierId: item.supplierId,
-                                  //     );
-
-                                  // Navigate immediately with custom transition
-
-                                  // Fire the API call in the background
-
-                                  navigateWithSlide(
-                                    context: context,
-                                    page: SupplierAllDuesView(),
-                                  );
-                                  ref
-                                      .read(
-                                        customerDueViewModelProvider.notifier,
-                                      )
-                                      .getSupplierDueDetails(
-                                        supplierId: item.supplierId,
-                                      );
+                                 
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(
@@ -158,7 +145,7 @@ class SupplierDuesView extends StatelessWidget {
                                     ],
                                   ),
                                   padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
+                                    vertical: 16,
                                   ),
                                   child: IntrinsicHeight(
                                     child: Row(
@@ -170,25 +157,22 @@ class SupplierDuesView extends StatelessWidget {
                                           child: Column(
                                             children: [
                                               Text(
-                                                "Follow Up",
+                                                formattedDate,
                                                 style: AppTextStyle.bodyMedium
                                                     .copyWith(
                                                       color: AppColors
                                                           .primaryColor2,
-                                                      fontSize: 12.sp,
+                                                      fontSize: 16.sp,
                                                     ),
-                                              ),
-                                              SizedBox(height: 2),
-                                              Text(
-                                                formattedDate,
-
-                                                style: AppTextStyle.labelLarge,
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
                                                 formattedTime,
-
-                                                style: AppTextStyle.bodySmall,
+                                                style: AppTextStyle.bodySmall
+                                                    .copyWith(
+                                                      color: AppColors
+                                                          .primaryColor2,
+                                                    ),
                                               ),
                                             ],
                                           ),
@@ -206,52 +190,24 @@ class SupplierDuesView extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    item.accountName.toString(),
-
+                                                    item.accountName
+                                                        .toString(),
                                                     style:
-                                                        AppTextStyle.labelLarge,
+                                                        AppTextStyle.bodyMedium,
                                                   ),
-                                                  SizedBox(height: 4),
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        "Phone: ",
-                                                        style: AppTextStyle
-                                                            .bodySmall,
-                                                      ),
-                                                      Text(
-                                                        item.phoneNo,
-                                                        style: AppTextStyle
-                                                            .bodySmall,
-                                                      ),
-                                                    ],
+                                                  Text(
+                                                    item.accountName.toString(),
+                                                    style:
+                                                        AppTextStyle.bodySmall,
                                                   ),
 
                                                   const SizedBox(height: 10),
-                                                ],
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
                                                   Text(
                                                     "${item.amount.toString()} Tk",
-                                                    style:
-                                                        AppTextStyle.labelLarge,
-                                                  ),
-                                                  Text(
-                                                    "Payable",
-                                                    style: AppTextStyle
-                                                        .bodyMedium
-                                                        .copyWith(
-                                                          color: AppColors
-                                                              .errorTextColor,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
                                                   ),
                                                 ],
                                               ),
+                                            
                                             ],
                                           ),
                                         ),
@@ -332,170 +288,86 @@ class SupplierDuesView extends StatelessWidget {
                           },
                         ),
                       ),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          return ref
-                                      .watch(customerDueViewModelProvider)
-                                      .totalPage ==
-                                  1
-                              ? SizedBox()
-                              : PurchasesPagination();
-                        },
-                      ),
+                      SalesPagination(),
                     ],
                   );
                 },
               ),
 
-              // Consumer(
-              //   builder: (context, ref, _) {
-              //     final purchaseState = ref.watch(purchaseViewModelProvider);
-              //     final notifier = ref.read(purchaseViewModelProvider.notifier);
-
-              //     final int currentPage = purchaseState.currentPage;
-              //     final int totalPage = purchaseState.totalPage;
-
-              //     if (totalPage == 0) return const SizedBox();
-
-              //     // How many pages to show in the window at a time (optional)
-              //     int maxVisiblePages = totalPage;
-              //     int startPage = (currentPage - 2).clamp(1, totalPage);
-              //     int endPage = (startPage + maxVisiblePages - 1).clamp(
-              //       1,
-              //       totalPage,
-              //     );
-
-              //     if (endPage - startPage + 1 < maxVisiblePages) {
-              //       startPage = (endPage - maxVisiblePages + 1).clamp(
-              //         1,
-              //         totalPage,
-              //       );
-              //     }
-
-              //     final pages = List.generate(
-              //       endPage - startPage + 1,
-              //       (index) => startPage + index,
-              //     );
-
-              //     return Padding(
-              //       padding: const EdgeInsets.symmetric(horizontal: 100),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.center,
-              //         children: [
-              //           // Previous button (fixed)
-              //           IconButton(
-              //             icon: const Icon(Icons.arrow_back_ios, size: 18),
-              //             onPressed: currentPage > 1
-              //                 ? () => notifier.goToPage(currentPage - 1)
-              //                 : null,
-              //           ),
-
-              //           // Scrollable page numbers
-              //           Expanded(
-              //             child: SingleChildScrollView(
-              //               scrollDirection: Axis.horizontal,
-              //               child: Row(
-              //                 children: pages.map((page) {
-              //                   final isActive = page == currentPage;
-              //                   return Padding(
-              //                     padding: const EdgeInsets.symmetric(
-              //                       horizontal: 4,
-              //                     ),
-              //                     child: InkWell(
-              //                       onTap: () => notifier.goToPage(page),
-              //                       borderRadius: BorderRadius.circular(8),
-              //                       child: Container(
-              //                         padding: const EdgeInsets.symmetric(
-              //                           horizontal: 10,
-              //                           vertical: 6,
-              //                         ),
-              //                         decoration: BoxDecoration(
-              //                           color: isActive
-              //                               ? AppColors.primaryColor2
-              //                               : Colors.grey.shade200,
-              //                           borderRadius: BorderRadius.circular(8),
-              //                         ),
-              //                         child: Text(
-              //                           "$page",
-              //                           style: TextStyle(
-              //                             color: isActive
-              //                                 ? Colors.white
-              //                                 : Colors.black87,
-              //                             fontWeight: isActive
-              //                                 ? FontWeight.bold
-              //                                 : FontWeight.normal,
-              //                           ),
-              //                         ),
-              //                       ),
-              //                     ),
-              //                   );
-              //                 }).toList(),
-              //               ),
-              //             ),
-              //           ),
-
-              //           // Next button (fixed)
-              //           IconButton(
-              //             icon: const Icon(Icons.arrow_forward_ios, size: 18),
-              //             onPressed: currentPage < totalPage
-              //                 ? () => notifier.goToPage(currentPage + 1)
-              //                 : null,
-              //           ),
-              //         ],
-              //       ),
-              //     );
-              //   },
-              // ),
+             
             );
           },
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {},
-      //   backgroundColor: AppColors.primaryColor,
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadiusGeometry.circular(100),
-      //   ),
-      //   child: Icon(CupertinoIcons.add, color: AppColors.whiteColor),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: AppColors.primaryColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(100),
+        ),
+        child: Icon(CupertinoIcons.add, color: AppColors.whiteColor),
+      ),
     );
   }
 }
 
-class PurchasesPagination extends ConsumerStatefulWidget {
-  const PurchasesPagination({super.key});
+class SalesPagination extends ConsumerStatefulWidget {
+  const SalesPagination({super.key});
 
   @override
-  ConsumerState<PurchasesPagination> createState() =>
-      _PurchasesPaginationState();
+  ConsumerState<SalesPagination> createState() => _SalesPaginationState();
 }
 
-class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
+class _SalesPaginationState extends ConsumerState<SalesPagination> {
   final ScrollController _scrollController = ScrollController();
-  final Map<int, GlobalKey> _pageKeys = {};
+  int? _previousPage;
+
+  // Approximate width of each page button (adjust based on your design)
+  static const double buttonWidth = 40.0;
+  static const double buttonSpacing = 8.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Scroll to current page after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final currentPage = ref.read(incomeViewModelProvider).currentPage;
+      if (currentPage > 1) {
+        _scrollToPageImmediate(currentPage);
+      }
+    });
+  }
+
+  void _scrollToPageImmediate(int page) {
+    if (!_scrollController.hasClients) return;
+
+    final itemWidth = buttonWidth + buttonSpacing;
+    final buttonPosition = (page - 1) * itemWidth;
+    final viewportWidth = _scrollController.position.viewportDimension;
+    final targetOffset =
+        buttonPosition - (viewportWidth / 2) + (buttonWidth / 2);
+
+    // Jump immediately without animation for initial positioning
+    _scrollController.jumpTo(
+      targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
+    );
+  }
 
   void _scrollToPage(int page) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final key = _pageKeys[page];
-      if (key == null) return;
+    if (!mounted) return;
 
-      final context = key.currentContext;
-      if (context == null) return;
+    // Use a longer delay to ensure the UI has updated
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (!mounted || !_scrollController.hasClients) return;
 
-      final box = context.findRenderObject() as RenderBox;
-      final scrollableBox =
-          _scrollController.position.context.storageContext.findRenderObject()
-              as RenderBox;
-
-      // Get offset of page relative to scrollable
-      final offset =
-          _scrollController.offset +
-          box.localToGlobal(Offset.zero, ancestor: scrollableBox).dx +
-          box.size.width / 2 -
-          scrollableBox.size.width / 2;
+      final itemWidth = buttonWidth + buttonSpacing;
+      final buttonPosition = (page - 1) * itemWidth;
+      final viewportWidth = _scrollController.position.viewportDimension;
+      final targetOffset =
+          buttonPosition - (viewportWidth / 2) + (buttonWidth / 2);
 
       _scrollController.animateTo(
-        offset.clamp(0.0, _scrollController.position.maxScrollExtent),
+        targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -504,12 +376,17 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(customerDueViewModelProvider);
-    final notifier = ref.read(customerDueViewModelProvider.notifier);
+    final purchaseState = ref.watch(incomeViewModelProvider);
+    final notifier = ref.read(incomeViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;
-    print("supplier dues page= $totalPage");
+
+    // Detect page change and scroll to it
+    if (_previousPage != null && _previousPage != currentPage) {
+      _scrollToPage(currentPage);
+    }
+    _previousPage = currentPage;
 
     if (totalPage == 0) return const SizedBox();
 
@@ -518,36 +395,31 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 60),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
             icon: const Icon(Icons.arrow_back_ios, size: 18),
             onPressed: currentPage > 1
-                ? () {
-                    notifier.goToPage(currentPage - 1);
-                    _scrollToPage(currentPage - 1);
-                  }
+                ? () => notifier.goToPage(currentPage - 1)
                 : null,
           ),
 
-          Expanded(
+          Flexible(
             child: SingleChildScrollView(
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: pages.map((page) {
-                  _pageKeys.putIfAbsent(page, () => GlobalKey());
                   final isActive = page == currentPage;
                   return Padding(
-                    key: _pageKeys[page],
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: InkWell(
-                      onTap: () {
-                        notifier.goToPage(page);
-                        _scrollToPage(page);
-                      },
+                      onTap: () => notifier.goToPage(page),
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         alignment: Alignment.center,
+                        constraints: const BoxConstraints(minWidth: 40),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 6,
@@ -578,14 +450,17 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
           IconButton(
             icon: const Icon(Icons.arrow_forward_ios, size: 18),
             onPressed: currentPage < totalPage
-                ? () {
-                    notifier.goToPage(currentPage + 1);
-                    _scrollToPage(currentPage + 1);
-                  }
+                ? () => notifier.goToPage(currentPage + 1)
                 : null,
           ),
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }
