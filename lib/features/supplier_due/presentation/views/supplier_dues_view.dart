@@ -27,12 +27,12 @@ class SupplierDuesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(customerDueViewModelProvider.notifier)
+                    .read(supplierDueViewModelProvider.notifier)
                     .refreshPurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final dueState = ref.watch(customerDueViewModelProvider);
+                  final dueState = ref.watch(supplierDueViewModelProvider);
                   final totalItem = dueState.duesList.isNotEmpty
                       ? dueState.duesList.first.totalSupplier
                       : 0;
@@ -137,7 +137,7 @@ class SupplierDuesView extends StatelessWidget {
                                   );
                                   ref
                                       .read(
-                                        customerDueViewModelProvider.notifier,
+                                        supplierDueViewModelProvider.notifier,
                                       )
                                       .getSupplierDueDetails(
                                         supplierId: item.supplierId,
@@ -335,7 +335,7 @@ class SupplierDuesView extends StatelessWidget {
                       Consumer(
                         builder: (context, ref, child) {
                           return ref
-                                      .watch(customerDueViewModelProvider)
+                                      .watch(supplierDueViewModelProvider)
                                       .totalPage ==
                                   1
                               ? SizedBox()
@@ -346,118 +346,10 @@ class SupplierDuesView extends StatelessWidget {
                   );
                 },
               ),
-
-              // Consumer(
-              //   builder: (context, ref, _) {
-              //     final purchaseState = ref.watch(purchaseViewModelProvider);
-              //     final notifier = ref.read(purchaseViewModelProvider.notifier);
-
-              //     final int currentPage = purchaseState.currentPage;
-              //     final int totalPage = purchaseState.totalPage;
-
-              //     if (totalPage == 0) return const SizedBox();
-
-              //     // How many pages to show in the window at a time (optional)
-              //     int maxVisiblePages = totalPage;
-              //     int startPage = (currentPage - 2).clamp(1, totalPage);
-              //     int endPage = (startPage + maxVisiblePages - 1).clamp(
-              //       1,
-              //       totalPage,
-              //     );
-
-              //     if (endPage - startPage + 1 < maxVisiblePages) {
-              //       startPage = (endPage - maxVisiblePages + 1).clamp(
-              //         1,
-              //         totalPage,
-              //       );
-              //     }
-
-              //     final pages = List.generate(
-              //       endPage - startPage + 1,
-              //       (index) => startPage + index,
-              //     );
-
-              //     return Padding(
-              //       padding: const EdgeInsets.symmetric(horizontal: 100),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.center,
-              //         children: [
-              //           // Previous button (fixed)
-              //           IconButton(
-              //             icon: const Icon(Icons.arrow_back_ios, size: 18),
-              //             onPressed: currentPage > 1
-              //                 ? () => notifier.goToPage(currentPage - 1)
-              //                 : null,
-              //           ),
-
-              //           // Scrollable page numbers
-              //           Expanded(
-              //             child: SingleChildScrollView(
-              //               scrollDirection: Axis.horizontal,
-              //               child: Row(
-              //                 children: pages.map((page) {
-              //                   final isActive = page == currentPage;
-              //                   return Padding(
-              //                     padding: const EdgeInsets.symmetric(
-              //                       horizontal: 4,
-              //                     ),
-              //                     child: InkWell(
-              //                       onTap: () => notifier.goToPage(page),
-              //                       borderRadius: BorderRadius.circular(8),
-              //                       child: Container(
-              //                         padding: const EdgeInsets.symmetric(
-              //                           horizontal: 10,
-              //                           vertical: 6,
-              //                         ),
-              //                         decoration: BoxDecoration(
-              //                           color: isActive
-              //                               ? AppColors.primaryColor2
-              //                               : Colors.grey.shade200,
-              //                           borderRadius: BorderRadius.circular(8),
-              //                         ),
-              //                         child: Text(
-              //                           "$page",
-              //                           style: TextStyle(
-              //                             color: isActive
-              //                                 ? Colors.white
-              //                                 : Colors.black87,
-              //                             fontWeight: isActive
-              //                                 ? FontWeight.bold
-              //                                 : FontWeight.normal,
-              //                           ),
-              //                         ),
-              //                       ),
-              //                     ),
-              //                   );
-              //                 }).toList(),
-              //               ),
-              //             ),
-              //           ),
-
-              //           // Next button (fixed)
-              //           IconButton(
-              //             icon: const Icon(Icons.arrow_forward_ios, size: 18),
-              //             onPressed: currentPage < totalPage
-              //                 ? () => notifier.goToPage(currentPage + 1)
-              //                 : null,
-              //           ),
-              //         ],
-              //       ),
-              //     );
-              //   },
-              // ),
             );
           },
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {},
-      //   backgroundColor: AppColors.primaryColor,
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadiusGeometry.circular(100),
-      //   ),
-      //   child: Icon(CupertinoIcons.add, color: AppColors.whiteColor),
-      // ),
     );
   }
 }
@@ -504,8 +396,8 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(customerDueViewModelProvider);
-    final notifier = ref.read(customerDueViewModelProvider.notifier);
+    final purchaseState = ref.watch(supplierDueViewModelProvider);
+    final notifier = ref.read(supplierDueViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;

@@ -12,8 +12,8 @@ class IncomeServices {
     required String pin,
     required String offset,
     required String code,
-    String? saledate,
-    String? customerId,
+    String? voucherdate,
+    String? catagoryId,
   }) async {
     final Dio dio = Dio();
 
@@ -24,7 +24,8 @@ class IncomeServices {
       'password': pin,
       'offset': offset,
       'limit': '10',
-    
+      'CATEGORY': catagoryId,
+      'voucher_date': voucherdate,
     };
    
     // ✅ Remove any null or empty parameters before request
@@ -32,8 +33,8 @@ class IncomeServices {
       (key, value) => value == null || value.toString().isEmpty,
     );
 
-    final String url = "${Urls.baseUrl}Get_Income/?school_code=$code&mobile=$phone&password=$pin&limit=10";
-
+    final String url = "${Urls.baseUrl}Get_Income/";
+  
     try {
       final response = await dio.get(url, queryParameters: queryParams);
 
@@ -51,34 +52,34 @@ class IncomeServices {
     }
   }
 
-  Future<Map<String, dynamic>> getSaleDetails({
+  // Future<Map<String, dynamic>> getSaleDetails({
+  //   required String phone,
+  //   required String pin,
+  //   required String offset,
+  //   required String code,
+  //   required String saleNo,
+  // }) async {
+  //   final url =
+  //       "${Urls.baseUrl}Get_Sales_Details/?school_code=$code&password=$pin&mobile=$phone&sales_no=$saleNo&offset=$offset&limit=10";
+
+  //   final Dio dio = Dio();
+
+  //   try {
+  //     final response = await dio.get(url);
+
+  //     print(response);
+  //     return {"statusCode": response.statusCode, "data": response.data};
+  //   } catch (e) {
+  //     return {"statusCode": 666, "data": "Catch error $e"};
+  //   }
+  // }
+
+  Future<Map<String, dynamic>> getIncomeCatagory({
     required String phone,
     required String pin,
-    required String offset,
-    required String code,
-    required String saleNo,
-  }) async {
-    final url =
-        "${Urls.baseUrl}Get_Sales_Details/?school_code=$code&password=$pin&mobile=$phone&sales_no=$saleNo&offset=$offset&limit=10";
-
-    final Dio dio = Dio();
-
-    try {
-      final response = await dio.get(url);
-
-      print(response);
-      return {"statusCode": response.statusCode, "data": response.data};
-    } catch (e) {
-      return {"statusCode": 666, "data": "Catch error $e"};
-    }
-  }
-
-  Future<Map<String, dynamic>> getCustomer({
-    required String phone,
-    required String pin,
     required String code,
   }) async {
-    final url = "${Urls.baseUrl}Customer_name/?mobile=$phone&password=$pin&school_code=$code";
+    final url = "${Urls.baseUrl}Get_Income_Head/?mobile=$phone&password=$pin&school_code=$code";
     Dio dio = Dio();
     try {
       final response = await dio.get(url);

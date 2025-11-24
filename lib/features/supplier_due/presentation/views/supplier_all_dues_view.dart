@@ -1,13 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/viewmodels/supplier_due_viewmodel.dart';
-
 import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_due_details.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/widgets/supplier_due_appbar_back_with_search.dart';
 import 'package:intl/intl.dart';
@@ -27,12 +25,12 @@ class SupplierAllDuesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(customerDueViewModelProvider.notifier)
+                    .read(supplierDueViewModelProvider.notifier)
                     .refreshPurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final dueState = ref.watch(customerDueViewModelProvider);
+                  final dueState = ref.watch(supplierDueViewModelProvider);
                   
 
                   if (dueState.loading) {
@@ -113,7 +111,7 @@ class SupplierAllDuesView extends StatelessWidget {
                                 onTap: () async {
                                   ref
                                       .read(
-                                        customerDueViewModelProvider.notifier,
+                                        supplierDueViewModelProvider.notifier,
                                       )
                                       .fetchSupplierPurchasesMaster(
                                         purchaseNo: item.purchaseNo,
@@ -452,7 +450,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
     super.initState();
     // Scroll to current page after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentPage = ref.read(customerDueViewModelProvider).currentPage;
+      final currentPage = ref.read(supplierDueViewModelProvider).currentPage;
       if (currentPage > 1) {
         _scrollToPageImmediate(currentPage);
       }
@@ -497,8 +495,8 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(customerDueViewModelProvider);
-    final notifier = ref.read(customerDueViewModelProvider.notifier);
+    final purchaseState = ref.watch(supplierDueViewModelProvider);
+    final notifier = ref.read(supplierDueViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;

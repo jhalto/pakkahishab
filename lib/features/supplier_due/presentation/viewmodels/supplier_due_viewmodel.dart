@@ -9,7 +9,7 @@ import 'package:pakkahishab/features/supplier_due/data/models/due_supplier_model
 import 'package:pakkahishab/features/supplier_due/data/repositories/supplier_due_repository.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_detail_model.dart';
 
-final customerDueViewModelProvider =
+final supplierDueViewModelProvider =
     NotifierProvider.autoDispose<SupplierDuesNotifier, SupplierDueState>(
       () => SupplierDuesNotifier(),
     );
@@ -302,7 +302,7 @@ class SupplierDuesNotifier extends Notifier<SupplierDueState> {
     } catch (e) {
       print(e);
     } finally {
-      state = state.copyWith(loading: false);
+      state = state.copyWith(detailLoading: false);
     }
   }
 

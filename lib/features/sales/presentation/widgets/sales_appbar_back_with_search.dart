@@ -255,7 +255,7 @@ class SalesAppbarBackWithSearch extends StatelessWidget
                                                         notifier
                                                             .updateCustomerId(
                                                               customer
-                                                                  .supplierId,
+                                                                  .customerId,
                                                             );
                                                         notifier
                                                             .fetchSales();

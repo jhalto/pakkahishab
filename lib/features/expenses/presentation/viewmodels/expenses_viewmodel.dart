@@ -3,10 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
+import 'package:pakkahishab/features/expenses/data/models/expense_catagory_model.dart';
 import 'package:pakkahishab/features/expenses/data/models/expenses_model.dart';
 import 'package:pakkahishab/features/expenses/data/repositories/expenses_repository.dart';
 import 'package:pakkahishab/features/sales/data/models/customer_model.dart';
-import 'package:pakkahishab/features/sales/data/models/sale_details_model.dart';
+
 
 
 // final purchaseViewModelProvider =
@@ -19,9 +20,9 @@ final expensesViewModelProvider =
     );
 
 final class ExpensesState {
-  final SalesDetailsResponse? salesDetails;
-  final CustomerResponse? customer;
-  final List<Customer>? filteredCustomers;
+  // final SalesDetailsResponse? salesDetails;
+  final ExpenseCategoryResponse? expenseCatagory;
+  final List<ExpenseCategory>? filteredExpenseCatagory;
   final bool loading;
   final bool detailLoading;
   final bool hasMore;
@@ -31,15 +32,15 @@ final class ExpensesState {
   final String pin;
   final String offset;
   final List<ExpenseItem> expensesList;
-  final String? customerId;
+  final String? catagoryId;
   final String? paymentMethod;
   // final String purchaseDate;
   // final String supplierId;
 
   const ExpensesState({
-    this.salesDetails,
-    this.customer,
-    this.filteredCustomers,
+    // this.salesDetails,
+    this.expenseCatagory,
+    this.filteredExpenseCatagory,
     this.loading = false,
     this.detailLoading = false,
     this.hasMore = false,
@@ -49,14 +50,14 @@ final class ExpensesState {
     this.pin = '',
     this.offset = '0',
     this.expensesList = const [],
-    this.customerId,
+    this.catagoryId,
     this.paymentMethod,
   });
 
   ExpensesState copyWith({
-    SalesDetailsResponse? salesDetails,
-    CustomerResponse? customer,
-    List<Customer>? filteredCustomers,
+    // SalesDetailsResponse? salesDetails,
+    ExpenseCategoryResponse? expenseCatagory,
+    List<ExpenseCategory>? filteredExpenseCatagory,
     bool? loading,
     bool? detailLoading,
     bool? hasMore,
@@ -65,14 +66,14 @@ final class ExpensesState {
     String? phone,
     String? pin,
     String? offset,
-    List<ExpenseItem>? salesList,
-    String? customerId,
+    List<ExpenseItem>? expensesList,
+    String? catagoryId,
     String? paymentMethod,
   }) {
     return ExpensesState(
-      salesDetails: salesDetails ?? this.salesDetails,
-      customer: customer ?? this.customer,
-      filteredCustomers: filteredCustomers ?? this.filteredCustomers,
+      // salesDetails: salesDetails ?? this.salesDetails,
+      expenseCatagory: expenseCatagory ?? this.expenseCatagory,
+      filteredExpenseCatagory: filteredExpenseCatagory ?? this.filteredExpenseCatagory,
       loading: loading ?? this.loading,
       detailLoading: detailLoading ?? this.detailLoading,
       hasMore: hasMore ?? this.hasMore,
@@ -81,15 +82,15 @@ final class ExpensesState {
       phone: phone ?? this.phone,
       pin: pin ?? this.pin,
       offset: offset ?? this.offset,
-      expensesList: salesList ?? this.expensesList,
-      customerId: customerId ?? this.customerId,
+      expensesList: expensesList ?? this.expensesList,
+      catagoryId: catagoryId ?? this.catagoryId,
       paymentMethod: paymentMethod ?? this.paymentMethod
     );
   }
 }
 
 class ExpensesNotifier extends Notifier<ExpensesState> {
-  late final expensesRepository _repo;
+  late final ExpensesRepository _repo;
 
   @override
   ExpensesState build() {
@@ -99,12 +100,12 @@ class ExpensesNotifier extends Notifier<ExpensesState> {
   }
 
   TextEditingController searchSupplierController = TextEditingController();
-  String paymentMethod  = "Cash";
+ 
 
   Future<void> fetchExpenses({
     bool loadMore = false,
     int? page,
-    String? saleDate,
+    String? voucherDate,
   }) async {
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
@@ -122,13 +123,13 @@ class ExpensesNotifier extends Notifier<ExpensesState> {
         pin: pin ?? '',
         code: code ?? '',
         offset: newOffset.toString(),
-        saleDate: saleDate,
-        customerId: state.customerId,
+        voucherDate: voucherDate,
+        catagoryId: state.catagoryId,
       );
 
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
-      final totalItem = result['data']['items'][0]['total_count'] ?? 0;
+      final totalItem = result['data']['count'] ?? 0;
       print(totalItem);
       state = state.copyWith(totalPage: (totalItem / 10).ceil());
       print(state.totalPage);
@@ -137,7 +138,7 @@ class ExpensesNotifier extends Notifier<ExpensesState> {
           .toList();
 
       state = state.copyWith(
-        salesList: newItems,
+        expensesList: newItems,
         offset: newOffset.toString(),
         currentPage: newPage,
         hasMore: hasMore,
@@ -149,12 +150,12 @@ class ExpensesNotifier extends Notifier<ExpensesState> {
     }
   }
 
-  void updateCustomerId(String customerId) {
-    state = state.copyWith(customerId: customerId);
+  Future<void> updateCatagoryId(String catagoryId) async{
+    state = state.copyWith(catagoryId: catagoryId);
+   await fetchExpenses();
   }
-
   Future<void> refreshSales() async {
-    state = state.copyWith(customerId: "");
+    state = state.copyWith(catagoryId: "");
     await fetchExpenses();
   }
 
@@ -167,61 +168,61 @@ class ExpensesNotifier extends Notifier<ExpensesState> {
   //   fetchPurchases();
   // }
 
-  Future<bool> fetchSalesDetails({
-    bool loadMore = false,
-    int? page,
-    required String saleNo,
-  }) async {
-    final phone = await SharedPreferencesHelper.getString('phone');
-    final pin = await SharedPreferencesHelper.getString('pin');
-    final code = await SharedPreferencesHelper.getString('code');
+  // Future<bool> fetchSalesDetails({
+  //   bool loadMore = false,
+  //   int? page,
+  //   required String saleNo,
+  // }) async {
+  //   final phone = await SharedPreferencesHelper.getString('phone');
+  //   final pin = await SharedPreferencesHelper.getString('pin');
+  //   final code = await SharedPreferencesHelper.getString('code');
 
-    try {
-      state = state.copyWith(detailLoading: true);
+  //   try {
+  //     state = state.copyWith(detailLoading: true);
 
-      final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
-      final int newOffset = (newPage - 1) * 10;
+  //     final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
+  //     final int newOffset = (newPage - 1) * 10;
 
-      final response = await _repo.getSaleDetails(
-        phone: phone ?? '',
-        pin: pin ??"",
-        code: code ?? '',
-        offset: newOffset.toString(),
-        saleNo: saleNo,
-      );
+  //     final response = await _repo.getSaleDetails(
+  //       phone: phone ?? '',
+  //       pin: pin ??"",
+  //       code: code ?? '',
+  //       offset: newOffset.toString(),
+  //       saleNo: saleNo,
+  //     );
 
-      if (response['statusCode'] == 200) {
-        final salesData = SalesDetailsResponse.fromJson(response['data']);
-        state = state.copyWith(salesDetails: salesData);
-        return true; // ✅ signal success
-      }
-    } catch (e) {
-      debugPrint("Error fetching purchases: $e");
-    } finally {
-      state = state.copyWith(detailLoading: false);
-    }
-    return false;
-  }
+  //     if (response['statusCode'] == 200) {
+  //       final salesData = SalesDetailsResponse.fromJson(response['data']);
+  //       state = state.copyWith(salesDetails: salesData);
+  //       return true; // ✅ signal success
+  //     }
+  //   } catch (e) {
+  //     debugPrint("Error fetching purchases: $e");
+  //   } finally {
+  //     state = state.copyWith(detailLoading: false);
+  //   }
+  //   return false;
+  // }
 
   
-  Future<void> getCustomer() async {
+  Future<void> getExpenseCatagory() async {
     state = state.copyWith(detailLoading: true);
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
-      final response = await _repo.getCustomer(
+      final response = await _repo.getExpenseCatagory(
         phone: phone.toString(),
         pin: pin.toString(),
         code: code.toString(),
       );
       print(response);
       if (response['statusCode'] == 200) {
-        final responseData = CustomerResponse.fromJson(response['data']);
+        final responseData = ExpenseCategoryResponse.fromJson(response['data']);
         state = state.copyWith(
-          customer: responseData,
-          filteredCustomers: responseData.items,
+          expenseCatagory: responseData,
+          filteredExpenseCatagory: responseData.items,
         );
         print("done");
       } else {
@@ -234,21 +235,21 @@ class ExpensesNotifier extends Notifier<ExpensesState> {
     }
   }
 
-  void searchSupplier(String query) {
-    final allCustomers = state.customer?.items ?? [];
+  void searchExpenseCatagory(String query) {
+    final allCatagory = state.expenseCatagory?.items ?? [];
 
     if (query.isEmpty) {
       // if query is empty, show all suppliers
-      state = state.copyWith(filteredCustomers: allCustomers);
+      state = state.copyWith(filteredExpenseCatagory: allCatagory);
     } else {
-      final filtered = allCustomers
+      final filtered = allCatagory
           .where(
-            (supplier) => supplier.customerName.toLowerCase().contains(
+            (catagory) => catagory.accountName.toLowerCase().contains(
               query.toLowerCase(),
             ),
           )
           .toList();
-      state = state.copyWith(filteredCustomers: filtered);
+      state = state.copyWith(filteredExpenseCatagory: filtered);
     }
   }
 

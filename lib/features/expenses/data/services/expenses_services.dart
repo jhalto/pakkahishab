@@ -12,28 +12,66 @@ class ExpensesServices {
     required String pin,
     required String offset,
     required String code,
-    String? saledate,
-    String? customerId,
+    String? voucherDate,
+    String? catagoryId,
   }) async {
     final Dio dio = Dio();
 
-    // Base query parameters
+    // Build query params properly
     final Map<String, dynamic> queryParams = {
       'school_code': code,
       'mobile': phone,
       'password': pin,
       'offset': offset,
       'limit': '10',
-      'SALES_DATE': saledate,
-      'customer_id': customerId,
+      'voucher_date': voucherDate,
+      'CATEGORY': catagoryId,
     };
-   
-    // ✅ Remove any null or empty parameters before request
-    queryParams.removeWhere(
-      (key, value) => value == null || value.toString().isEmpty,
-    );
 
-    final String url = "${Urls.baseUrl}Get_Expense/?school_code=$code&mobile=$phone&password=$pin&limit=10";
+    queryParams.removeWhere((key, value) {
+      return value == null || value.toString().isEmpty;
+    });
+
+    final String url = "${Urls.baseUrl}Get_Expense/";
+
+    try {
+      final response = await dio.get(url, queryParameters: queryParams);
+
+      print("Request URL: ${response.realUri}");
+      print("Response: ${response.data}");
+
+      return {"statusCode": response.statusCode, "data": response.data};
+    } on DioException catch (e) {
+      return {
+        "statusCode": e.response?.statusCode ?? 666,
+        "data": e.response?.data ?? "Dio error: ${e.message}",
+      };
+    } catch (e) {
+      return {"statusCode": 666, "data": "Unexpected error: $e"};
+    }
+  }
+
+  Future<Map<String, dynamic>> getExpenseCatagory({
+    required String phone,
+    required String pin,
+    
+    required String code,
+   
+  }) async {
+    final Dio dio = Dio();
+
+    // Build query params properly
+    final Map<String, dynamic> queryParams = {
+      'school_code': code,
+      'mobile': phone,
+      'password': pin,
+    };
+
+    queryParams.removeWhere((key, value) {
+      return value == null || value.toString().isEmpty;
+    });
+
+    final String url = "${Urls.baseUrl}Get_Expense_Head/";
 
     try {
       final response = await dio.get(url, queryParameters: queryParams);
@@ -74,20 +112,5 @@ class ExpensesServices {
     }
   }
 
-  Future<Map<String, dynamic>> getCustomer({
-    required String phone,
-    required String pin,
-    required String code,
-  }) async {
-    final url = "${Urls.baseUrl}Customer_name/?mobile=$phone&password=$pin&school_code=$code";
-    Dio dio = Dio();
-    try {
-      final response = await dio.get(url);
-      print(url);
-      print(response);
-      return {"statusCode": response.statusCode, "data": response.data};
-    } catch (e) {
-      return {"statusCode": 666, "data": "Catch Error $e"};
-    }
-  }
+ 
 }

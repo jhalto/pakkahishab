@@ -5,7 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
-import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_viewmodel.dart';
+import 'package:pakkahishab/features/income/presentation/viewmodels/income_viewmodel.dart';
+
 
 class IncomeAppbarBackWithSearch extends StatelessWidget
     implements PreferredSizeWidget {
@@ -57,7 +58,7 @@ class IncomeAppbarBackWithSearch extends StatelessWidget
           actions: [
             Consumer(
               builder: (context, ref, child) {
-                final vm = ref.watch(salesViewModelProvider);
+                final vm = ref.watch(incomeViewModelProvider);
 
                 return InkWell(
                   borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -82,13 +83,13 @@ class IncomeAppbarBackWithSearch extends StatelessWidget
                         PopupMenuItem(
                           onTap: () async {
                             final notifier = ref.read(
-                              salesViewModelProvider.notifier,
+                              incomeViewModelProvider.notifier,
                             );
-                            final vm = ref.read(salesViewModelProvider);
+                            final vm = ref.read(incomeViewModelProvider);
 
-                            if (vm.customer == null ||
-                                (vm.customer?.items?.isEmpty ?? true)) {
-                              notifier.getCustomer();
+                            if (vm.incomeCatagory == null ||
+                                (vm.incomeCatagory?.items.isEmpty ?? true)) {
+                              notifier.getIncomeCatagory();
                             }
 
                             if (!context.mounted) return;
@@ -113,7 +114,7 @@ class IncomeAppbarBackWithSearch extends StatelessWidget
                                         Consumer(
                                           builder: (context, ref, child) {
                                             final vmn = ref.watch(
-                                              salesViewModelProvider
+                                              incomeViewModelProvider
                                                   .notifier,
                                             );
 
@@ -176,7 +177,7 @@ class IncomeAppbarBackWithSearch extends StatelessWidget
                                                           ),
                                                     ),
                                                     onChanged: (value) {
-                                                      vmn.searchSupplier(value);
+                                                      vmn.searchIncomeCatagory(value);
                                                     },
                                                   ),
                                                 ),
@@ -188,14 +189,14 @@ class IncomeAppbarBackWithSearch extends StatelessWidget
                                           child: Consumer(
                                             builder: (context, ref, child) {
                                               final notifier = ref.read(
-                                                salesViewModelProvider
+                                                incomeViewModelProvider
                                                     .notifier,
                                               );
                                               final vm = ref.watch(
-                                                salesViewModelProvider,
+                                                incomeViewModelProvider,
                                               );
                                               final customerList =
-                                                  vm.filteredCustomers ?? [];
+                                                  vm.filteredIncomeCatagory ?? [];
                                               if (vm.detailLoading) {
                                                 return Center(
                                                   child: Padding(
@@ -255,18 +256,15 @@ class IncomeAppbarBackWithSearch extends StatelessWidget
                                                         notifier
                                                             .updateCustomerId(
                                                               customer
-                                                                  .supplierId,
+                                                                  .accountNo,
                                                             );
-                                                        notifier
-                                                            .fetchSales();
+                                                        
                                                         Navigator.pop(context);
                                                       },
                                                       title: Text(
-                                                        customer.customerName,
+                                                        customer.accountName,
                                                       ),
-                                                      subtitle: Text(
-                                                        customer.mobile,
-                                                      ),
+                                                      
                                                     ),
                                                   );
                                                 },
@@ -282,7 +280,7 @@ class IncomeAppbarBackWithSearch extends StatelessWidget
                             );
                           },
 
-                          child: const Text("Customer"),
+                          child: const Text("Catagory"),
                         ),
 
                         // ---- Purchase Date filter ----
@@ -318,11 +316,11 @@ class IncomeAppbarBackWithSearch extends StatelessWidget
                               ).format(selectedDate);
 
                               ref
-                                  .read(salesViewModelProvider.notifier)
-                                  .fetchSales(saleDate: formattedDate);
+                                  .read(incomeViewModelProvider.notifier)
+                                  .fetchIncome(voucherDate: formattedDate);
                             }
                           },
-                          child: const Text("Sale Date"),
+                          child: const Text("Voucher Date"),
                         ),
                       ],
                     );

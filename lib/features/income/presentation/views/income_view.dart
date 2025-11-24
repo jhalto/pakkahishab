@@ -9,7 +9,6 @@ import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/income/presentation/viewmodels/income_viewmodel.dart';
 import 'package:pakkahishab/features/income/presentation/widgets/income_appbar_back_with_search.dart';
 
-
 class IncomeView extends StatelessWidget {
   const IncomeView({super.key});
 
@@ -82,9 +81,7 @@ class IncomeView extends StatelessWidget {
                                       incomeState.incomeList.isEmpty
                                           ? "0"
                                           : ref
-                                                .watch(
-                                                  incomeViewModelProvider,
-                                                )
+                                                .watch(incomeViewModelProvider)
                                                 .incomeList
                                                 .first
                                                 .totalIncome
@@ -110,6 +107,9 @@ class IncomeView extends StatelessWidget {
                             final formattedDate = DateFormat(
                               'dd MMM',
                             ).format(parsedDate);
+                            final formattedYear = DateFormat(
+                              'yy',
+                            ).format(parsedDate);
                             final formattedTime = DateFormat(
                               'hh:mma',
                             ).format(parsedDate);
@@ -127,8 +127,6 @@ class IncomeView extends StatelessWidget {
                                   //     builder: (_) => ExpensesDetails(expenseItem: item,),
                                   //   ),
                                   // );
-
-                                 
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(
@@ -157,12 +155,12 @@ class IncomeView extends StatelessWidget {
                                           child: Column(
                                             children: [
                                               Text(
-                                                formattedDate,
+                                                "$formattedDate $formattedYear",
                                                 style: AppTextStyle.bodyMedium
                                                     .copyWith(
                                                       color: AppColors
                                                           .primaryColor2,
-                                                      fontSize: 16.sp,
+                                                      fontSize: 12.sp,
                                                     ),
                                               ),
                                               const SizedBox(height: 4),
@@ -188,26 +186,39 @@ class IncomeView extends StatelessWidget {
                                               Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  Text(
-                                                    item.accountName
-                                                        .toString(),
-                                                    style:
-                                                        AppTextStyle.bodyMedium,
-                                                  ),
                                                   Text(
                                                     item.accountName.toString(),
                                                     style:
-                                                        AppTextStyle.bodySmall,
+                                                        AppTextStyle.bodyMedium,
                                                   ),
+                                                
 
-                                                  const SizedBox(height: 10),
+                                                
                                                   Text(
                                                     "${item.amount.toString()} Tk",
                                                   ),
                                                 ],
                                               ),
-                                            
+                                               Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    item.voucher.toString(),
+                                                    style:
+                                                        AppTextStyle.bodyMedium,
+                                                  ),
+                                                
+
+                                                
+                                                  Text(
+                                                    item.debitCredit,style: AppTextStyle.bodySmall,
+                                                  ),
+                                                ],
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -293,8 +304,6 @@ class IncomeView extends StatelessWidget {
                   );
                 },
               ),
-
-             
             );
           },
         ),

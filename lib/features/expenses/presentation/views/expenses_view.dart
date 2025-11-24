@@ -8,7 +8,7 @@ import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/expenses/presentation/viewmodels/expenses_viewmodel.dart';
 import 'package:pakkahishab/features/expenses/presentation/views/expenses_details.dart';
-import 'package:pakkahishab/features/expenses/presentation/widgets/sales_appbar_back_with_search.dart';
+import 'package:pakkahishab/features/expenses/presentation/widgets/expanses_appbar_back_with_search.dart';
 import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_viewmodel.dart';
 import 'package:pakkahishab/features/sales/presentation/views/sale_details.dart';
 
@@ -37,7 +37,7 @@ class ExpensesView extends StatelessWidget {
                     return Center(child: loader);
                   }
                   if (expanesState.expensesList.isEmpty) {
-                    return Center(child: Text("No Sales"));
+                    return Center(child: Text("No Expenses"));
                   }
                   return Column(
                     children: [
@@ -112,6 +112,9 @@ class ExpensesView extends StatelessWidget {
                             final formattedDate = DateFormat(
                               'dd MMM',
                             ).format(parsedDate);
+                             final formattedYear = DateFormat(
+                              'yy',
+                            ).format(parsedDate);
                             final formattedTime = DateFormat(
                               'hh:mma',
                             ).format(parsedDate);
@@ -159,21 +162,22 @@ class ExpensesView extends StatelessWidget {
                                           child: Column(
                                             children: [
                                               Text(
-                                                formattedDate,
+                                                "$formattedDate $formattedYear",
                                                 style: AppTextStyle.bodyMedium
                                                     .copyWith(
                                                       color: AppColors
                                                           .primaryColor2,
-                                                      fontSize: 16.sp,
+                                                      fontSize: 12.sp,
                                                     ),
                                               ),
-                                              const SizedBox(height: 4),
+                                                                                            const SizedBox(height: 4),
                                               Text(
                                                 formattedTime,
                                                 style: AppTextStyle.bodySmall
                                                     .copyWith(
                                                       color: AppColors
                                                           .primaryColor2,
+                                                          fontSize: 12.sp
                                                     ),
                                               ),
                                             ],
@@ -197,11 +201,7 @@ class ExpensesView extends StatelessWidget {
                                                     style:
                                                         AppTextStyle.bodyMedium,
                                                   ),
-                                                  Text(
-                                                    item.accountName,
-                                                    style:
-                                                        AppTextStyle.bodySmall,
-                                                  ),
+                                                  
 
                                                   const SizedBox(height: 10),
                                                   Text(
@@ -209,68 +209,17 @@ class ExpensesView extends StatelessWidget {
                                                   ),
                                                 ],
                                               ),
-                                              // Column(
-                                              //   mainAxisAlignment:
-                                              //       MainAxisAlignment
-                                              //           .spaceBetween,
-                                              //   crossAxisAlignment:
-                                              //       CrossAxisAlignment.end,
-                                              //   children: [
-                                              //     if (item.amount == 0)
-                                              //       Text(
-                                              //         "Paid",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: const Color(
-                                              //                 0xff50AA53,
-                                              //               ),
-                                              //             ),
-                                              //       ),
-
-                                              //     if (item.due ==
-                                              //         item.netAmount)
-                                              //       Text(
-                                              //         "Unpaid",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: const Color(
-                                              //                 0xfff5a848,
-                                              //               ),
-                                              //             ),
-                                              //       ),
-                                              //     if (item.due != 0 &&
-                                              //         item.due !=
-                                              //             item.netAmount)
-                                              //       Text(
-                                              //         "Partial",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: AppColors
-                                              //                   .primaryColor2,
-                                              //             ),
-                                              //       ),
-                                              //     if (item.due != 0)
-                                              //       Text(
-                                              //         item.due.toString(),
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: AppColors
-                                              //                   .primaryColor2,
-                                              //             ),
-                                              //       ),
-
-                                              //     // if (item.due == item.netAmount)
-                                              //     //   Text(
-                                              //     //     item.netAmount.toString(),
-                                              //     //     style:
-                                              //     //         AppTextStyle.bodyMedium,
-                                              //     //   ),
-                                              //   ],
-                                              // ),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                 Text(item.voucher),
+                                                 Text(item.debitCredit, style: AppTextStyle.bodySmall,)
+                                                ],
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -357,105 +306,6 @@ class ExpensesView extends StatelessWidget {
                 },
               ),
 
-              // Consumer(
-              //   builder: (context, ref, _) {
-              //     final purchaseState = ref.watch(purchaseViewModelProvider);
-              //     final notifier = ref.read(purchaseViewModelProvider.notifier);
-
-              //     final int currentPage = purchaseState.currentPage;
-              //     final int totalPage = purchaseState.totalPage;
-
-              //     if (totalPage == 0) return const SizedBox();
-
-              //     // How many pages to show in the window at a time (optional)
-              //     int maxVisiblePages = totalPage;
-              //     int startPage = (currentPage - 2).clamp(1, totalPage);
-              //     int endPage = (startPage + maxVisiblePages - 1).clamp(
-              //       1,
-              //       totalPage,
-              //     );
-
-              //     if (endPage - startPage + 1 < maxVisiblePages) {
-              //       startPage = (endPage - maxVisiblePages + 1).clamp(
-              //         1,
-              //         totalPage,
-              //       );
-              //     }
-
-              //     final pages = List.generate(
-              //       endPage - startPage + 1,
-              //       (index) => startPage + index,
-              //     );
-
-              //     return Padding(
-              //       padding: const EdgeInsets.symmetric(horizontal: 100),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.center,
-              //         children: [
-              //           // Previous button (fixed)
-              //           IconButton(
-              //             icon: const Icon(Icons.arrow_back_ios, size: 18),
-              //             onPressed: currentPage > 1
-              //                 ? () => notifier.goToPage(currentPage - 1)
-              //                 : null,
-              //           ),
-
-              //           // Scrollable page numbers
-              //           Expanded(
-              //             child: SingleChildScrollView(
-              //               scrollDirection: Axis.horizontal,
-              //               child: Row(
-              //                 children: pages.map((page) {
-              //                   final isActive = page == currentPage;
-              //                   return Padding(
-              //                     padding: const EdgeInsets.symmetric(
-              //                       horizontal: 4,
-              //                     ),
-              //                     child: InkWell(
-              //                       onTap: () => notifier.goToPage(page),
-              //                       borderRadius: BorderRadius.circular(8),
-              //                       child: Container(
-              //                         padding: const EdgeInsets.symmetric(
-              //                           horizontal: 10,
-              //                           vertical: 6,
-              //                         ),
-              //                         decoration: BoxDecoration(
-              //                           color: isActive
-              //                               ? AppColors.primaryColor2
-              //                               : Colors.grey.shade200,
-              //                           borderRadius: BorderRadius.circular(8),
-              //                         ),
-              //                         child: Text(
-              //                           "$page",
-              //                           style: TextStyle(
-              //                             color: isActive
-              //                                 ? Colors.white
-              //                                 : Colors.black87,
-              //                             fontWeight: isActive
-              //                                 ? FontWeight.bold
-              //                                 : FontWeight.normal,
-              //                           ),
-              //                         ),
-              //                       ),
-              //                     ),
-              //                   );
-              //                 }).toList(),
-              //               ),
-              //             ),
-              //           ),
-
-              //           // Next button (fixed)
-              //           IconButton(
-              //             icon: const Icon(Icons.arrow_forward_ios, size: 18),
-              //             onPressed: currentPage < totalPage
-              //                 ? () => notifier.goToPage(currentPage + 1)
-              //                 : null,
-              //           ),
-              //         ],
-              //       ),
-              //     );
-              //   },
-              // ),
             );
           },
         ),

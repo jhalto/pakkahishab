@@ -15,45 +15,45 @@ class IncomeRepository {
     required String pin,
     required String offset,
     required String code,
-    String? saleDate,
-    String? customerId,
+    String? voucherDate,
+    String? catagoryId,
   }) async {
     final purchaseData = await _incomeServices.getIncomes(
       phone: phone,
       pin: pin,
       offset: offset,
       code: code,
-      saledate: saleDate,
-      customerId: customerId,
+      voucherdate: voucherDate,
+      catagoryId: catagoryId,
     );
     print(purchaseData.length);
     return purchaseData;
   }
 
-  Future<Map<String, dynamic>> getSaleDetails({
-    required String phone,
-    required String pin,
-    required String offset,
-    required String code,
-    required String saleNo,
-  }) async {
-    final purchaseData = await _incomeServices.getSaleDetails(
-      saleNo: saleNo,
-      phone: phone,
-      pin: pin,
-      offset: offset,
-      code: code,
-    );
-    print(purchaseData.length);
-    return purchaseData;
-  }
+  // Future<Map<String, dynamic>> getSaleDetails({
+  //   required String phone,
+  //   required String pin,
+  //   required String offset,
+  //   required String code,
+  //   required String saleNo,
+  // }) async {
+  //   final purchaseData = await _incomeServices.getSaleDetails(
+  //     saleNo: saleNo,
+  //     phone: phone,
+  //     pin: pin,
+  //     offset: offset,
+  //     code: code,
+  //   );
+  //   print(purchaseData.length);
+  //   return purchaseData;
+  // }
 
-  Future<Map<String, dynamic>> getCustomer({
+  Future<Map<String, dynamic>> getIncomeCatagory({
     required String phone,
     required String pin,
     required String code,
   }) async {
-    final response = await _incomeServices.getCustomer(
+    final response = await _incomeServices.getIncomeCatagory(
       phone: phone,
       pin: pin,
       code: code

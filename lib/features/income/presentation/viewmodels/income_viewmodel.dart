@@ -3,10 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
+import 'package:pakkahishab/features/income/data/models/income_catagory_model.dart';
 import 'package:pakkahishab/features/income/data/models/income_model.dart';
 import 'package:pakkahishab/features/income/data/repositories/income_repository.dart';
 import 'package:pakkahishab/features/sales/data/models/customer_model.dart';
-import 'package:pakkahishab/features/sales/data/models/sale_details_model.dart';
+
 
 
 final incomeViewModelProvider =
@@ -15,9 +16,9 @@ final incomeViewModelProvider =
     );
 
 final class IncomeState {
-  final SalesDetailsResponse? salesDetails;
-  final CustomerResponse? customer;
-  final List<Customer>? filteredCustomers;
+  // final SalesDetailsResponse? salesDetails;
+  final IncomeCategoryResponse? incomeCatagory;
+  final List<IncomeCategory>? filteredIncomeCatagory;
   final bool loading;
   final bool detailLoading;
   final bool hasMore;
@@ -27,15 +28,15 @@ final class IncomeState {
   final String pin;
   final String offset;
   final List<IncomeItem> incomeList;
-  final String? customerId;
+  final String? catagoryId;
   final String? paymentMethod;
   // final String purchaseDate;
   // final String supplierId;
 
   const IncomeState({
-    this.salesDetails,
-    this.customer,
-    this.filteredCustomers,
+    // this.salesDetails,
+    this.incomeCatagory,
+    this.filteredIncomeCatagory,
     this.loading = false,
     this.detailLoading = false,
     this.hasMore = false,
@@ -45,14 +46,14 @@ final class IncomeState {
     this.pin = '',
     this.offset = '0',
     this.incomeList = const [],
-    this.customerId,
+    this.catagoryId,
     this.paymentMethod,
   });
 
   IncomeState copyWith({
-    SalesDetailsResponse? salesDetails,
-    CustomerResponse? customer,
-    List<Customer>? filteredCustomers,
+    // SalesDetailsResponse? salesDetails,
+    IncomeCategoryResponse? incomeCatagory,
+    List<IncomeCategory>? filteredIncomeCatagory,
     bool? loading,
     bool? detailLoading,
     bool? hasMore,
@@ -62,13 +63,13 @@ final class IncomeState {
     String? pin,
     String? offset,
     List<IncomeItem>? incomeList,
-    String? customerId,
+    String? catagoryId,
     String? paymentMethod,
   }) {
     return IncomeState(
-      salesDetails: salesDetails ?? this.salesDetails,
-      customer: customer ?? this.customer,
-      filteredCustomers: filteredCustomers ?? this.filteredCustomers,
+      // salesDetails: salesDetails ?? this.salesDetails,
+      incomeCatagory: incomeCatagory ?? this.incomeCatagory,
+      filteredIncomeCatagory: filteredIncomeCatagory ?? this.filteredIncomeCatagory,
       loading: loading ?? this.loading,
       detailLoading: detailLoading ?? this.detailLoading,
       hasMore: hasMore ?? this.hasMore,
@@ -78,7 +79,7 @@ final class IncomeState {
       pin: pin ?? this.pin,
       offset: offset ?? this.offset,
       incomeList: incomeList ?? this.incomeList,
-      customerId: customerId ?? this.customerId,
+      catagoryId: catagoryId ?? this.catagoryId,
       paymentMethod: paymentMethod ?? this.paymentMethod
     );
   }
@@ -100,7 +101,7 @@ class IncomeNotifier extends Notifier<IncomeState> {
   Future<void> fetchIncome({
     bool loadMore = false,
     int? page,
-    String? saleDate,
+    String? voucherDate,
   }) async {
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
@@ -118,13 +119,13 @@ class IncomeNotifier extends Notifier<IncomeState> {
         pin: pin ?? '',
         code: code ?? '',
         offset: newOffset.toString(),
-        saleDate: saleDate,
-        customerId: state.customerId,
+        voucherDate: voucherDate,
+        catagoryId: state.catagoryId,
       );
 
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
-      final totalItem = result['data']['items'][0]['total_count'] ?? 0;
+      final totalItem = result['data']['count'] ?? 0;
       print(totalItem);
       state = state.copyWith(totalPage: (totalItem / 10).ceil());
       print(state.totalPage);
@@ -145,12 +146,13 @@ class IncomeNotifier extends Notifier<IncomeState> {
     }
   }
 
-  void updateCustomerId(String customerId) {
-    state = state.copyWith(customerId: customerId);
+  Future<void> updateCustomerId(String customerId) async{
+    state = state.copyWith(catagoryId: customerId);
+    await fetchIncome();
   }
 
   Future<void> refreshSales() async {
-    state = state.copyWith(customerId: "");
+    state = state.copyWith(catagoryId: "");
     await fetchIncome();
   }
 
@@ -163,61 +165,61 @@ class IncomeNotifier extends Notifier<IncomeState> {
   //   fetchPurchases();
   // }
 
-  Future<bool> fetchSalesDetails({
-    bool loadMore = false,
-    int? page,
-    required String saleNo,
-  }) async {
-    final phone = await SharedPreferencesHelper.getString('phone');
-    final pin = await SharedPreferencesHelper.getString('pin');
-    final code = await SharedPreferencesHelper.getString('code');
+  // Future<bool> fetchSalesDetails({
+  //   bool loadMore = false,
+  //   int? page,
+  //   required String saleNo,
+  // }) async {
+  //   final phone = await SharedPreferencesHelper.getString('phone');
+  //   final pin = await SharedPreferencesHelper.getString('pin');
+  //   final code = await SharedPreferencesHelper.getString('code');
 
-    try {
-      state = state.copyWith(detailLoading: true);
+  //   try {
+  //     state = state.copyWith(detailLoading: true);
 
-      final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
-      final int newOffset = (newPage - 1) * 10;
+  //     final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
+  //     final int newOffset = (newPage - 1) * 10;
 
-      final response = await _repo.getSaleDetails(
-        phone: phone ?? '',
-        pin: pin ??"",
-        code: code ?? '',
-        offset: newOffset.toString(),
-        saleNo: saleNo,
-      );
+  //     final response = await _repo.getSaleDetails(
+  //       phone: phone ?? '',
+  //       pin: pin ??"",
+  //       code: code ?? '',
+  //       offset: newOffset.toString(),
+  //       saleNo: saleNo,
+  //     );
 
-      if (response['statusCode'] == 200) {
-        final salesData = SalesDetailsResponse.fromJson(response['data']);
-        state = state.copyWith(salesDetails: salesData);
-        return true; // ✅ signal success
-      }
-    } catch (e) {
-      debugPrint("Error fetching purchases: $e");
-    } finally {
-      state = state.copyWith(detailLoading: false);
-    }
-    return false;
-  }
+  //     if (response['statusCode'] == 200) {
+  //       final salesData = SalesDetailsResponse.fromJson(response['data']);
+  //       state = state.copyWith(salesDetails: salesData);
+  //       return true; // ✅ signal success
+  //     }
+  //   } catch (e) {
+  //     debugPrint("Error fetching purchases: $e");
+  //   } finally {
+  //     state = state.copyWith(detailLoading: false);
+  //   }
+  //   return false;
+  // }
 
   
-  Future<void> getCustomer() async {
+  Future<void> getIncomeCatagory() async {
     state = state.copyWith(detailLoading: true);
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
-      final response = await _repo.getCustomer(
+      final response = await _repo.getIncomeCatagory(
         phone: phone.toString(),
         pin: pin.toString(),
         code: code.toString(),
       );
       print(response);
       if (response['statusCode'] == 200) {
-        final responseData = CustomerResponse.fromJson(response['data']);
+        final responseData = IncomeCategoryResponse.fromJson(response['data']);
         state = state.copyWith(
-          customer: responseData,
-          filteredCustomers: responseData.items,
+          incomeCatagory: responseData,
+      filteredIncomeCatagory: responseData.items,
         );
         print("done");
       } else {
@@ -230,21 +232,21 @@ class IncomeNotifier extends Notifier<IncomeState> {
     }
   }
 
-  void searchSupplier(String query) {
-    final allCustomers = state.customer?.items ?? [];
+  void searchIncomeCatagory(String query) {
+    final allCatagory = state.incomeCatagory?.items ?? [];
 
     if (query.isEmpty) {
       // if query is empty, show all suppliers
-      state = state.copyWith(filteredCustomers: allCustomers);
+      state = state.copyWith(filteredIncomeCatagory: allCatagory);
     } else {
-      final filtered = allCustomers
+      final filtered = allCatagory
           .where(
-            (supplier) => supplier.customerName.toLowerCase().contains(
+            (catagory) => catagory.accountName.toLowerCase().contains(
               query.toLowerCase(),
             ),
           )
           .toList();
-      state = state.copyWith(filteredCustomers: filtered);
+      state = state.copyWith(filteredIncomeCatagory: filtered);
     }
   }
 
