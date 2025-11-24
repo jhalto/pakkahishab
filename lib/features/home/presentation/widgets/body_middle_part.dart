@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/custom_feature_widget.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
+import 'package:pakkahishab/routes/app_routes.dart';
 
 class BodyMiddlePart extends StatelessWidget {
   const BodyMiddlePart({super.key});
@@ -16,6 +18,9 @@ class BodyMiddlePart extends StatelessWidget {
           Row(
             children: [
               CustomFeatureWidget(
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.expenses);
+                },  
                 title: Text(AppLocalizations.of(context)!.expenses),
                 consumer: Consumer(
                   builder: (context, ref, child) =>
@@ -24,6 +29,9 @@ class BodyMiddlePart extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               CustomFeatureWidget(
+                onTap: () {
+                  Navigator.pushNamed(context, Routes.income);
+                },
                 title: Text(AppLocalizations.of(context)!.income),
                 consumer: Consumer(
                   builder: (context, ref, child) =>
@@ -36,6 +44,9 @@ class BodyMiddlePart extends StatelessWidget {
           Row(
             children: [
               CustomFeatureWidget(
+                onTap: () {
+                  
+                },
                 title: Text(AppLocalizations.of(context)!.stock),
                 consumer: Consumer(
                   builder: (context, ref, child) =>

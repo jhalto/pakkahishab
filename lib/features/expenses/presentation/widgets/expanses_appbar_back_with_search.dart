@@ -5,14 +5,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
-import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_viewmodel.dart';
+import 'package:pakkahishab/features/expenses/presentation/viewmodels/expenses_viewmodel.dart';
+// import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_viewmodel.dart';
 
-class SalesAppbarBackWithSearch extends StatelessWidget
+class ExpensesAppbarBackWithSearch extends StatelessWidget
     implements PreferredSizeWidget {
   final String title;
   final ValueChanged<String>? onSearchChanged;
 
-  SalesAppbarBackWithSearch({
+  ExpensesAppbarBackWithSearch({
     super.key,
     required this.title,
     this.onSearchChanged,
@@ -57,7 +58,7 @@ class SalesAppbarBackWithSearch extends StatelessWidget
           actions: [
             Consumer(
               builder: (context, ref, child) {
-                final vm = ref.watch(salesViewModelProvider);
+                final vm = ref.watch(expensesViewModelProvider);
 
                 return InkWell(
                   borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -82,13 +83,13 @@ class SalesAppbarBackWithSearch extends StatelessWidget
                         PopupMenuItem(
                           onTap: () async {
                             final notifier = ref.read(
-                              salesViewModelProvider.notifier,
+                              expensesViewModelProvider.notifier,
                             );
-                            final vm = ref.read(salesViewModelProvider);
+                            final vm = ref.read(expensesViewModelProvider);
 
-                            if (vm.customer == null ||
-                                (vm.customer?.items?.isEmpty ?? true)) {
-                              notifier.getCustomer();
+                            if (vm.expenseCatagory == null ||
+                                (vm.expenseCatagory?.items.isEmpty ?? true)) {
+                              notifier.getExpenseCatagory();
                             }
 
                             if (!context.mounted) return;
@@ -113,7 +114,7 @@ class SalesAppbarBackWithSearch extends StatelessWidget
                                         Consumer(
                                           builder: (context, ref, child) {
                                             final vmn = ref.watch(
-                                              salesViewModelProvider
+                                              expensesViewModelProvider
                                                   .notifier,
                                             );
 
@@ -176,7 +177,7 @@ class SalesAppbarBackWithSearch extends StatelessWidget
                                                           ),
                                                     ),
                                                     onChanged: (value) {
-                                                      vmn.searchSupplier(value);
+                                                      vmn.searchExpenseCatagory(value);
                                                     },
                                                   ),
                                                 ),
@@ -188,14 +189,14 @@ class SalesAppbarBackWithSearch extends StatelessWidget
                                           child: Consumer(
                                             builder: (context, ref, child) {
                                               final notifier = ref.read(
-                                                salesViewModelProvider
+                                                expensesViewModelProvider
                                                     .notifier,
                                               );
                                               final vm = ref.watch(
-                                                salesViewModelProvider,
+                                                expensesViewModelProvider,
                                               );
-                                              final customerList =
-                                                  vm.filteredCustomers ?? [];
+                                              final catagoryList =
+                                                  vm.filteredExpenseCatagory ?? [];
                                               if (vm.detailLoading) {
                                                 return Center(
                                                   child: Padding(
@@ -207,20 +208,20 @@ class SalesAppbarBackWithSearch extends StatelessWidget
                                                   ),
                                                 );
                                               }
-                                              if (customerList.isEmpty) {
+                                              if (catagoryList.isEmpty) {
                                                 return Center(
                                                   child: Padding(
                                                     padding: EdgeInsets.all(
                                                       16.0,
                                                     ),
                                                     child: Text(
-                                                      'No Customers available',
+                                                      'No Catagory available',
                                                     ),
                                                   ),
                                                 );
                                               }
                                               return ListView.separated(
-                                                itemCount: customerList.length,
+                                                itemCount: catagoryList.length,
                                                 separatorBuilder:
                                                     (context, index) =>
                                                         const Divider(
@@ -231,8 +232,8 @@ class SalesAppbarBackWithSearch extends StatelessWidget
                                                           endIndent: 16,
                                                         ),
                                                 itemBuilder: (context, index) {
-                                                  final customer =
-                                                      customerList[index];
+                                                  final catagory =
+                                                      catagoryList[index];
                                                   return Material(
                                                     color: Colors.transparent,
                                                     borderRadius:
@@ -253,20 +254,18 @@ class SalesAppbarBackWithSearch extends StatelessWidget
                                                           .withAlpha(20),
                                                       onTap: () {
                                                         notifier
-                                                            .updateCustomerId(
-                                                              customer
-                                                                  .customerId,
+                                                            .updateCatagoryId(
+                                                              catagory
+                                                                  .accountNo,
                                                             );
-                                                        notifier
-                                                            .fetchSales();
+                                                        // notifier
+                                                        //     .fetchSales();
                                                         Navigator.pop(context);
                                                       },
                                                       title: Text(
-                                                        customer.customerName,
+                                                        catagory.accountName,
                                                       ),
-                                                      subtitle: Text(
-                                                        customer.mobile,
-                                                      ),
+                                                     
                                                     ),
                                                   );
                                                 },
@@ -282,7 +281,7 @@ class SalesAppbarBackWithSearch extends StatelessWidget
                             );
                           },
 
-                          child: const Text("Customer"),
+                          child: const Text("Catagory"),
                         ),
 
                         // ---- Purchase Date filter ----
@@ -318,11 +317,11 @@ class SalesAppbarBackWithSearch extends StatelessWidget
                               ).format(selectedDate);
 
                               ref
-                                  .read(salesViewModelProvider.notifier)
-                                  .fetchSales(saleDate: formattedDate);
+                                  .read(expensesViewModelProvider.notifier)
+                                  .fetchExpenses(voucherDate: formattedDate);
                             }
                           },
-                          child: const Text("Sale Date"),
+                          child: const Text("Voucher Date"),
                         ),
                       ],
                     );

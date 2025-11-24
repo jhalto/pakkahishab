@@ -1,0 +1,116 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pakkahishab/core/const/urls.dart';
+
+final expensesServiceProvider = Provider<ExpensesServices>(
+  (ref) => ExpensesServices(),
+);
+
+class ExpensesServices {
+  Future<Map<String, dynamic>> getExpenses({
+    required String phone,
+    required String pin,
+    required String offset,
+    required String code,
+    String? voucherDate,
+    String? catagoryId,
+  }) async {
+    final Dio dio = Dio();
+
+    // Build query params properly
+    final Map<String, dynamic> queryParams = {
+      'school_code': code,
+      'mobile': phone,
+      'password': pin,
+      'offset': offset,
+      'limit': '10',
+      'voucher_date': voucherDate,
+      'CATEGORY': catagoryId,
+    };
+
+    queryParams.removeWhere((key, value) {
+      return value == null || value.toString().isEmpty;
+    });
+
+    final String url = "${Urls.baseUrl}Get_Expense/";
+
+    try {
+      final response = await dio.get(url, queryParameters: queryParams);
+
+      print("Request URL: ${response.realUri}");
+      print("Response: ${response.data}");
+
+      return {"statusCode": response.statusCode, "data": response.data};
+    } on DioException catch (e) {
+      return {
+        "statusCode": e.response?.statusCode ?? 666,
+        "data": e.response?.data ?? "Dio error: ${e.message}",
+      };
+    } catch (e) {
+      return {"statusCode": 666, "data": "Unexpected error: $e"};
+    }
+  }
+
+  Future<Map<String, dynamic>> getExpenseCatagory({
+    required String phone,
+    required String pin,
+    
+    required String code,
+   
+  }) async {
+    final Dio dio = Dio();
+
+    // Build query params properly
+    final Map<String, dynamic> queryParams = {
+      'school_code': code,
+      'mobile': phone,
+      'password': pin,
+    };
+
+    queryParams.removeWhere((key, value) {
+      return value == null || value.toString().isEmpty;
+    });
+
+    final String url = "${Urls.baseUrl}Get_Expense_Head/";
+
+    try {
+      final response = await dio.get(url, queryParameters: queryParams);
+
+      print("Request URL: ${response.realUri}");
+      print("Response: ${response.data}");
+
+      return {"statusCode": response.statusCode, "data": response.data};
+    } on DioException catch (e) {
+      return {
+        "statusCode": e.response?.statusCode ?? 666,
+        "data": e.response?.data ?? "Dio error: ${e.message}",
+      };
+    } catch (e) {
+      return {"statusCode": 666, "data": "Unexpected error: $e"};
+    }
+  }
+
+  Future<Map<String, dynamic>> getSaleDetails({
+    required String phone,
+    required String pin,
+    required String offset,
+    required String code,
+    required String saleNo,
+  }) async {
+    final url =
+        "${Urls.baseUrl}Get_Sales_Details/?school_code=$code&password=$pin&mobile=$phone&sales_no=$saleNo&offset=$offset&limit=10";
+
+    final Dio dio = Dio();
+
+    try {
+      final response = await dio.get(url);
+
+      print(response);
+      return {"statusCode": response.statusCode, "data": response.data};
+    } catch (e) {
+      return {"statusCode": 666, "data": "Catch error $e"};
+    }
+  }
+
+ 
+}

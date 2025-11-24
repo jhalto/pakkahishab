@@ -44,14 +44,14 @@ class CustomerResponse {
 }
 
 class Customer {
-  final String supplierId;
+  final String customerId;
   final String customerName;
   final int schoolCode;
   final String password;
   final String mobile;
 
   Customer({
-    required this.supplierId,
+    required this.customerId,
     required this.customerName,
     required this.schoolCode,
     required this.password,
@@ -60,7 +60,7 @@ class Customer {
 
   factory Customer.fromJson(Map<String, dynamic> json) {
     return Customer(
-      supplierId: json['supplier_id'] ?? '',
+      customerId: json['customer_id'] ?? '',
       customerName: json['customer_name'] ?? '',
       schoolCode: json['school_code'] ?? 0,
       password: json['password'] ?? '',
@@ -70,7 +70,7 @@ class Customer {
 
   Map<String, dynamic> toJson() {
     return {
-      'supplier_id': supplierId,
+      'customer_id': customerId,
       'customer_name': customerName,
       'school_code': schoolCode,
       'password': password,

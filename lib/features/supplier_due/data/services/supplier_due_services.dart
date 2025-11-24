@@ -119,22 +119,7 @@ class SupplierDueServices {
     }
   }
 
-  Future<Map<String, dynamic>> getSupplier({
-    required String phone,
-    required String pin,
-    required String code,
-  }) async {
-    final url = "${Urls.baseUrl}Supplier_name/?mobile=$phone&password=$pin&school_code=$code";
-    Dio dio = Dio();
-    try {
-      final response = await dio.get(url);
-      print(url);
-      print(response);
-      return {"statusCode": response.statusCode, "data": response.data};
-    } catch (e) {
-      return {"statusCode": 666, "data": "Catch Error $e"};
-    }
-  }
+  
 
    Future<Map<String, dynamic>> getSupplierPurchaseMaster({
     required String phone,

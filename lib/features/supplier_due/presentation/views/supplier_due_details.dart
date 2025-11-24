@@ -20,14 +20,14 @@ class SupplierDueDetails extends StatelessWidget {
       appBar: CustomAppbarBack(title: "Supplier Due Details"),
       body: Consumer(
         builder: (context, ref, child) {
-          if (ref.watch(CustomerDueViewModelProvider).loading) {
+          if (ref.watch(supplierDueViewModelProvider).loading) {
             return Center(child: loader);
           }
-          final data = ref.watch(CustomerDueViewModelProvider).supplierDueDetails;
+          final data = ref.watch(supplierDueViewModelProvider).supplierDueDetails;
           
-          final purchaseMaseter = ref.watch(CustomerDueViewModelProvider).purchaseList.first;
+          final purchaseMaseter = ref.watch(supplierDueViewModelProvider).purchaseList.first;
           final item = ref
-              .watch(CustomerDueViewModelProvider)
+              .watch(supplierDueViewModelProvider)
               .purchaseDetails!.items.first;
             
 
@@ -132,7 +132,7 @@ class SupplierDueDetails extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Consumer(
                   builder: (context, ref, child) {
-                    final vm = ref.watch(CustomerDueViewModelProvider);
+                    final vm = ref.watch(supplierDueViewModelProvider);
                     return ListView.builder(
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,

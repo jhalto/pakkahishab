@@ -21,6 +21,8 @@ class MyApp extends ConsumerWidget {
     final translation = ref.watch(translationProvider);
     return ScreenUtilInit(
       designSize: const Size(375, 812),
+      minTextAdapt: true, // ✅ adapts text to screen size
+      splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
           title: 'PakkaHishab',
@@ -32,11 +34,8 @@ class MyApp extends ConsumerWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('en'),
-            Locale('bn'),
-          ],
-          
+          supportedLocales: const [Locale('en'), Locale('bn')],
+
           theme: ThemeData(
             appBarTheme: const AppBarTheme(
               backgroundColor: AppColors.bgColor, // AppBar background
@@ -45,7 +44,7 @@ class MyApp extends ConsumerWidget {
               centerTitle: true, // Optional: center the title
             ),
             scaffoldBackgroundColor: AppColors.bgColor,
-            textTheme: TextTheme(bodyMedium:AppTextStyle.bodyMedium),
+            textTheme: TextTheme(bodyMedium: AppTextStyle.bodyMedium),
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           ),
           initialRoute: Routes.login,
