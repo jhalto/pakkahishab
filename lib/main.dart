@@ -46,6 +46,7 @@ class MyApp extends ConsumerWidget {
             scaffoldBackgroundColor: AppColors.bgColor,
             textTheme: TextTheme(bodyMedium: AppTextStyle.bodyMedium),
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
           ),
           initialRoute: Routes.login,
           onGenerateRoute: Routes.generateRoute,

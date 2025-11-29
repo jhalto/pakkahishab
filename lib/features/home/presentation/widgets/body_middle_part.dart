@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/custom_feature_widget.dart';
+import 'package:pakkahishab/features/stock/presentation/views/stock_view.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
 
@@ -45,7 +46,7 @@ class BodyMiddlePart extends StatelessWidget {
             children: [
               CustomFeatureWidget(
                 onTap: () {
-                  
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => StockView()));
                 },
                 title: Text(AppLocalizations.of(context)!.stock),
                 consumer: Consumer(

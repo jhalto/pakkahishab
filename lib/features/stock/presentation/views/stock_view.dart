@@ -1,22 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/income/presentation/viewmodels/income_viewmodel.dart';
-import 'package:pakkahishab/features/income/presentation/views/income_details.dart';
-import 'package:pakkahishab/features/income/presentation/widgets/income_appbar_back_with_search.dart';
+import 'package:pakkahishab/features/stock/presentation/viewmodels/stock_viewmodel.dart';
+import 'package:pakkahishab/features/stock/presentation/widgets/stock_appbar_back_with_search.dart';
 
-class IncomeView extends StatelessWidget {
-  const IncomeView({super.key});
+
+class StockView extends StatelessWidget {
+  const StockView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: IncomeAppbarBackWithSearch(title: "Incomes"),
+      appBar: StockAppbarBackWithSearch(title: "Stock"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -24,17 +22,17 @@ class IncomeView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(incomeViewModelProvider.notifier)
+                    .read(stockViewModelProvider.notifier)
                     .refreshSales();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final incomeState = ref.watch(incomeViewModelProvider);
+                  final incomeState = ref.watch(stockViewModelProvider);
 
                   if (incomeState.loading) {
                     return Center(child: loader);
                   }
-                  if (incomeState.incomeList.isEmpty) {
+                  if (incomeState.stockList.isEmpty) {
                     return Center(child: Text("No Incomes"));
                   }
                   return Column(
@@ -54,11 +52,11 @@ class IncomeView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      incomeState.incomeList.isEmpty
+                                      incomeState.stockList.isEmpty
                                           ? "0"
                                           : ref
-                                                .watch(incomeViewModelProvider)
-                                                .incomeList
+                                                .watch(stockViewModelProvider)
+                                                .stockList
                                                 .length
                                                 .toString(),
                                       style: AppTextStyle.labelLarge,
@@ -79,13 +77,13 @@ class IncomeView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      incomeState.incomeList.isEmpty
+                                      incomeState.stockList.isEmpty
                                           ? "0"
                                           : ref
-                                                .watch(incomeViewModelProvider)
-                                                .incomeList
+                                                .watch(stockViewModelProvider)
+                                                .stockList
                                                 .first
-                                                .totalIncome
+                                                .totalStockAmount
                                                 .toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
@@ -99,21 +97,21 @@ class IncomeView extends StatelessWidget {
                       const SizedBox(height: 8),
                       Expanded(
                         child: ListView.builder(
-                          itemCount: incomeState.incomeList.length,
+                          itemCount: incomeState.stockList.length,
                           itemBuilder: (context, index) {
-                            final item = incomeState.incomeList[index];
-                            final parsedDate = DateFormat(
-                              "dd/MM/yyyy",
-                            ).parse(item.voucherDate);
-                            final formattedDate = DateFormat(
-                              'dd MMM',
-                            ).format(parsedDate);
-                            final formattedYear = DateFormat(
-                              'yy',
-                            ).format(parsedDate);
-                            final formattedTime = DateFormat(
-                              'hh:mma',
-                            ).format(parsedDate);
+                            final item = incomeState.stockList[index];
+                            // final parsedDate = DateFormat(
+                            //   "dd/MM/yyyy",
+                            // ).parse(item.);
+                            // final formattedDate = DateFormat(
+                            //   'dd MMM',
+                            // ).format(parsedDate);
+                            // final formattedYear = DateFormat(
+                            //   'yy',
+                            // ).format(parsedDate);
+                            // final formattedTime = DateFormat(
+                            //   'hh:mma',
+                            // ).format(parsedDate);
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 2,
@@ -122,12 +120,12 @@ class IncomeView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => IncomeDetails(incomeItem: item,),
-                                    ),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (_) => IncomeDetails(incomeItem: item,),
+                                  //   ),
+                                  // );
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(
@@ -155,24 +153,24 @@ class IncomeView extends StatelessWidget {
                                           ),
                                           child: Column(
                                             children: [
-                                              Text(
-                                                "$formattedDate $formattedYear",
-                                                style: AppTextStyle.bodyMedium
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryColor2,
-                                                      fontSize: 12.sp,
-                                                    ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                formattedTime,
-                                                style: AppTextStyle.bodySmall
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryColor2,
-                                                    ),
-                                              ),
+                                              // Text(
+                                              //   "$formattedDate $formattedYear",
+                                              //   style: AppTextStyle.bodyMedium
+                                              //       .copyWith(
+                                              //         color: AppColors
+                                              //             .primaryColor2,
+                                              //         fontSize: 12.sp,
+                                              //       ),
+                                              // ),
+                                              // const SizedBox(height: 4),
+                                              // Text(
+                                              //   formattedTime,
+                                              //   style: AppTextStyle.bodySmall
+                                              //       .copyWith(
+                                              //         color: AppColors
+                                              //             .primaryColor2,
+                                              //       ),
+                                              // ),
                                             ],
                                           ),
                                         ),
@@ -190,7 +188,7 @@ class IncomeView extends StatelessWidget {
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Text(
-                                                    item.accountName.toString(),
+                                                    item.productName.toString(),
                                                     style:
                                                         AppTextStyle.bodyMedium,
                                                   ),
@@ -198,7 +196,7 @@ class IncomeView extends StatelessWidget {
 
                                                 
                                                   Text(
-                                                    "${item.amount.toString()} Tk",
+                                                    "${item.purchasePrice.toString()} Tk",
                                                   ),
                                                 ],
                                               ),
@@ -208,7 +206,7 @@ class IncomeView extends StatelessWidget {
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Text(
-                                                    item.voucher.toString(),
+                                                    item.productId.toString(),
                                                     style:
                                                         AppTextStyle.bodyMedium,
                                                   ),
@@ -216,7 +214,7 @@ class IncomeView extends StatelessWidget {
 
                                                 
                                                   Text(
-                                                    item.debitCredit,style: AppTextStyle.bodySmall,
+                                                    item.balance.toString(),style: AppTextStyle.bodySmall,
                                                   ),
                                                 ],
                                               ),
@@ -341,7 +339,7 @@ class _SalesPaginationState extends ConsumerState<SalesPagination> {
     super.initState();
     // Scroll to current page after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentPage = ref.read(incomeViewModelProvider).currentPage;
+      final currentPage = ref.read(stockViewModelProvider).currentPage;
       if (currentPage > 1) {
         _scrollToPageImmediate(currentPage);
       }
@@ -386,8 +384,8 @@ class _SalesPaginationState extends ConsumerState<SalesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(incomeViewModelProvider);
-    final notifier = ref.read(incomeViewModelProvider.notifier);
+    final purchaseState = ref.watch(stockViewModelProvider);
+    final notifier = ref.read(stockViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;
