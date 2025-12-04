@@ -14,7 +14,7 @@ class StockView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: StockAppbarBackWithSearch(title: "Stock"),
+      appBar: StockAppbarBackWithSearch(title: "Stocks"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -206,7 +206,7 @@ class StockView extends StatelessWidget {
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Text(
-                                                    item.productId.toString(),
+                                                   (item.balance * item.purchasePrice).toString(),
                                                     style:
                                                         AppTextStyle.bodyMedium,
                                                   ),
@@ -214,7 +214,7 @@ class StockView extends StatelessWidget {
 
                                                 
                                                   Text(
-                                                    item.balance.toString(),style: AppTextStyle.bodySmall,
+                                                   "Stock ${item.balance.toStringAsFixed(0)}",style: AppTextStyle.bodySmall,
                                                   ),
                                                 ],
                                               ),

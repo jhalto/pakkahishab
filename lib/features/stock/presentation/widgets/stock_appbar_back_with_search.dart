@@ -2,12 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/features/stock/presentation/viewmodels/stock_viewmodel.dart';
-
-
 
 class StockAppbarBackWithSearch extends StatelessWidget
     implements PreferredSizeWidget {
@@ -115,8 +112,7 @@ class StockAppbarBackWithSearch extends StatelessWidget
                                         Consumer(
                                           builder: (context, ref, child) {
                                             final vmn = ref.watch(
-                                              stockViewModelProvider
-                                                  .notifier,
+                                              stockViewModelProvider.notifier,
                                             );
 
                                             return Row(
@@ -144,7 +140,7 @@ class StockAppbarBackWithSearch extends StatelessWidget
                                                       filled: true,
 
                                                       labelText:
-                                                          'Search Customer',
+                                                          'Search Product',
                                                       hintStyle: TextStyle(
                                                         color: Colors.white70,
                                                       ),
@@ -178,7 +174,9 @@ class StockAppbarBackWithSearch extends StatelessWidget
                                                           ),
                                                     ),
                                                     onChanged: (value) {
-                                                      vmn.searchStockProdutItem(value);
+                                                      vmn.searchStockProdutItem(
+                                                        value,
+                                                      );
                                                     },
                                                   ),
                                                 ),
@@ -190,14 +188,14 @@ class StockAppbarBackWithSearch extends StatelessWidget
                                           child: Consumer(
                                             builder: (context, ref, child) {
                                               final notifier = ref.read(
-                                                 stockViewModelProvider
-                                                    .notifier,
+                                                stockViewModelProvider.notifier,
                                               );
                                               final vm = ref.watch(
                                                 stockViewModelProvider,
                                               );
                                               final customerList =
-                                                  vm.filteredStockProductItem ?? [];
+                                                  vm.filteredStockProductItem ??
+                                                  [];
                                               if (vm.detailLoading) {
                                                 return Center(
                                                   child: Padding(
@@ -216,7 +214,7 @@ class StockAppbarBackWithSearch extends StatelessWidget
                                                       16.0,
                                                     ),
                                                     child: Text(
-                                                      'No Customers available',
+                                                      'No Product available',
                                                     ),
                                                   ),
                                                 );
@@ -254,18 +252,20 @@ class StockAppbarBackWithSearch extends StatelessWidget
                                                           .blackColor
                                                           .withAlpha(20),
                                                       onTap: () {
-                                                        notifier
-                                                            .updateProductId(
-                                                              
-                                                                productId:   customer.productId.toString(),
-                                                            );
-                                                        
+                                                        print(
+                                                          customer.productId,
+                                                        );
+                                                        notifier.updateProductId(
+                                                          productId: customer
+                                                              .productId
+                                                              .toString(),
+                                                        );
+
                                                         Navigator.pop(context);
                                                       },
                                                       title: Text(
                                                         customer.productName,
                                                       ),
-                                                      
                                                     ),
                                                   );
                                                 },

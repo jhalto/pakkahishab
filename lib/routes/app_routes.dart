@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:pakkahishab/features/advance/presentation/views/advance_view.dart';
 import 'package:pakkahishab/features/auth/presentation/view/login_view.dart';
 import 'package:pakkahishab/features/auth/presentation/view/signup_view.dart';
+import 'package:pakkahishab/features/bank/presentation/views/bank_view.dart';
+import 'package:pakkahishab/features/cash/presentation/views/cash_view.dart';
 import 'package:pakkahishab/features/customer_due/presentation/views/customer_dues_view.dart';
 import 'package:pakkahishab/features/expenses/presentation/views/expenses_view.dart';
 import 'package:pakkahishab/features/income/presentation/views/income_view.dart';
+import 'package:pakkahishab/features/loan/presentation/views/loan_view.dart';
+import 'package:pakkahishab/features/mobile_banking/presentation/views/mobile_bank_view.dart';
 import 'package:pakkahishab/features/stock/presentation/views/stock_view.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_dues_view.dart';
 import 'package:pakkahishab/features/home/presentation/views/home_view.dart';
@@ -23,6 +28,11 @@ class Routes {
   static const String expenses = '/expenses';
   static const String income = '/income';
   static const String stock = '/stock';
+  static const String cash = '/cash';
+  static const String bank = '/bank';
+  static const String advance = '/advance';
+  static const String loan = '/loan';
+  static const String mobileBank = '/mobileBank';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     Widget page;
@@ -60,6 +70,21 @@ class Routes {
         break;
       case stock:
         page = const StockView(); 
+        break;
+      case cash:
+        page = const CashView(); 
+        break;
+      case bank:
+        page = const BankView(); 
+        break;
+      case advance:
+        page = const AdvanceView(); 
+        break;
+      case loan:
+        page = const LoanView(); 
+        break;
+      case mobileBank:
+        page = const MobileBankView(); 
         break;
       default:
         page = const Scaffold(

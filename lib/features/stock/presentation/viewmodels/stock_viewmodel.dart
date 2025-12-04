@@ -145,7 +145,7 @@ class StockNotifier extends Notifier<StockState> {
   }
 
   Future<void> updateProductId({required String productId}) async {
-    state = state.copyWith(productId: state.productId);
+    state = state.copyWith(productId: productId);
     await fetchStock();
   }
 
