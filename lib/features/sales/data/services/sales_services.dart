@@ -72,13 +72,30 @@ class SalesServices {
     }
   }
 
-  Future<Map<String, dynamic>> getCustomer({
+  Future<Map<String, dynamic>> getSaledCustomer({
     required String phone,
     required String pin,
     required String code,
   }) async {
     final url =
         "${Urls.baseUrl}Customer_name/?mobile=$phone&password=$pin&school_code=$code";
+    Dio dio = Dio();
+    try {
+      final response = await dio.get(url);
+      print(url);
+      print(response);
+      return {"statusCode": response.statusCode, "data": response.data};
+    } catch (e) {
+      return {"statusCode": 666, "data": "Catch Error $e"};
+    }
+  }
+  Future<Map<String, dynamic>> getAllCustomer({
+    required String phone,
+    required String pin,
+    required String code,
+  }) async {
+    final url =
+        "${Urls.baseUrl}all_customer_name/?mobile=$phone&password=$pin&school_code=$code";
     Dio dio = Dio();
     try {
       final response = await dio.get(url);
@@ -153,11 +170,26 @@ class SalesServices {
     } on DioException catch (e) {
       switch (e.type) {
         case DioExceptionType.connectionTimeout:
-          return {"success": false, "error": "Connection Timeout"};
+          return {
+            "statusCode": e.response!.statusCode,
+            "success": false,
+            "message": "Connection timeout. Please try again.",
+            "data": e.response?.data,
+          };
         case DioExceptionType.receiveTimeout:
-          return {"success": false, "error": "Receive Timeout"};
+          return {
+            "statusCode": e.response!.statusCode,
+            "success": false,
+            "message": "Recieve timeout. Please try again.",
+            "data": e.response?.data,
+          };
         case DioExceptionType.sendTimeout:
-          return {"success": false, "error": "Send Timeout"};
+          return {
+            "statusCode": e.response!.statusCode,
+            "success": false,
+            "message": "Send timeout. Please try again.",
+            "data": e.response?.data,
+          };
         case DioExceptionType.badResponse:
           return {
             "success": false,
@@ -165,13 +197,26 @@ class SalesServices {
             "error": e.response?.data ?? "Bad Response",
           };
         case DioExceptionType.cancel:
-          return {"success": false, "error": "Request Cancelled"};
+          return {
+            "statusCode": e.response!.statusCode,
+            "success": false,
+            "message": "Request cancel. Please try again.",
+            "data": e.response?.data,
+          };
         case DioExceptionType.unknown:
         default:
-          return {"success": false, "error": "Unknown Error: ${e.message}"};
+          return {
+            "statusCode": e.response!.statusCode,
+            "success": false,
+            "message": "Unexpected network error: ${e.message}",
+          };
       }
     } catch (e) {
-      return {"success": false, "error": "Unexpected Error: $e"};
+      return {
+        "statusCode": 666,
+        "success": false,
+        "message": "Unexpected error: $e",
+      };
     }
   }
 
@@ -211,27 +256,18 @@ class SalesServices {
         data: body,
         options: Options(
           headers: {"Content-Type": "application/json"},
+
           // Validate only status code 200–299
-          validateStatus: (status) => status != null && status < 500,
         ),
       );
-
+      print(response);
       // -------------------------
       // SUCCESS (status 200–299)
       // -------------------------
-      if (response.statusCode != null &&
-          response.statusCode! >= 200 &&
-          response.statusCode! < 300) {
-        return {"success": true, "data": response.data};
-      }
 
-      // -------------------------
-      // API Returned Error (400–499)
-      // -------------------------
       return {
-        "success": false,
-        "message": "API returned an error",
         "statusCode": response.statusCode,
+        "success": true,
         "data": response.data,
       };
     } on DioException catch (e) {
@@ -242,25 +278,32 @@ class SalesServices {
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {
         return {
+          "statusCode": e.response!.statusCode,
           "success": false,
           "message": "Connection timeout. Please try again.",
+          "data": e.response?.data,
         };
       }
 
       if (e.type == DioExceptionType.badResponse) {
         return {
+          "statusCode": e.response!.statusCode,
           "success": false,
           "message": "Server error occurred",
-          "statusCode": e.response?.statusCode,
           "data": e.response?.data,
         };
       }
 
       if (e.type == DioExceptionType.connectionError) {
-        return {"success": false, "message": "No internet connection"};
+        return {
+          "statusCode": e.response!.statusCode,
+          "success": false,
+          "message": "No internet connection",
+        };
       }
 
       return {
+        "statusCode": e.response!.statusCode,
         "success": false,
         "message": "Unexpected network error: ${e.message}",
       };
@@ -268,7 +311,11 @@ class SalesServices {
       // -------------------------
       // ANY OTHER UNKNOWN ERRORS
       // -------------------------
-      return {"success": false, "message": "Unexpected error: $e"};
+      return {
+        "statusCode": 666,
+        "success": false,
+        "message": "Unexpected error: $e",
+      };
     }
   }
 }

@@ -48,19 +48,30 @@ class SalesRepository {
     return purchaseData;
   }
 
-  Future<Map<String, dynamic>> getCustomer({
+  Future<Map<String, dynamic>> getSaledCustomer({
     required String phone,
     required String pin,
     required String code,
   }) async {
-    final response = await _salesServices.getCustomer(
+    final response = await _salesServices.getSaledCustomer(
       phone: phone,
       pin: pin,
       code: code,
     );
     return response;
   }
-
+Future<Map<String, dynamic>> getAllCustomer({
+    required String phone,
+    required String pin,
+    required String code,
+  }) async {
+    final response = await _salesServices.getAllCustomer(
+      phone: phone,
+      pin: pin,
+      code: code,
+    );
+    return response;
+  }
   Future<Map<String, dynamic>> addSales({
     required String phone,
     required String pin,

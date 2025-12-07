@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 
-class CustomFormField extends StatefulWidget {
+class CustomPakkaFormField extends StatefulWidget {
   final String? hint;
   final String? label;
   final TextEditingController controller;
@@ -12,7 +12,7 @@ class CustomFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextInputAction? textInputAction;
   final VoidCallback? onComplete;
-  const CustomFormField({
+  const CustomPakkaFormField({
     super.key,
     this.hint,
     this.label,
@@ -25,10 +25,10 @@ class CustomFormField extends StatefulWidget {
   });
 
   @override
-  CustomFormFieldState createState() => CustomFormFieldState();
+  CustomPakkaFormFieldState createState() => CustomPakkaFormFieldState();
 }
 
-class CustomFormFieldState extends State<CustomFormField> {
+class CustomPakkaFormFieldState extends State<CustomPakkaFormField> {
   // bool _isObscured = true;
   final ValueNotifier<String?> _errorText = ValueNotifier(null);
   final ValueNotifier<bool> _isObscured = ValueNotifier(true);
@@ -117,7 +117,7 @@ class CustomFormFieldState extends State<CustomFormField> {
                 prefixIconConstraints: const BoxConstraints(minWidth: 50),
                 prefixIcon: widget.prefixIcon,
                 hintText: widget.hint,
-                labelText: widget.hint,
+                labelText: widget.label,
                 labelStyle: AppTextStyle.bodyMediumSecondary,
                 hintStyle: AppTextStyle.bodyMediumSecondary,
                 filled: true,
@@ -131,11 +131,11 @@ class CustomFormFieldState extends State<CustomFormField> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(6),
-                  borderSide: const BorderSide(color: Colors.transparent),
+                  borderSide: const BorderSide(color: AppColors.koraNeel),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(6),
-                  borderSide: const BorderSide(color: Colors.transparent),
+                  borderSide: BorderSide(color: Colors.grey),
                 ),
                 suffixIcon: widget.isPassword
                     ? ValueListenableBuilder<bool>(

@@ -1,5 +1,8 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
-import 'package:pakkahishab/features/sales/data/models/customer_model.dart';
+import 'package:pakkahishab/features/sales/data/models/all_customer_model.dart';
 import 'package:pakkahishab/features/sales/data/repositories/sales_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -11,31 +14,31 @@ final saleAddViewModelProvider =
 final class SalesAddState {
   final bool isLoading;
   final String? errorMessage;
-  final CustomerResponse? customer;
-  final List<Customer>? filteredCustomer;
-  final Map<String, dynamic>? response;
+  final AllCustomerModel? customer;
+  final List<AllCustomer>? filteredCustomer;
+  final String? customerId;
 
   SalesAddState({
     this.isLoading = false,
     this.customer,
     this.filteredCustomer,
     this.errorMessage,
-    this.response,
+    this.customerId,
   });
 
   SalesAddState copyWith({
     bool? isLoading,
-    final CustomerResponse? customer,
-    final List<Customer>? filteredCustomer,
+    final AllCustomerModel? customer,
+    final List<AllCustomer>? filteredCustomer,
     String? errorMessage,
-    Map<String, dynamic>? response,
+    String? customerId,
   }) {
     return SalesAddState(
       isLoading: isLoading ?? this.isLoading,
       customer: customer ?? this.customer,
       filteredCustomer: filteredCustomer ?? this.filteredCustomer,
-      errorMessage: errorMessage,
-      response: response ?? this.response,
+      errorMessage: errorMessage ?? errorMessage,
+      customerId: customerId ?? customerId,
     );
   }
 }
@@ -43,10 +46,19 @@ final class SalesAddState {
 class SalesAddNotifier extends Notifier<SalesAddState> {
   late final SalesRepository _repo;
 
+  TextEditingController customerNameController = TextEditingController();
+  TextEditingController customerPhoneController = TextEditingController();
+  TextEditingController customerEmailController = TextEditingController();
+  TextEditingController customerAddressController = TextEditingController();
+  TextEditingController customerOpeningBalanceController =
+      TextEditingController();
+
+  final customerAddFormKey = GlobalKey<FormState>();
+
   @override
   SalesAddState build() {
     _repo = ref.read(salesRepositoryProvider);
-    Future.microtask(() => getSaleCustomer());
+    Future.microtask(() => getAllCustomer());
     return SalesAddState();
   }
 
@@ -79,8 +91,6 @@ class SalesAddNotifier extends Notifier<SalesAddState> {
 
       // If the API expects sales_details as part of body
       // you may need to send salesDetails inside addSales method in repository
-
-      state = state.copyWith(isLoading: false, response: response);
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -89,41 +99,45 @@ class SalesAddNotifier extends Notifier<SalesAddState> {
     }
   }
 
- Future<void> getSaleCustomer() async {
-  state = state.copyWith(isLoading: true);
-  final phone = await SharedPreferencesHelper.getString('phone');
-  final pin = await SharedPreferencesHelper.getString('pin');
-  final code = await SharedPreferencesHelper.getString('code');
+  Future<void> getAllCustomer() async {
+    state = state.copyWith(isLoading: true);
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
 
-  try {
-    final response = await _repo.getCustomer(
-      phone: phone.toString(),
-      pin: pin.toString(),
-      code: code.toString(),
-    );
-    print(response);
-    if (response['statusCode'] == 200) {
-      print(response['data']);
-      final responseData = CustomerResponse.fromJson(response['data']);
-      state = state.copyWith(
-        isLoading: false,  // ✅ Set loading false here
-        customer: responseData,
-        filteredCustomer: responseData.items,
+    try {
+      final response = await _repo.getAllCustomer(
+        phone: phone.toString(),
+        pin: pin.toString(),
+        code: code.toString(),
       );
-      print(state.filteredCustomer);
-      print("done");
-    } else {
-      print("error $response");
-      state = state.copyWith(isLoading: false);  // ✅ Also set here
+      print(response);
+      if (response['statusCode'] == 200) {
+        print(response['data']);
+        final responseData = AllCustomerModel.fromJson(response['data']);
+        state = state.copyWith(
+          isLoading: false, // ✅ Set loading false here
+          customer: responseData,
+          filteredCustomer: responseData.items,
+        );
+        print(state.filteredCustomer);
+        print("done");
+      } else {
+        print("error $response");
+        state = state.copyWith(isLoading: false); // ✅ Also set here
+      }
+    } catch (e) {
+      print(e);
+      state = state.copyWith(isLoading: false); // ✅ And here
     }
-  } catch (e) {
-    print(e);
-    state = state.copyWith(isLoading: false);  // ✅ And here
+    // Remove the finally block entirely
   }
-  // Remove the finally block entirely
-}
+  
+  void updateCustomerId(String customerId){
+    state = state.copyWith(customerId: customerId);
+  }
 
-    void searchCustomer(String query) {
+  void searchCustomer(String query) {
     final allCustomers = state.customer?.items ?? [];
 
     if (query.isEmpty) {
@@ -132,12 +146,31 @@ class SalesAddNotifier extends Notifier<SalesAddState> {
     } else {
       final filtered = allCustomers
           .where(
-            (supplier) => supplier.customerName.toLowerCase().contains(
+            (supplier) => supplier.supplierName.toLowerCase().contains(
               query.toLowerCase(),
             ),
           )
           .toList();
       state = state.copyWith(filteredCustomer: filtered);
     }
+  }
+
+  Future<void> addCustomer() async {
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
+
+    final response = await _repo.addCustomer(
+      code: code.toString(),
+      mobile: phone.toString(),
+      pin: pin.toString(),
+      customerName: customerNameController.text.trim(),
+      customerEmail: customerEmailController.text.trim(),
+      customerPhone: customerPhoneController.text.trim(),
+      customerAddress: customerAddressController.text.trim(),
+      openingBalance: int.tryParse(customerOpeningBalanceController.text.trim())?? 0,
+    );
+
+    print(response);
   }
 }

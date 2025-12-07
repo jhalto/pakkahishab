@@ -4,19 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/global_widgets/custom_pakka_form_field.dart';
 import 'package:pakkahishab/core/helper/validation_helper.dart';
-import 'package:pakkahishab/features/sales/data/models/all_customer_model.dart';
-import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_add_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 
-class SalesCustomerWidget extends StatelessWidget {
-  const SalesCustomerWidget({super.key});
+class PurchaseSupplierWidget extends StatelessWidget {
+  const PurchaseSupplierWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final addViewModel = ref.watch(saleAddViewModelProvider);
-        final _vmn = ref.watch(saleAddViewModelProvider.notifier);
-        final allCustomers = addViewModel.customer?.items ?? [];
+        final _vm = ref.watch(purchaseAddViewModelProvider);
+        final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+        final allCustomers = _vm.filteredSupplier ?? [];
 
         if (allCustomers.isEmpty) {
           return CircularProgressIndicator();
@@ -25,9 +25,9 @@ class SalesCustomerWidget extends StatelessWidget {
 
         return Row(
           children: [
-            SizedBox(width: 10,),
+            SizedBox(width: 10),
             Expanded(
-              child: DropdownSearch<AllCustomer>(
+              child: DropdownSearch<AllSupplier>(
                 // REQUIRED: Return Future<List<Customer>>
                 items: (filter, loadProps) async {
                   return allCustomers;
@@ -41,22 +41,30 @@ class SalesCustomerWidget extends StatelessWidget {
                 },
 
                 // Show customer name
-                itemAsString: (AllCustomer c) => c.supplierName,
+                itemAsString: (AllSupplier c) => c.supplierName,
 
                 // Selected item - uncomment when ready
                 // selectedItem: addViewModel.selectedCustomer,
 
                 // Compare function
-                compareFn: (AllCustomer a, AllCustomer b) =>
+                compareFn: (AllSupplier a, AllSupplier b) =>
                     a.supplierId == b.supplierId,
 
                 popupProps: PopupProps.menu(
+                  menuProps: MenuProps(
+                    backgroundColor: AppColors.whiteColor,
+                    borderRadius: BorderRadius.circular(
+                      8,
+                    ), // 👈 popup border radius
+                  ),
+
                   showSearchBox: true,
                   searchFieldProps: TextFieldProps(
                     decoration: InputDecoration(
-                      hintText: "কাস্টমার খুঁজুন...",
+                      hintText: "সাপ্লায়ার খুঁজুন...",
                       prefixIcon: const Icon(Icons.search),
                       filled: true,
+                       contentPadding: EdgeInsets.zero,
                       fillColor: Colors.grey.shade100,
                       border: InputBorder.none,
                     ),
@@ -65,8 +73,9 @@ class SalesCustomerWidget extends StatelessWidget {
 
                 decoratorProps: DropDownDecoratorProps(
                   decoration: InputDecoration(
-                    labelText: "কাস্টমার নির্বাচন করুন",
+                    labelText: "সাপ্লায়ার নির্বাচন করুন",
                     filled: true,
+                     contentPadding: EdgeInsets.zero,
                     fillColor: Colors.grey.shade200,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -76,8 +85,8 @@ class SalesCustomerWidget extends StatelessWidget {
                   ),
                 ),
 
-                onChanged: (AllCustomer? value) {
-                   _vmn.updateCustomerId(value!.supplierId);
+                onChanged: (AllSupplier? value) {
+                  _vmn.updateSupplierId(value!.supplierId);
                 },
               ),
             ),
@@ -111,7 +120,7 @@ class SalesCustomerWidget extends StatelessWidget {
                             SizedBox(height: 20),
 
                             Text(
-                              "Add New Customer",
+                              "Add New Supplier",
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -128,9 +137,10 @@ class SalesCustomerWidget extends StatelessWidget {
                                   CustomPakkaFormField(
                                     controller: _vmn.customerNameController,
 
-                                    label: "Customer Name *", 
-                                   
-                                    validator: (value) => Validation.validateName(value, context),
+                                    label: "Customer Name *",
+
+                                    validator: (value) =>
+                                        Validation.validateName(value, context),
                                   ),
                                   SizedBox(height: 12),
 
@@ -138,7 +148,11 @@ class SalesCustomerWidget extends StatelessWidget {
                                   CustomPakkaFormField(
                                     controller: _vmn.customerPhoneController,
                                     label: "Customer Phone *",
-                                    validator: (value) => Validation.validatePhone(value, context),
+                                    validator: (value) =>
+                                        Validation.validatePhone(
+                                          value,
+                                          context,
+                                        ),
                                   ),
                                   SizedBox(height: 12),
 
@@ -155,7 +169,8 @@ class SalesCustomerWidget extends StatelessWidget {
                                   SizedBox(height: 12),
 
                                   CustomPakkaFormField(
-                                    controller: _vmn.customerOpeningBalanceController,
+                                    controller:
+                                        _vmn.customerOpeningBalanceController,
                                     label: "Opening Balance",
                                   ),
                                 ],
@@ -176,8 +191,9 @@ class SalesCustomerWidget extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () async {
-                                  if (_vmn.customerAddFormKey.currentState!.validate()) {
-                                    await _vmn.addCustomer();
+                                  if (_vmn.customerAddFormKey.currentState!
+                                      .validate()) {
+                                    await _vmn.addSupplier();
 
                                     Navigator.pop(context);
                                   }

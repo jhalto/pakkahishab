@@ -91,4 +91,123 @@ class PurchaseServices {
       return {"statusCode": 666, "data": "Catch Error $e"};
     }
   }
+
+   Future<Map<String, dynamic>> getAllSupplier({
+    required String phone,
+    required String pin,
+    required String code,
+  }) async {
+    final url =
+        "${Urls.baseUrl}all_supplier_name/?mobile=$phone&password=$pin&school_code=$code";
+    Dio dio = Dio();
+    try {
+      final response = await dio.get(url);
+      print(url);
+      print(response);
+      return {"statusCode": response.statusCode, "data": response.data};
+    } catch (e) {
+      return {"statusCode": 666, "data": "Catch Error $e"};
+    }
+  }
+   
+
+    Future<Map<String, dynamic>> addSupplier({
+    required String code,
+    required String mobile,
+    required String pin,
+    required String customerName,
+    required String customerPhone,
+    String? customerAddress,
+    String? customerEmail,
+    int openingBalance = 0,
+  }) async {
+    final url =
+        "${Urls.baseUrl}Insert_Supplier/?school_code=$code&MOBILE=$mobile&PASSWORD=$pin";
+
+    final body = {
+      "suppliers": [
+        {
+          "supplier_name": customerName,
+          "phone": customerPhone,
+          "address": customerAddress ?? "",
+          "email": customerEmail ?? "",
+          "godown_no": "1",
+          "opening_balance": openingBalance,
+        },
+      ],
+    };
+
+    Dio dio = Dio()
+      ..options.connectTimeout = const Duration(seconds: 10)
+      ..options.receiveTimeout = const Duration(seconds: 10);
+
+    try {
+      final response = await dio.post(
+        url,
+        data: body,
+        options: Options(
+          headers: {"Content-Type": "application/json"},
+
+          // Validate only status code 200–299
+        ),
+      );
+      print(response);
+      // -------------------------
+      // SUCCESS (status 200–299)
+      // -------------------------
+
+      return {
+        "statusCode": response.statusCode,
+        "success": true,
+        "data": response.data,
+      };
+    } on DioException catch (e) {
+      // -------------------------
+      // DIO EXCEPTIONS (NETWORK ERRORS)
+      // -------------------------
+
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        return {
+          "statusCode": e.response!.statusCode,
+          "success": false,
+          "message": "Connection timeout. Please try again.",
+          "data": e.response?.data,
+        };
+      }
+
+      if (e.type == DioExceptionType.badResponse) {
+        return {
+          "statusCode": e.response!.statusCode,
+          "success": false,
+          "message": "Server error occurred",
+          "data": e.response?.data,
+        };
+      }
+
+      if (e.type == DioExceptionType.connectionError) {
+        return {
+          "statusCode": e.response!.statusCode,
+          "success": false,
+          "message": "No internet connection",
+        };
+      }
+
+      return {
+        "statusCode": e.response!.statusCode,
+        "success": false,
+        "message": "Unexpected network error: ${e.message}",
+      };
+    } catch (e) {
+      // -------------------------
+      // ANY OTHER UNKNOWN ERRORS
+      // -------------------------
+      return {
+        "statusCode": 666,
+        "success": false,
+        "message": "Unexpected error: $e",
+      };
+    }
+  }
+
 }
