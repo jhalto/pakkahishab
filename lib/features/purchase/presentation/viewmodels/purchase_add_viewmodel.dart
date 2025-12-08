@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
+import 'package:pakkahishab/core/utils/show_snackbar.dart';
+import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/supplier_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
@@ -14,32 +16,83 @@ final purchaseAddViewModelProvider =
       () => PurchaseAddNotifier(),
     );
 
+final supplierListProvider = FutureProvider<List<AllSupplier>>((ref) async {
+  final repo = ref.watch(purchaseRepositoryProvider);
+
+  final phone = await SharedPreferencesHelper.getString('phone');
+  final pin = await SharedPreferencesHelper.getString('pin');
+  final code = await SharedPreferencesHelper.getString('code');
+
+  final response = await repo.getAllSupplier(
+    phone: phone.toString(),
+    pin: pin.toString(),
+    code: code.toString(),
+  );
+
+  if (response['statusCode'] == 200) {
+    final model = AllSupplierModel.fromJson(response['data']);
+    return model.items;
+  } else {
+    throw Exception("Failed to load suppliers");
+  }
+});
+
+final productListProvider = FutureProvider<List<AllProduct>>((ref) async {
+  try {
+    final _repo = ref.watch(purchaseRepositoryProvider);
+
+    final phone = await SharedPreferencesHelper.getString('phone') ?? '';
+    final pin = await SharedPreferencesHelper.getString('pin') ?? '';
+    final code = await SharedPreferencesHelper.getString('code') ?? '';
+
+    final response = await _repo.getAllProduct(
+      mobile: phone,
+      pin: pin,
+      code: code,
+    );
+
+    print("API Response: $response");
+
+    if (response['success'] == true) {
+      final model = AllProductResponse.fromJson(response['data']);
+      print("Parsed items: ${model.items.length}");
+      return model.items;
+    } else {
+      final message = response['message'] ?? "Failed to load Product";
+      throw Exception(message);
+    }
+  } catch (e) {
+    print("Error: $e");
+    throw Exception("Something went wrong: $e");
+  }
+});
+
 final class PurchaseAddState {
   final bool isLoading;
   final String? errorMessage;
-  final AllSupplierModel? supplier;
-  final List<AllSupplier>? filteredSupplier;
+  // final AllSupplierModel? supplier;
+  // final List<AllSupplier>? filteredSupplier;
   final String? supplierId;
 
   PurchaseAddState({
     this.isLoading = false,
-    this.supplier,
-    this.filteredSupplier,
+    // this.supplier,
+    // this.filteredSupplier,
     this.errorMessage,
     this.supplierId,
   });
 
   PurchaseAddState copyWith({
     bool? isLoading,
-    final AllSupplierModel? supplier,
-    final List<AllSupplier>? filteredSupplier,
+    // final AllSupplierModel? supplier,
+    // final List<AllSupplier>? filteredSupplier,
     String? errorMessage,
     String? supplierId,
   }) {
     return PurchaseAddState(
       isLoading: isLoading ?? this.isLoading,
-      supplier: supplier ?? this.supplier,
-      filteredSupplier: filteredSupplier ?? this.filteredSupplier,
+      // supplier: supplier ?? this.supplier,
+      // filteredSupplier: filteredSupplier ?? this.filteredSupplier,
       errorMessage: errorMessage ?? errorMessage,
       supplierId: supplierId ?? supplierId,
     );
@@ -49,11 +102,18 @@ final class PurchaseAddState {
 class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   late final PurchaseRepository _repo;
 
-  TextEditingController customerNameController = TextEditingController();
-  TextEditingController customerPhoneController = TextEditingController();
-  TextEditingController customerEmailController = TextEditingController();
-  TextEditingController customerAddressController = TextEditingController();
-  TextEditingController customerOpeningBalanceController =
+  TextEditingController supplierNameController = TextEditingController();
+  TextEditingController supplierPhoneController = TextEditingController();
+  TextEditingController supplierEmailController = TextEditingController();
+  TextEditingController supplierAddressController = TextEditingController();
+  TextEditingController supplierOpeningBalanceController =
+      TextEditingController();
+
+  TextEditingController productNameController = TextEditingController();
+  TextEditingController productPriceController = TextEditingController();
+  TextEditingController productSellPriceController = TextEditingController();
+  TextEditingController productManufacturingDateController = TextEditingController();
+  TextEditingController productOpeningBalanceController =
       TextEditingController();
 
   final customerAddFormKey = GlobalKey<FormState>();
@@ -61,7 +121,6 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   @override
   PurchaseAddState build() {
     _repo = ref.read(purchaseRepositoryProvider);
-    Future.microtask(() => getAllSupplier());
     return PurchaseAddState();
   }
 
@@ -102,38 +161,38 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   //   }
   // }
 
-  Future<void> getAllSupplier() async {
-    state = state.copyWith(isLoading: true);
-    final phone = await SharedPreferencesHelper.getString('phone');
-    final pin = await SharedPreferencesHelper.getString('pin');
-    final code = await SharedPreferencesHelper.getString('code');
+  // Future<void> getAllSupplier() async {
+  //   state = state.copyWith(isLoading: true);
+  //   final phone = await SharedPreferencesHelper.getString('phone');
+  //   final pin = await SharedPreferencesHelper.getString('pin');
+  //   final code = await SharedPreferencesHelper.getString('code');
 
-    try {
-      final response = await _repo.getAllSupplier(
-        phone: phone.toString(),
-        pin: pin.toString(),
-        code: code.toString(),
-      );
-      print(response);
-      if (response['statusCode'] == 200) {
-        print(response['data']);
-        final responseData = AllSupplierModel.fromJson(response['data']);
-        state = state.copyWith(
-          isLoading: false, // ✅ Set loading false here
-          supplier: responseData,
-          filteredSupplier: responseData.items,
-        );
-        print("done");
-      } else {
-        print("error $response");
-        state = state.copyWith(isLoading: false); // ✅ Also set here
-      }
-    } catch (e) {
-      print(e);
-      state = state.copyWith(isLoading: false); // ✅ And here
-    }
-    // Remove the finally block entirely
-  }
+  //   try {
+  //     final response = await _repo.getAllSupplier(
+  //       phone: phone.toString(),
+  //       pin: pin.toString(),
+  //       code: code.toString(),
+  //     );
+  //     print(response);
+  //     if (response['statusCode'] == 200) {
+  //       print(response['data']);
+  //       final responseData = AllSupplierModel.fromJson(response['data']);
+  //       state = state.copyWith(
+  //         isLoading: false, // ✅ Set loading false here
+  //         supplier: responseData,
+  //         filteredSupplier: responseData.items,
+  //       );
+  //       print("done");
+  //     } else {
+  //       print("error $response");
+  //       state = state.copyWith(isLoading: false); // ✅ Also set here
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     state = state.copyWith(isLoading: false); // ✅ And here
+  //   }
+  //   // Remove the finally block entirely
+  // }
 
   void updateSupplierId(String supplierId) {
     state = state.copyWith(supplierId: supplierId);
@@ -159,22 +218,62 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   //   }
   // }
 
-  Future<void> addSupplier() async {
+  Future<void> addSupplier(BuildContext context) async {
+    state = state.copyWith(isLoading: true);
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
-
+    await Future.delayed(Duration(seconds: 2));
     final response = await _repo.addSupplier(
       code: code.toString(),
       mobile: phone.toString(),
       pin: pin.toString(),
-      customerName: customerNameController.text.trim(),
-      customerEmail: customerEmailController.text.trim(),
-      customerPhone: customerPhoneController.text.trim(),
-      customerAddress: customerAddressController.text.trim(),
-      openingBalance: int.tryParse(customerOpeningBalanceController.text.trim())?? 0,
+      customerName: supplierNameController.text.trim(),
+      customerEmail: supplierEmailController.text.trim(),
+      customerPhone: supplierPhoneController.text.trim(),
+      customerAddress: supplierAddressController.text.trim(),
+      openingBalance:
+          int.tryParse(supplierOpeningBalanceController.text.trim()) ?? 0,
     );
 
-    print(response);
+    if (response['statusCode'] == 200 &&
+        response['data']['message'] == 'Suppliers inserted successfully') {
+      state = state.copyWith(isLoading: false);
+      if (!context.mounted) return;
+      Navigator.pop(context);
+      showCustomSnackBar(
+        context,
+        "Suppliers inserted successfully",
+        type: SnackBarType.success,
+      );
+      // getAllSupplier();
+      supplierNameController.clear();
+      supplierPhoneController.clear();
+      supplierEmailController.clear();
+      supplierAddressController.clear();
+      supplierOpeningBalanceController.clear();
+    } else if (response['statusCode'] == 200 &&
+        response['data']['message'] ==
+            'ORA-00001: unique constraint (DEV.CONS_SUPMOBILE) violated') {
+      state = state.copyWith(isLoading: false);
+
+      if (!context.mounted) return;
+
+      showCustomSnackBar(context, "The Phone number is Already taken");
+    }
+  }
+
+  Future<void> addProduct() async {
+    state = state.copyWith(isLoading: true);
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
+
+    final List<AddProductItem> productList = [
+      AddProductItem(name: )
+    ];
+
+    final response = await _repo.addProduct(code: code.toString(), mobile: phone.toString(), pin: pin.toString(), product: productList);
+
   }
 }
