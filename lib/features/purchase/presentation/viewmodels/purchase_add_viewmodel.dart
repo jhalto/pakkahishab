@@ -1,14 +1,11 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
-import 'package:pakkahishab/features/purchase/data/models/supplier_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
-import 'package:pakkahishab/features/sales/data/models/all_customer_model.dart';
-import 'package:pakkahishab/features/sales/data/repositories/sales_repository.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_details_add_widget.dart';
 import 'package:riverpod/riverpod.dart';
 
 final purchaseAddViewModelProvider =
@@ -70,51 +67,79 @@ final productListProvider = FutureProvider<List<AllProduct>>((ref) async {
 final class PurchaseAddState {
   final bool isLoading;
   final String? errorMessage;
-  // final AllSupplierModel? supplier;
-  // final List<AllSupplier>? filteredSupplier;
+
+  final String? selectedManufacturingDate;
+  final String? selectedExpiredDate;
   final String? supplierId;
+  final List<PurchaseDetailsProduct>? selectedPurchaseProducts;
 
   PurchaseAddState({
     this.isLoading = false,
-    // this.supplier,
-    // this.filteredSupplier,
+
+    String? selectedManufacturingDate,
+    this.selectedExpiredDate,
     this.errorMessage,
     this.supplierId,
-  });
+    this.selectedPurchaseProducts,
+  }) : selectedManufacturingDate =
+           selectedManufacturingDate ??
+           DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   PurchaseAddState copyWith({
     bool? isLoading,
-    // final AllSupplierModel? supplier,
-    // final List<AllSupplier>? filteredSupplier,
+    String? selectedManufacturingDate,
+    String? selectedExpiredDate,
     String? errorMessage,
     String? supplierId,
+    List<PurchaseDetailsProduct>? selectedPurchaseProducts,
   }) {
     return PurchaseAddState(
       isLoading: isLoading ?? this.isLoading,
-      // supplier: supplier ?? this.supplier,
-      // filteredSupplier: filteredSupplier ?? this.filteredSupplier,
-      errorMessage: errorMessage ?? errorMessage,
-      supplierId: supplierId ?? supplierId,
+      selectedManufacturingDate:
+          selectedManufacturingDate ?? this.selectedManufacturingDate,
+      selectedExpiredDate: selectedExpiredDate ?? this.selectedExpiredDate,
+
+      errorMessage: errorMessage ?? this.errorMessage,
+      supplierId: supplierId ?? this.supplierId,
+      selectedPurchaseProducts: selectedPurchaseProducts ?? selectedPurchaseProducts
     );
   }
 }
 
 class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   late final PurchaseRepository _repo;
-
+  // supplier add controllers
   TextEditingController supplierNameController = TextEditingController();
   TextEditingController supplierPhoneController = TextEditingController();
   TextEditingController supplierEmailController = TextEditingController();
   TextEditingController supplierAddressController = TextEditingController();
   TextEditingController supplierOpeningBalanceController =
       TextEditingController();
-
+  // product add controllers
   TextEditingController productNameController = TextEditingController();
   TextEditingController productPriceController = TextEditingController();
   TextEditingController productSellPriceController = TextEditingController();
-  TextEditingController productManufacturingDateController = TextEditingController();
-  TextEditingController productOpeningBalanceController =
-      TextEditingController();
+  TextEditingController productCodeController = TextEditingController();
+  TextEditingController productStockController = TextEditingController();
+  
+
+  void clearProductAddController(){
+   productCodeController.clear();
+   productNameController.clear();
+   productSellPriceController.clear();
+   productStockController.clear();
+   productPriceController.clear(); 
+  }
+  // purchase product add controllers and variable
+
+  TextEditingController purchaseProductQuantity = TextEditingController(text: 1.toString());
+  String selectedPurchaseProductName = '';
+  String selectedPurchaseProductPrice = '';
+  String selectedPurchaseProductId = '';
+  
+
+  
+  // TextEditingController purchaseProductQuantity = TextEditingController();
 
   final customerAddFormKey = GlobalKey<FormState>();
 
@@ -263,17 +288,60 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     }
   }
 
-  Future<void> addProduct() async {
+  Future<void> addProduct(BuildContext context) async {
     state = state.copyWith(isLoading: true);
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
     final List<AddProductItem> productList = [
-      AddProductItem(name: )
+      AddProductItem(
+        name: productNameController.text.trim(),
+        purchasePrice: double.tryParse(productPriceController.text.trim()),
+        sellPrice: double.tryParse(productSellPriceController.text.trim()),
+        manufacturingDate: state.selectedManufacturingDate.toString(),
+        productStock: productStockController.text.trim(),
+        productCode: productCodeController.text.trim(),
+      ),
     ];
 
-    final response = await _repo.addProduct(code: code.toString(), mobile: phone.toString(), pin: pin.toString(), product: productList);
+    try {
+      final response = await _repo.addProduct(
+        code: code.toString(),
+        mobile: phone.toString(),
+        pin: pin.toString(),
+        product: productList,
+      );
+      print(response);
+      if (response['statusCode'] == 200 && response['data']['status'] == 'success') {
+        
+        state = state.copyWith(isLoading: false);
+        
+        if (!context.mounted) return;
+        FocusScope.of(context).unfocus();
+        Navigator.pop(context);
 
-  }
+        showCustomSnackBar(context, "Products inserted successfully", type: SnackBarType.success);
+        
+        selectedPurchaseProductName = productList.first.name;
+        selectedPurchaseProductPrice = productList.first.purchasePrice.toString();
+        // selectedPurchaseProductId = productList.first.;
+        
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PurchaseProductDetailsAddWidget(selectedProductAdd: productList.first),));
+        ref.invalidate(productListProvider);
+        clearProductAddController();
+      }else if(response['data']['status'] == 'error'){
+         state = state.copyWith(isLoading: false);
+         if(!context.mounted) return;
+         showCustomSnackBar(context, response['data']['message']);
+
+      }
+    } catch (e) {
+       state = state.copyWith(isLoading: false);
+      print(e);
+    }
+  } 
+
+  
+  
 }

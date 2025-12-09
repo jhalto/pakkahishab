@@ -298,10 +298,10 @@ class PurchaseServices {
 
     Dio dio = Dio();
     try {
-      final response = await dio.get(url);
-      print(response);
+      final response = await dio.post(url, data: body);
+     
       if (response.statusCode == 200) {
-        return {"success": true, "data": response.data};
+        return {"statusCode": response.statusCode ,"success": true, "data": response.data};
       } else {
         return {
           "success": false,

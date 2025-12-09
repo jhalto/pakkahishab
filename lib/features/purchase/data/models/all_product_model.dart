@@ -15,13 +15,19 @@ class AllProductResponse {
 
   factory AllProductResponse.fromJson(Map<String, dynamic> json) {
     return AllProductResponse(
-      items: (json['items'] as List<dynamic>)
+      items: (json['items'] as List<dynamic>? ?? [])
           .map((item) => AllProduct.fromJson(item))
           .toList(),
-      hasMore: json['hasMore'] as bool,
-      limit: json['limit'] as int,
-      offset: json['offset'] as int,
-      count: json['count'] as int,
+      hasMore: json['hasMore'] == true,
+      limit: json['limit'] is int
+          ? json['limit']
+          : int.tryParse(json['limit']?.toString() ?? '0') ?? 0,
+      offset: json['offset'] is int
+          ? json['offset']
+          : int.tryParse(json['offset']?.toString() ?? '0') ?? 0,
+      count: json['count'] is int
+          ? json['count']
+          : int.tryParse(json['count']?.toString() ?? '0') ?? 0,
     );
   }
 
@@ -39,50 +45,83 @@ class AllProductResponse {
 class AllProduct {
   final int productId;
   final String productName;
-  final int purchasePrice;
-  final int sellPrice;
+  final double? purchasePrice;
+  final double? sellPrice;
   final DateTime? manufacturingDate;
   final DateTime? expiredDate;
-  final int schoolCode;
-  final int productCode;
-  final int productStock;
-  final int projectCode;
-  final String password;
-  final String mobile;
+  final int? schoolCode;
+  final int? productCode;
+  final int? productStock;
+  final int? projectCode;
+  final String? password;
+  final String? mobile;
 
   AllProduct({
     required this.productId,
     required this.productName,
-    required this.purchasePrice,
-    required this.sellPrice,
+    this.purchasePrice,
+    this.sellPrice,
     this.manufacturingDate,
     this.expiredDate,
-    required this.schoolCode,
-    required this.productCode,
-    required this.productStock,
-    required this.projectCode,
-    required this.password,
-    required this.mobile,
+    this.schoolCode,
+    this.productCode,
+    this.productStock,
+    this.projectCode,
+    this.password,
+    this.mobile,
   });
 
-  factory AllProduct.fromJson(Map<String, dynamic> json) {
+  factory AllProduct.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      throw Exception('Product JSON cannot be null');
+    }
+
     return AllProduct(
-      productId: json['product_id'] as int,
-      productName: json['product_name'] as String,
-      purchasePrice: json['purchase_price'] as int,
-      sellPrice: json['sell_price'] as int,
+      productId: json['product_id'] is int
+          ? json['product_id']
+          : int.tryParse(json['product_id']?.toString() ?? '') ??
+                (throw Exception('product_id is required')),
+      productName:
+          json['product_name']?.toString() ??
+          (throw Exception('product_name is required')),
+      purchasePrice: json['purchase_price'] != null
+          ? (json['purchase_price'] is double
+                ? json['purchase_price']
+                : double.tryParse(json['purchase_price'].toString()))
+          : null,
+      sellPrice: json['sell_price'] != null
+          ? (json['sell_price'] is double
+                ? json['sell_price']
+                : double.tryParse(json['sell_price'].toString()))
+          : null,
       manufacturingDate: json['manufacturing_date'] != null
-          ? DateTime.tryParse(json['manufacturing_date'] as String)
+          ? DateTime.tryParse(json['manufacturing_date'].toString())
           : null,
       expiredDate: json['expired_date'] != null
-          ? DateTime.tryParse(json['expired_date'] as String)
+          ? DateTime.tryParse(json['expired_date'].toString())
           : null,
-      schoolCode: json['school_code'] as int,
-      productCode: json['product_code'] as int,
-      productStock: json['product_stock'] as int,
-      projectCode: json['project_code'] as int,
-      password: json['password'] as String,
-      mobile: json['mobile'] as String,
+      schoolCode: json['school_code'] != null
+          ? (json['school_code'] is int
+                ? json['school_code']
+                : int.tryParse(json['school_code'].toString()))
+          : null,
+      productCode: json['product_code'] != null
+          ? (json['product_code'] is int
+                ? json['product_code']
+                : int.tryParse(json['product_code'].toString()))
+          : null,
+      productStock: json['product_stock'] != null
+          ? (json['product_stock'] is int
+                ? json['product_stock']
+                : int.tryParse(json['product_stock'].toString()))
+          : null,
+      projectCode: json['project_code'] != null
+          ? (json['project_code'] is int
+                ? json['project_code']
+                : int.tryParse(json['project_code'].toString()))
+          : null,
+      password: json['password']?.toString(),
+      mobile: json['mobile']?.toString(),
     );
   }
 
@@ -92,9 +131,8 @@ class AllProduct {
       'product_name': productName,
       'purchase_price': purchasePrice,
       'sell_price': sellPrice,
-      'manufacturing_date':
-          manufacturingDate?.toIso8601String(), // null-safe
-      'expired_date': expiredDate?.toIso8601String(), // null-safe
+      'manufacturing_date': manufacturingDate?.toIso8601String(),
+      'expired_date': expiredDate?.toIso8601String(),
       'school_code': schoolCode,
       'product_code': productCode,
       'product_stock': productStock,
@@ -105,7 +143,7 @@ class AllProduct {
   }
 }
 
-class AddProductItem{
+class AddProductItem {
   final String name;
   final double? purchasePrice;
   final double? sellPrice;
@@ -121,22 +159,39 @@ class AddProductItem{
     this.manufacturingDate,
     this.expiredDate,
     this.productCode,
-    this.productStock
-
+    this.productStock,
   });
-  
-  Map<String, dynamic> toJson(){
+
+  Map<String, dynamic> toJson() {
     return {
       "product_name": name,
-      "purchase_price": purchasePrice ?? "",
+      "purchase_price": purchasePrice ?? 0.0,
       "sell_price": sellPrice ?? 0.0,
       "manufacturing_date": manufacturingDate ?? "",
       "expired_date": expiredDate ?? "",
       "product_code": productCode ?? "",
       "product_stock": productStock ?? 0,
-
     };
   }
-  
+}
 
+class PurchaseDetailsProduct {
+  int productId;
+  int quantity;
+  double unitPrice;
+
+  PurchaseDetailsProduct({
+    required this.productId,
+    this.quantity = 1,
+    required this.unitPrice,
+  });
+
+
+  Map<String, dynamic> toJson(){
+    return {
+      "product_id": productId,
+      "quantity":  quantity,
+      "unit_price": unitPrice,
+    };
+  }
 }
