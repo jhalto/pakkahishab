@@ -68,6 +68,20 @@ class LoginNotifier extends Notifier<LoginState> {
     state = state.copyWith(password: value, passwordError: error);
   }
 
+  Future<bool> isLogin(BuildContext context) async {
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
+
+    if(phone != null && pin != null && code != null){
+     
+     return true;
+      
+    }else{
+      return false;
+    }
+  }
+
   Future<bool> checkSavedNumber() async {
     final number = await SharedPreferencesHelper.getString('phone');
     print(number);
@@ -113,8 +127,11 @@ class LoginNotifier extends Notifier<LoginState> {
           ),
           SharedPreferencesHelper.saveString('phone', response['Mobile']),
           SharedPreferencesHelper.saveString('email', response['Email']),
-          SharedPreferencesHelper.saveString('code', response['School_code'].toString()),
-          SharedPreferencesHelper.saveString('pin',  state.password),
+          SharedPreferencesHelper.saveString(
+            'code',
+            response['School_code'].toString(),
+          ),
+          SharedPreferencesHelper.saveString('pin', state.password),
         ]);
         state = state.copyWith(phone: '', password: '');
         if (!context.mounted) return;

@@ -10,11 +10,26 @@ import 'package:pakkahishab/routes/app_routes.dart';
 import 'package:pakkahishab/core/global_widgets/custom_fullwidth_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends ConsumerWidget {
   const LoginView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final notifier = ref.read(loginNotifierProvider.notifier);
+
+      final isLoggedIn = await notifier.isLogin(context);
+
+      if (isLoggedIn && context.mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.navbar,
+          (route) => false,
+        );
+      }else{
+        notifier.checkSavedNumber();
+      }
+    });
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(

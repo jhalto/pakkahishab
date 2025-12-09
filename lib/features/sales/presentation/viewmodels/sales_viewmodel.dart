@@ -210,7 +210,7 @@ class SalesNotifier extends Notifier<SalesState> {
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
-      final response = await _repo.getCustomer(
+      final response = await _repo.getSaledCustomer(
         phone: phone.toString(),
         pin: pin.toString(),
         code: code.toString(),

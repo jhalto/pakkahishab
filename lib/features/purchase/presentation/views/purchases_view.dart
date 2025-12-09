@@ -5,10 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
+
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/views/purchase_add.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_appbar_back_with_search.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_details.dart';
+
 
 class PurchasesView extends StatelessWidget {
   const PurchasesView({super.key});
@@ -470,7 +474,10 @@ class PurchasesView extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          // Navigator.pushNamed(context, Routes.p)
+          navigateWithSlide(context: context, page: PurchaseAdd());
+        },
         backgroundColor: AppColors.primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.circular(100),

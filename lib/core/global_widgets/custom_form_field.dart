@@ -5,6 +5,7 @@ import 'package:pakkahishab/core/const/app_text_style.dart';
 
 class CustomFormField extends StatefulWidget {
   final String? hint;
+  final String? label;
   final TextEditingController controller;
   final bool isPassword;
   final Widget? prefixIcon;
@@ -14,6 +15,7 @@ class CustomFormField extends StatefulWidget {
   const CustomFormField({
     super.key,
     this.hint,
+    this.label,
     required this.controller,
     this.prefixIcon,
     this.isPassword = false,
@@ -115,6 +117,8 @@ class CustomFormFieldState extends State<CustomFormField> {
                 prefixIconConstraints: const BoxConstraints(minWidth: 50),
                 prefixIcon: widget.prefixIcon,
                 hintText: widget.hint,
+                labelText: widget.hint,
+                labelStyle: AppTextStyle.bodyMediumSecondary,
                 hintStyle: AppTextStyle.bodyMediumSecondary,
                 filled: true,
 

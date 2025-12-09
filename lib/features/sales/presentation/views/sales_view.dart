@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
+import 'package:pakkahishab/features/sales/presentation/views/sales_add.dart';
 import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_viewmodel.dart';
 import 'package:pakkahishab/features/sales/presentation/views/sale_details.dart';
 import 'package:pakkahishab/features/sales/presentation/widgets/sales_appbar_back_with_search.dart';
@@ -456,7 +458,9 @@ class SalesView extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          navigateWithSlide(context: context, page: SaleAdd());
+        },
         backgroundColor: AppColors.primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.circular(100),

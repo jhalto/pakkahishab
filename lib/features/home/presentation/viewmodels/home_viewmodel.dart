@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/features/home/data/repositories/home_repository.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final homeProvider = StateNotifierProvider<HomeNotifier, HomeState>((ref) {
   final repo = ref.watch(homeRepositoryProvider);
@@ -17,18 +18,18 @@ class HomeState {
   final String company;
 
   final List<IconData> icons;
-   String cashInHand ;
-   String cashAtBank ;
-   String totalPurchase;
-   String totalSales;
-   String totalPayable;
-   String totalReceivable;
-   String expenses;
-   String income;
-   String stock;
-   String advance;
-   String loan;
-   String mobileBanking;
+  String cashInHand;
+  String cashAtBank;
+  String totalPurchase;
+  String totalSales;
+  String totalPayable;
+  String totalReceivable;
+  String expenses;
+  String income;
+  String stock;
+  String advance;
+  String loan;
+  String mobileBanking;
   final String filter;
 
   HomeState({
@@ -135,9 +136,10 @@ class HomeNotifier extends StateNotifier<HomeState> {
     loadUserData();
     fetchDashBoard(state.filter);
   }
-  void updateFilter(String value){
-   state = state.copyWith(filter: value);
+  void updateFilter(String value) {
+    state = state.copyWith(filter: value);
   }
+
   Future<void> loadUserData() async {
     final results = await Future.wait([
       SharedPreferencesHelper.getString('name'),
@@ -155,88 +157,124 @@ class HomeNotifier extends StateNotifier<HomeState> {
   }
 
   Future<void> logout(BuildContext context) async {
-    // final sp = await SharedPreferences.getInstance();
-    // await sp.clear();
+    final sp = await SharedPreferences.getInstance();
+
+    // Save the phone before clearing
+    final savedPhone = sp.getString('phone');
+
+    // Clear all data
+    await sp.clear();
+
+    // Restore phone number
+    if (savedPhone != null) {
+      await sp.setString('phone', savedPhone);
+    }
+
     if (!context.mounted) return;
+
     Navigator.pushNamedAndRemoveUntil(context, Routes.login, (route) => false);
   }
 
- Future<void> fetchDashBoard(String filter) async {
-  final schoolCode = await SharedPreferencesHelper.getString('code');
-  
-  // Don't hit API if schoolCode is null or empty
-  if (schoolCode == null || schoolCode.isEmpty) return;
+  Future<void> fetchDashBoard(String filter) async {
+    final schoolCode = await SharedPreferencesHelper.getString('code');
 
-  try {
-    final dashboardResponse = await repository.fetchDashBoard(
-      filter,
-      schoolCode: schoolCode,
-    );
+    // Don't hit API if schoolCode is null or empty
+    if (schoolCode == null || schoolCode.isEmpty) return;
 
-    // Initialize all metrics to 0
-    var updatedState = state.copyWith(
-      totalPurchase: '0',
-      totalSales: '0',
-      expenses: '0',
-      income: '0',
-      cashInHand: '0',
-      stock: '0',
-      totalPayable: '0',
-      totalReceivable: '0',
-      cashAtBank: '0',
-      mobileBanking: '0',
-      advance: '0',
-      loan: '0',
-    );
+    try {
+      final dashboardResponse = await repository.fetchDashBoard(
+        filter,
+        schoolCode: schoolCode,
+      );
 
-    if (dashboardResponse != null && dashboardResponse.items.isNotEmpty) {
-      for (var item in dashboardResponse.items) {
-        switch (item.metric.toLowerCase()) {
-          case 'purchase':
-            updatedState = updatedState.copyWith(totalPurchase: item.amount.toString());
-            break;
-          case 'sales':
-            updatedState = updatedState.copyWith(totalSales: item.amount.toString());
-            break;
-          case 'expense':
-            updatedState = updatedState.copyWith(expenses: item.amount.toString());
-            break;
-          case 'income':
-            updatedState = updatedState.copyWith(income: item.amount.toString());
-            break;
-          case 'cash':
-            updatedState = updatedState.copyWith(cashInHand: item.amount.toString());
-            break;
-          case 'stock':
-            updatedState = updatedState.copyWith(stock: item.amount.toString());
-            break;
-          case 'supplier_due':
-            updatedState = updatedState.copyWith(totalPayable: item.amount.toString());
-            break;
-          case 'customer_due':
-            updatedState = updatedState.copyWith(totalReceivable: item.amount.toString());
-            break;
-          case 'bank':
-            updatedState = updatedState.copyWith(cashAtBank: item.amount.toString());
-            break;
-          case 'mobile_banking':
-            updatedState = updatedState.copyWith(mobileBanking: item.amount.toString());
-            break;
-          case 'advance':
-            updatedState = updatedState.copyWith(advance: item.amount.toString());
-            break;
-          case 'loan':
-            updatedState = updatedState.copyWith(loan: item.amount.toString());
-            break;
+      // Initialize all metrics to 0
+      var updatedState = state.copyWith(
+        totalPurchase: '0',
+        totalSales: '0',
+        expenses: '0',
+        income: '0',
+        cashInHand: '0',
+        stock: '0',
+        totalPayable: '0',
+        totalReceivable: '0',
+        cashAtBank: '0',
+        mobileBanking: '0',
+        advance: '0',
+        loan: '0',
+      );
+
+      if (dashboardResponse != null && dashboardResponse.items.isNotEmpty) {
+        for (var item in dashboardResponse.items) {
+          switch (item.metric.toLowerCase()) {
+            case 'purchase':
+              updatedState = updatedState.copyWith(
+                totalPurchase: item.amount.toString(),
+              );
+              break;
+            case 'sales':
+              updatedState = updatedState.copyWith(
+                totalSales: item.amount.toString(),
+              );
+              break;
+            case 'expense':
+              updatedState = updatedState.copyWith(
+                expenses: item.amount.toString(),
+              );
+              break;
+            case 'income':
+              updatedState = updatedState.copyWith(
+                income: item.amount.toString(),
+              );
+              break;
+            case 'cash':
+              updatedState = updatedState.copyWith(
+                cashInHand: item.amount.toString(),
+              );
+              break;
+            case 'stock':
+              updatedState = updatedState.copyWith(
+                stock: item.amount.toString(),
+              );
+              break;
+            case 'supplier_due':
+              updatedState = updatedState.copyWith(
+                totalPayable: item.amount.toString(),
+              );
+              break;
+            case 'customer_due':
+              updatedState = updatedState.copyWith(
+                totalReceivable: item.amount.toString(),
+              );
+              break;
+            case 'bank':
+              updatedState = updatedState.copyWith(
+                cashAtBank: item.amount.toString(),
+              );
+              break;
+            case 'mobile_banking':
+              updatedState = updatedState.copyWith(
+                mobileBanking: item.amount.toString(),
+              );
+              break;
+            case 'advance':
+              updatedState = updatedState.copyWith(
+                advance: item.amount.toString(),
+              );
+              break;
+            case 'loan':
+              updatedState = updatedState.copyWith(
+                loan: item.amount.toString(),
+              );
+              break;
+          }
         }
       }
-    }
 
-    state = updatedState; // ✅ Only one rebuild
-  } catch (e) {
-    print("Error fetching dashboard: $e");
+      state = updatedState; // ✅ Only one rebuild
+    } catch (e) {
+      print("Error fetching dashboard: $e");
+    }
   }
-}
 
   //   String getAmountByMetric(String metric) {
   //   try {

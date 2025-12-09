@@ -131,7 +131,7 @@ class AppTextStyle {
     fontWeight: FontWeight.w400,
     fontSize: 12.sp,
     height: 1.2,
-    color: Colors.black54,
+    color: Colors.black87,
   );
 
   /// Labels & Buttons

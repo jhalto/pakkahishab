@@ -7,6 +7,7 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/income/presentation/viewmodels/income_viewmodel.dart';
+import 'package:pakkahishab/features/income/presentation/views/income_details.dart';
 import 'package:pakkahishab/features/income/presentation/widgets/income_appbar_back_with_search.dart';
 
 class IncomeView extends StatelessWidget {
@@ -121,12 +122,12 @@ class IncomeView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (_) => ExpensesDetails(expenseItem: item,),
-                                  //   ),
-                                  // );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => IncomeDetails(incomeItem: item,),
+                                    ),
+                                  );
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(

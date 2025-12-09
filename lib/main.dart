@@ -15,7 +15,7 @@ void main() {
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final translation = ref.watch(translationProvider);
@@ -46,6 +46,7 @@ class MyApp extends ConsumerWidget {
             scaffoldBackgroundColor: AppColors.bgColor,
             textTheme: TextTheme(bodyMedium: AppTextStyle.bodyMedium),
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
           ),
           initialRoute: Routes.login,
           onGenerateRoute: Routes.generateRoute,

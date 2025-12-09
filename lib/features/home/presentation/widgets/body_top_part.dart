@@ -38,24 +38,29 @@ class BodyTopPart extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: Column(
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.cashInHand,
-                          style: AppTextStyle.bodyMediumWhite,
-                        ),
-                        const SizedBox(height: 2),
-                        Consumer(
-                          builder: (context, ref, child) {
-                            return Text(
-                              ref.watch(homeProvider).cashInHand,
-                              style: AppTextStyle.titleMedium.copyWith(
-                                color: AppColors.whiteColor,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, Routes.cash);
+                      },
+                      child: Column(
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.cashInHand,
+                            style: AppTextStyle.bodyMediumWhite,
+                          ),
+                          const SizedBox(height: 2),
+                          Consumer(
+                            builder: (context, ref, child) {
+                              return Text(
+                                ref.watch(homeProvider).cashInHand,
+                                style: AppTextStyle.titleMedium.copyWith(
+                                  color: AppColors.whiteColor,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -63,24 +68,29 @@ class BodyTopPart extends StatelessWidget {
                     child: VerticalDivider(color: AppColors.whiteColor),
                   ),
                   Expanded(
-                    child: Column(
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.cashAtBank,
-                          style: AppTextStyle.bodyMediumWhite,
-                        ),
-                        const SizedBox(height: 2),
-                        Consumer(
-                          builder: (context, ref, child) {
-                            return Text(
-                              ref.watch(homeProvider).cashAtBank,
-                              style: AppTextStyle.titleMedium.copyWith(
-                                color: AppColors.whiteColor,
-                              ),
-                            );
-                          },
-                        ),
-                      ],
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, Routes.bank);
+                      },
+                      child: Column(
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.cashAtBank,
+                            style: AppTextStyle.bodyMediumWhite,
+                          ),
+                          const SizedBox(height: 2),
+                          Consumer(
+                            builder: (context, ref, child) {
+                              return Text(
+                                ref.watch(homeProvider).cashAtBank,
+                                style: AppTextStyle.titleMedium.copyWith(
+                                  color: AppColors.whiteColor,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
