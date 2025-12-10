@@ -299,9 +299,13 @@ class PurchaseServices {
     Dio dio = Dio();
     try {
       final response = await dio.post(url, data: body);
-     
+
       if (response.statusCode == 200) {
-        return {"statusCode": response.statusCode ,"success": true, "data": response.data};
+        return {
+          "statusCode": response.statusCode,
+          "success": true,
+          "data": response.data,
+        };
       } else {
         return {
           "success": false,
@@ -361,6 +365,74 @@ class PurchaseServices {
         "success": false,
         "message": "Unexpected error: $e",
       };
+    }
+  }
+
+  Future<Map<String, dynamic>> addPurchase({
+    required String purchaseDate,
+    required String supplierId,
+    required String purchaseType,
+    required String netAmount,
+    required String due,
+    required String paidPrice,
+    required String mobile,
+    required String password,
+    required String schoolCode,
+   required List<Map<String, dynamic>> productList,
+  }) async {
+    final dio = Dio();
+
+    final url =
+        "https://erp.bdtender.tech:8443/ords/dev/PakkahisabApp/Insert_pa_purchase_and_p_details/"
+        "?SCHOOL_CODE=$schoolCode"
+        "&PASSWORD=$password"
+        "&MOBILE=$mobile"
+        "&PURCHASE_DATE=$purchaseDate"
+        "&SUPPLIER_ID=$supplierId"
+        "&PURCHASE_TYPE=$purchaseType"
+        "&NET_AMOUNT=$netAmount"
+        "&DUE=$due"
+        "&PAID_PRICE=$paidPrice";
+
+    final body = {
+      "purchase_details": productList,
+    };
+    
+    try {
+      final response = await dio.post(url, data:  body);
+     print(response);
+     print(url);
+     print(body);
+      if (response.statusCode == 200) {
+        if (response.data is Map<String, dynamic>) {
+          return response.data;
+        } else {
+          return {"success": false, "message": "Invalid response format"};
+        }
+      } else {
+        return {
+          "success": false,
+          "message": "Server error: ${response.statusCode}",
+        };
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout) {
+        return {"success": false, "message": "Connection timeout"};
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        return {"success": false, "message": "Server took too long to respond"};
+      } else if (e.type == DioExceptionType.badResponse) {
+        return {
+          "success": false,
+          "message": "Server error: ${e.response?.statusCode}",
+          "data": e.response?.data,
+        };
+      } else if (e.type == DioExceptionType.connectionError) {
+        return {"success": false, "message": "No internet connection"};
+      } else {
+        return {"success": false, "message": "Unexpected error: ${e.message}"};
+      }
+    } catch (e) {
+      return {"success": false, "message": "Unknown error: $e"};
     }
   }
 }

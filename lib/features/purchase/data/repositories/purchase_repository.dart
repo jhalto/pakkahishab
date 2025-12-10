@@ -57,10 +57,11 @@ class PurchaseRepository {
     final response = await _purchaseServices.getSupplier(
       phone: phone,
       pin: pin,
-      code: code
+      code: code,
     );
     return response;
   }
+
   Future<Map<String, dynamic>> getAllSupplier({
     required String phone,
     required String pin,
@@ -69,7 +70,7 @@ class PurchaseRepository {
     final response = await _purchaseServices.getAllSupplier(
       phone: phone,
       pin: pin,
-      code: code
+      code: code,
     );
     return response;
   }
@@ -91,7 +92,7 @@ class PurchaseRepository {
       customerName: customerName,
       customerPhone: customerPhone,
     );
-    return response;    
+    return response;
   }
 
   Future<Map<String, dynamic>> getAllProduct({
@@ -104,7 +105,7 @@ class PurchaseRepository {
       phone: mobile,
       pin: pin,
     );
-    return response;    
+    return response;
   }
 
   Future<Map<String, dynamic>> addProduct({
@@ -117,9 +118,35 @@ class PurchaseRepository {
       code: code,
       phone: mobile,
       pin: pin,
-      products: product
+      products: product,
     );
-    return response;    
+    return response;
+  }
+
+  Future<Map<String, dynamic>> addPurchase({
+    required String purchaseDate,
+    required String supplierId,
+    required String purchaseType,
+    required String netAmount,
+    required String due,
+    required String paidPrice,
+    required String mobile,
+    required String password,
+    required String schoolCode,
+   required List<Map<String, dynamic>> productList,
+  }) async {
+    final response = _purchaseServices.addPurchase(
+      purchaseDate: purchaseDate,
+      supplierId: supplierId,
+      purchaseType: purchaseType,
+      netAmount: netAmount,
+      due: due,
+      paidPrice: paidPrice,
+      mobile: mobile,
+      password: password,
+      schoolCode: schoolCode,
+      productList: productList,
+    );
+    return response;
   }
 }
-

@@ -176,11 +176,13 @@ class AddProductItem {
 }
 
 class PurchaseDetailsProduct {
-  int productId;
+  String productName;
+  String productId;
   int quantity;
   double unitPrice;
 
   PurchaseDetailsProduct({
+    required this.productName,
     required this.productId,
     this.quantity = 1,
     required this.unitPrice,
@@ -189,6 +191,7 @@ class PurchaseDetailsProduct {
 
   Map<String, dynamic> toJson(){
     return {
+      "product_name": productName,
       "product_id": productId,
       "quantity":  quantity,
       "unit_price": unitPrice,

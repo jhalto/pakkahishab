@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 
 class InvoiceNameDateWidget extends StatelessWidget {
   const InvoiceNameDateWidget({super.key});
@@ -21,49 +23,53 @@ class InvoiceNameDateWidget extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
+      child: Consumer(
+        builder: (context, ref, child) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Invoice No:",
-                style: AppTextStyle.bodySmall.copyWith(
-                  fontWeight: FontWeight.w400,
-                ),
+              Row(
+                children: [
+                  Text(
+                    "Invoice No:",
+                    style: AppTextStyle.bodySmall.copyWith(
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(width: 2),
+                  Text(
+                    ref.read(purchaseAddViewModelProvider.notifier).generateInvoiceNumber(),
+                    style: AppTextStyle.bodySmall.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(width: 2),
-              Text(
-                "29384793284",
-                style: AppTextStyle.bodySmall.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+              Row(
+                children: [
+                  Text(
+                    "Invoice Date:",
+                    style: AppTextStyle.bodySmall.copyWith(
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(width: 2),
+                  Text(
+                     ref.watch(purchaseAddViewModelProvider).purchaseDate.toString(),
+                    style: AppTextStyle.bodySmall.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Icon(Icons.calendar_today, size: 16),
+                  ),
+                ],
               ),
             ],
-          ),
-          Row(
-            children: [
-              Text(
-                "Invoice Date:",
-                style: AppTextStyle.bodySmall.copyWith(
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(width: 2),
-              Text(
-                "31/12/2025",
-                style: AppTextStyle.bodySmall.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(width: 8),
-              InkWell(
-                borderRadius: BorderRadius.circular(8),
-                child: Icon(Icons.calendar_today, size: 16),
-              ),
-            ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }

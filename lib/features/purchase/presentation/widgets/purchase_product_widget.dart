@@ -312,6 +312,7 @@ class PurchaseProductWidget extends ConsumerWidget {
 
                 onChanged: (value) {
                   if (value != null) {
+                    _vmn.selectedPurchaseProductId = value.productId.toString();
                     _vmn.selectedPurchaseProductName = value.productName;
                     _vmn.selectedPurchaseProductPrice = value.purchasePrice.toString();
                      Navigator.push(context, MaterialPageRoute(builder: (context) => PurchaseProductDetailsAddWidget(selectedProductAll: value),));
