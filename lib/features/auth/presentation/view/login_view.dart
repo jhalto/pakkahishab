@@ -23,7 +23,7 @@ class LoginView extends ConsumerWidget {
       if (isLoggedIn && context.mounted) {
         Navigator.pushNamedAndRemoveUntil(
           context,
-          Routes.navbar,
+          Routes.home,
           (route) => false,
         );
       }else{

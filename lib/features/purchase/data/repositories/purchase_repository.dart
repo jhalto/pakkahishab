@@ -124,16 +124,16 @@ class PurchaseRepository {
   }
 
   Future<Map<String, dynamic>> addPurchase({
-    required String purchaseDate,
-    required String supplierId,
-    required String purchaseType,
-    required String netAmount,
-    required String due,
-    required String paidPrice,
+    String? purchaseDate,
+    String? supplierId,
+    String? purchaseType,
+    String? netAmount,
+    String? due,
+    String? paidPrice,
     required String mobile,
     required String password,
     required String schoolCode,
-   required List<Map<String, dynamic>> productList,
+    List<Map<String, dynamic>>? productList,
   }) async {
     final response = _purchaseServices.addPurchase(
       purchaseDate: purchaseDate,
@@ -148,5 +148,24 @@ class PurchaseRepository {
       productList: productList,
     );
     return response;
+  }
+
+  Future<Map<String, dynamic>> getSupplierWisePurchases({
+    required String phone,
+    required String pin,
+    required String offset,
+    required String code,
+
+    String? supplierId,
+  }) async {
+    final purchaseData = await _purchaseServices.getPuchaseSupplierWise(
+      phone: phone,
+      pin: pin,
+      offset: offset,
+      code: code,
+      supplierId: supplierId,
+    );
+    print(purchaseData.length);
+    return purchaseData;
   }
 }

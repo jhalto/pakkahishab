@@ -29,18 +29,23 @@ class PurchaseAdd extends StatelessWidget {
           PurchaseProductItemWidget(),
           SizedBox(height: 10),
           AddPurchaseSummury(),
-          SizedBox(height: 20,),
+          SizedBox(height: 20),
           AddPurchasePaymentTypeWidget(),
 
-          SizedBox(height: 20,),
+          SizedBox(height: 20),
 
-          Consumer(builder: (context, ref, child) {
-            return CustomFullwidthButton(onTap: ()async{
-
-              ref.read(purchaseAddViewModelProvider.notifier).addPurchase();
-            }, title: "Add");
-          },) 
-          
+          Consumer(
+            builder: (context, ref, child) {
+              return CustomFullwidthButton(
+                onTap: () async {
+                  ref
+                      .read(purchaseAddViewModelProvider.notifier)
+                      .addPurchase(context);
+                },
+                title: "Add",
+              );
+            },
+          ),
         ],
       ),
     );

@@ -291,28 +291,21 @@ class PurchaseServices {
 
     required List<AddProductItem> products,
   }) async {
-    final body = {"products": products};
+    final body = {"products": products.map((e) => e.toJson()).toList()};
 
     final url =
         "${Urls.baseUrl}Insert_Pa_Product/?school_code=$code&MOBILE=$phone&PASSWORD=$pin";
-
+    print(body);
     Dio dio = Dio();
     try {
       final response = await dio.post(url, data: body);
 
-      if (response.statusCode == 200) {
-        return {
-          "statusCode": response.statusCode,
-          "success": true,
-          "data": response.data,
-        };
+      print(response.statusCode);
+
+      if (response.statusCode == 200 && response.data['stutus'] == 'success') {
+        return {"statusCode": response.statusCode, "data": response.data};
       } else {
-        return {
-          "success": false,
-          "statusCode": response.statusCode,
-          "message": "Unexpected status",
-          "data": response.data,
-        };
+        return {"statusCode": response.statusCode, "data": response.data};
       }
     } on DioException catch (e) {
       switch (e.type) {
@@ -369,51 +362,55 @@ class PurchaseServices {
   }
 
   Future<Map<String, dynamic>> addPurchase({
-    required String purchaseDate,
-    required String supplierId,
-    required String purchaseType,
-    required String netAmount,
-    required String due,
-    required String paidPrice,
+    String? purchaseDate,
+    String? supplierId,
+    String? purchaseType,
+    String? netAmount,
+    String? due,
+    String? paidPrice,
     required String mobile,
     required String password,
     required String schoolCode,
-   required List<Map<String, dynamic>> productList,
+    List<Map<String, dynamic>>? productList,
   }) async {
+    final url = "${Urls.baseUrl}Insert_pa_purchase_and_p_details/";
+
     final dio = Dio();
 
-    final url =
-        "https://erp.bdtender.tech:8443/ords/dev/PakkahisabApp/Insert_pa_purchase_and_p_details/"
-        "?SCHOOL_CODE=$schoolCode"
-        "&PASSWORD=$password"
-        "&MOBILE=$mobile"
-        "&PURCHASE_DATE=$purchaseDate"
-        "&SUPPLIER_ID=$supplierId"
-        "&PURCHASE_TYPE=$purchaseType"
-        "&NET_AMOUNT=$netAmount"
-        "&DUE=$due"
-        "&PAID_PRICE=$paidPrice";
-
-    final body = {
-      "purchase_details": productList,
+    // Build query parameter map
+    final queryParams = {
+      "SCHOOL_CODE": schoolCode,
+      "PASSWORD": password,
+      "MOBILE": mobile,
+      "PURCHASE_DATE": purchaseDate,
+      "SUPPLIER_ID": supplierId,
+      "PURCHASE_TYPE": purchaseType,
+      "NET_AMOUNT": netAmount,
+      "DUE": due,
+      "PAID_PRICE": paidPrice,
     };
-    
+
+    // Remove null or empty values
+    queryParams.removeWhere(
+      (key, value) => value == null || value.toString().isEmpty,
+    );
+    print(queryParams);
+    final body = {"purchase_details": productList};
+
+    print(url);
+
     try {
-      final response = await dio.post(url, data:  body);
-     print(response);
-     print(url);
-     print(body);
-      if (response.statusCode == 200) {
-        if (response.data is Map<String, dynamic>) {
-          return response.data;
-        } else {
-          return {"success": false, "message": "Invalid response format"};
-        }
+      final response = await dio.post(
+        url,
+        data: body,
+        queryParameters: queryParams,
+      );
+      print(response.data);
+
+      if (response.statusCode == 200 && response.data['status'] == "success") {
+        return {"statusCode": response.statusCode, "data": response.data};
       } else {
-        return {
-          "success": false,
-          "message": "Server error: ${response.statusCode}",
-        };
+        return {"statusCode": response.statusCode, "data": response.data};
       }
     } on DioException catch (e) {
       if (e.type == DioExceptionType.connectionTimeout) {
@@ -433,6 +430,52 @@ class PurchaseServices {
       }
     } catch (e) {
       return {"success": false, "message": "Unknown error: $e"};
+    }
+  }
+
+  Future<Map<String, dynamic>> getPuchaseSupplierWise({
+    required String phone,
+    required String pin,
+    required String offset,
+    required String code,
+
+    String? supplierId,
+  }) async {
+    final Dio dio = Dio();
+
+    // Base query parameters
+    final Map<String, dynamic> queryParams = {
+      'school_code': code,
+      'mobile': phone,
+      'password': pin,
+      'offset': offset,
+      'limit': '10',
+
+      'supplier_id': supplierId,
+    };
+    print(supplierId);
+
+    // ✅ Remove any null or empty parameters before request
+    queryParams.removeWhere(
+      (key, value) => value == null || value.toString().isEmpty,
+    );
+
+    final String url = "${Urls.baseUrl}get_supplier_wise_total_purchase/";
+
+    try {
+      final response = await dio.get(url, queryParameters: queryParams);
+
+      print("Request URL: ${response.realUri}");
+      print("Response: ${response.data}");
+
+      return {"statusCode": response.statusCode, "data": response.data};
+    } on DioException catch (e) {
+      return {
+        "statusCode": e.response?.statusCode ?? 666,
+        "data": e.response?.data ?? "Dio error: ${e.message}",
+      };
+    } catch (e) {
+      return {"statusCode": 666, "data": "Unexpected error: $e"};
     }
   }
 }

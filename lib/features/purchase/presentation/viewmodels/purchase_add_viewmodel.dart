@@ -1,8 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:pakkahishab/core/const/app_colors.dart';
+import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/core/global_widgets/custom_pakka_form_field.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
+import 'package:pakkahishab/core/helper/validation_helper.dart';
+import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
@@ -92,14 +98,15 @@ final class PurchaseAddState {
     this.selectedPurchaseProducts,
   }) : selectedManufacturingDate =
            selectedManufacturingDate ??
-           DateFormat('yyyy-MM-dd').format(DateTime.now()), purchaseDate =
-           purchaseDate ??
-           DateFormat('yyyy-MM-dd').format(DateTime.now());
+           DateFormat('yyyy-MM-dd').format(DateTime.now()),
+       purchaseDate =
+           purchaseDate ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   PurchaseAddState copyWith({
     bool? isLoading,
     String? selectedManufacturingDate,
     String? selectedExpiredDate,
+    String? purchaseDate,
     String? errorMessage,
     String? supplierId,
     String? paymentMethod,
@@ -112,7 +119,7 @@ final class PurchaseAddState {
       selectedManufacturingDate:
           selectedManufacturingDate ?? this.selectedManufacturingDate,
       selectedExpiredDate: selectedExpiredDate ?? this.selectedExpiredDate,
-
+      purchaseDate: purchaseDate ?? this.purchaseDate,
       errorMessage: errorMessage ?? this.errorMessage,
       supplierId: supplierId ?? this.supplierId,
       paymentMethod: paymentMethod ?? this.paymentMethod,
@@ -370,7 +377,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     );
 
     if (response['statusCode'] == 200 &&
-        response['data']['message'] == 'Suppliers inserted successfully') {
+        response['data']['status'] == 'success') {
       state = state.copyWith(isLoading: false);
       if (!context.mounted) return;
       Navigator.pop(context);
@@ -402,6 +409,10 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
+    print(phone);
+    print(pin);
+    print(code);
+
     final List<AddProductItem> productList = [
       AddProductItem(
         name: productNameController.text.trim(),
@@ -412,7 +423,12 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
         productCode: productCodeController.text.trim(),
       ),
     ];
-
+    print(productList.first.name);
+    print(productList.first.purchasePrice);
+    print(productList.first.sellPrice);
+    print(productList.first.manufacturingDate);
+    print(productList.first.productStock);
+    print(productList.first.productCode);
     try {
       final response = await _repo.addProduct(
         code: code.toString(),
@@ -421,6 +437,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
         product: productList,
       );
       print(response);
+
       if (response['statusCode'] == 200 &&
           response['data']['status'] == 'success') {
         state = state.copyWith(isLoading: false);
@@ -434,20 +451,21 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
           "Products inserted successfully",
           type: SnackBarType.success,
         );
+        // selectedPurchaseProductId = response['data']['inserted_products'][0]['product_id'];
+        // selectedPurchaseProductName = productList.first.name;
+        // selectedPurchaseProductPrice = productList.first.purchasePrice.toString();
+        // purchaseProductQuantity.text = "1";
 
-        selectedPurchaseProductName = productList.first.name;
-        selectedPurchaseProductPrice = productList.first.purchasePrice
-            .toString();
         // selectedPurchaseProductId = productList.first.;
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PurchaseProductDetailsAddWidget(
-              selectedProductAdd: productList.first,
-            ),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => PurchaseProductDetailsAddWidget(
+        //       selectedProductAdd: productList.first,
+        //     ),
+        //   ),
+        // );
         ref.invalidate(productListProvider);
         clearProductAddController();
       } else if (response['data']['status'] == 'error') {
@@ -471,40 +489,244 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
 
     return 'PM$numbers';
   }
+
   List<Map<String, dynamic>> getPurchaseDetailsApiFormat(
-    List<PurchaseDetailsProduct> products) {
-  return products.map((p) => {
-        "product_id": int.tryParse(p.productId) ?? 0,
-        "quantity": p.quantity,
-        "unit_price": p.unitPrice,
-      }).toList();
-}
-  Future<void> addPurchase() async {
+    List<PurchaseDetailsProduct> products,
+  ) {
+    return products
+        .map(
+          (p) => {
+            "product_id": int.tryParse(p.productId) ?? 0,
+            "quantity": p.quantity,
+            "unit_price": p.unitPrice,
+          },
+        )
+        .toList();
+  }
+
+  void updatePurchaseDate({required String date}) {
+    state = state.copyWith(purchaseDate: date);
+  }
+
+  Future<void> addPurchase(BuildContext context) async {
     state = state.copyWith(isLoading: true);
+
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
-    final response = _repo.addPurchase(
+    final purchaseTypeValue = state.purchaseType == 'Credit' ? "0" : "1";
+
+    // Safe product list (empty allowed)
+    final productList = (state.selectedPurchaseProducts ?? [])
+        .map(
+          (p) => {
+            "product_id": int.tryParse(p.productId) ?? 0,
+            "quantity": p.quantity,
+            "unit_price": p.unitPrice,
+          },
+        )
+        .toList();
+
+    // 🔥 IMPORTANT: await
+    final response = await _repo.addPurchase(
       purchaseDate: state.purchaseDate.toString(),
       supplierId: state.supplierId.toString(),
-      purchaseType: state.purchaseType.toString(),
+      purchaseType: purchaseTypeValue,
       netAmount: purchaseNetAmmountController.text.trim(),
       due: purchaseDuePriceController.text.trim(),
       paidPrice: purchasePaidPriceController.text.trim(),
-      mobile: phone.toString(),
-      password: pin.toString(),
-      schoolCode: code.toString(),
-      productList: state.selectedPurchaseProducts!
-        .map((p) => {
-              "product_id": int.tryParse(p.productId) ?? 0,
-              "quantity": p.quantity,
-              "unit_price": p.unitPrice,
-            })
-        .toList(),
+      mobile: phone ?? "",
+      password: pin ?? "",
+      schoolCode: code ?? "",
+      productList: productList, // works even when empty
     );
 
     print(response);
+
+    if (response['data']['status'] == 'success') {
+      if (!context.mounted) return;
+      showCustomSnackBar(context, "Purchase Add Successfully");
+    } else if (response['data']['status'] == 'error') {}
+
+    state = state.copyWith(isLoading: false);
   }
 
+  Future<void> showProductAddBottomSheet(BuildContext context) async {
+    showModalBottomSheet(
+      // isScrollControlled: true,
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (context) {
+        return Consumer(
+          builder: (context, ref, _) {
+            final _vm = ref.watch(
+              purchaseAddViewModelProvider,
+            ); // <- watch here
+            final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+            return Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                    left: 18,
+                    right: 18,
+                    top: 20,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          height: 5,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade400,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+
+                        Text(
+                          "Add New Product",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        SizedBox(height: 20),
+
+                        Form(
+                          key: _vmn.customerAddFormKey,
+                          child: Column(
+                            children: [
+                              CustomPakkaFormField(
+                                controller: _vmn.productNameController,
+                                label: "Product Name *",
+                                validator: (value) =>
+                                    Validation.validateName(value, context),
+                                textInputAction: TextInputAction.next,
+                              ),
+
+                              SizedBox(height: 12),
+
+                              CustomPakkaFormField(
+                                controller: _vmn.productPriceController,
+                                label: "Product Purchase Price",
+                                textInputAction: TextInputAction.next,
+                              ),
+                              SizedBox(height: 12),
+
+                              CustomPakkaFormField(
+                                controller: _vmn.productSellPriceController,
+                                label: "Product Sell Price",
+                                textInputAction: TextInputAction.next,
+                              ),
+                              SizedBox(height: 12),
+                              Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 14,
+                                  horizontal: 19,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8),
+                                  ),
+                                  color: AppColors.fillColor,
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                child: Text(
+                                  "Product Stock-In : ${_vm.selectedManufacturingDate}",
+                                  style: AppTextStyle.bodyMediumSecondary,
+                                ),
+                              ),
+
+                              SizedBox(height: 12),
+
+                              CustomPakkaFormField(
+                                controller: _vmn.productStockController,
+                                label: "Product Stock",
+                                textInputAction: TextInputAction.done,
+                                onComplete: () async {
+                                  if (_vmn.customerAddFormKey.currentState!
+                                      .validate()) {
+                                    await _vmn.addSupplier(context);
+
+                                    /// refresh dropdown list
+                                  }
+                                },
+                              ),
+                              SizedBox(height: 12),
+
+                              CustomPakkaFormField(
+                                controller: _vmn.productCodeController,
+                                label: "Product Code",
+                                textInputAction: TextInputAction.done,
+                                onComplete: () async {
+                                  if (_vmn.customerAddFormKey.currentState!
+                                      .validate()) {
+                                    await _vmn.addSupplier(context);
+
+                                    /// refresh dropdown list
+                                    ref.invalidate(supplierListProvider);
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        SizedBox(height: 20),
+
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryColor,
+                              padding: EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () async {
+                              if (_vmn.customerAddFormKey.currentState!
+                                  .validate()) {
+                                await _vmn.addProduct(context);
+
+                                /// reload supplier list
+                              }
+                            },
+                            child: Text(
+                              "Save Product",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 16),
+                      ],
+                    ),
+                  ),
+                ),
+                if (_vm.isLoading)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.black.withAlpha(25),
+                      child: Center(
+                        child: loader, // your custom loader
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 }

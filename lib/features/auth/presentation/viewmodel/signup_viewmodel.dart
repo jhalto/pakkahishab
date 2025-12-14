@@ -203,7 +203,7 @@ class SignupNotifier extends Notifier<SignupState> {
           print("Context mounted: ${context.mounted}");
           Navigator.pushNamedAndRemoveUntil(
             context,
-            Routes.navbar,
+            Routes.home,
             (route) => false,
           );
         }
