@@ -451,7 +451,7 @@ class PurchaseServices {
       'offset': offset,
       'limit': '10',
 
-      'supplier_id': supplierId,
+      'supplier': supplierId,
     };
     print(supplierId);
 

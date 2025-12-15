@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
@@ -9,15 +7,10 @@ import 'package:pakkahishab/features/purchase/data/models/supplier_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/supplier_wise_purchase_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
 
-
 final purchaseViewModelProvider =
     NotifierProvider.autoDispose<PurchaseNotifier, PurchaseState>(
       () => PurchaseNotifier(),
     );
-
-// final purchaseListProvider = FutureProvider((ref) {
-//   return 
-// },);    
 
 final class PurchaseState {
   final PurchaseDetailsResponse? purchaseDetails;
@@ -35,6 +28,7 @@ final class PurchaseState {
   final List<SupplierPurchaseItem> supplierPurchaseList;
   final String? supplierId;
   final String? paymentMethod;
+  final String? totalPurchase;
   // final String purchaseDate;
   // final String supplierId;
 
@@ -54,6 +48,7 @@ final class PurchaseState {
     this.supplierPurchaseList = const [],
     this.supplierId,
     this.paymentMethod,
+    this.totalPurchase,
   });
 
   PurchaseState copyWith({
@@ -72,6 +67,7 @@ final class PurchaseState {
     List<SupplierPurchaseItem>? supplierPurchaseList,
     String? supplierId,
     String? paymentMethod,
+    String? totalPurchase,
   }) {
     return PurchaseState(
       purchaseDetails: purchaseDetails ?? this.purchaseDetails,
@@ -88,7 +84,8 @@ final class PurchaseState {
       purchaseList: purchaseList ?? this.purchaseList,
       supplierPurchaseList: supplierPurchaseList ?? this.supplierPurchaseList,
       supplierId: supplierId ?? this.supplierId,
-      paymentMethod: paymentMethod ?? this.paymentMethod
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      totalPurchase: totalPurchase ?? this.totalPurchase,
     );
   }
 }
@@ -105,7 +102,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
   }
 
   TextEditingController searchSupplierController = TextEditingController();
-  String paymentMethod  = "Cash";
+  String paymentMethod = "Cash";
 
   Future<void> fetchPurchases({
     bool loadMore = false,
@@ -133,20 +130,20 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
       );
 
       final items = (result['data']['items'] ?? []) as List;
-      // final hasMore = result['data']['hasMore'] ?? false;
-      // final totalItem = result['data']['count'] ?? 0;
-      // print(totalItem);
-      // print(state.totalPage);
+      final hasMore = result['data']['hasMore'] ?? false;
+      final totalItem = result['data']['count'] ?? 0;
+      print(totalItem);
+      print(state.totalPage);
       final newItems = items
-          .map<PurchaseItem>((e) =>PurchaseItem.fromJson(e))
+          .map<PurchaseItem>((e) => PurchaseItem.fromJson(e))
           .toList();
 
       state = state.copyWith(
-       purchaseList: newItems,
+        purchaseList: newItems,
         offset: newOffset.toString(),
         currentPage: newPage,
-        // hasMore: hasMore,
-        // totalPage: (totalItem / 10).ceil(),
+        hasMore: hasMore,
+        totalPage: (totalItem / 10).ceil(),
       );
     } catch (e) {
       debugPrint("Error fetching purchases: $e");
@@ -154,6 +151,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
       state = state.copyWith(loading: false);
     }
   }
+
   Future<void> fetchSupplierWisePurchases({
     bool loadMore = false,
     int? page,
@@ -181,8 +179,14 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
       final totalItem = result['data']['count'] ?? 0;
-      print(totalItem);
-      print(state.totalPage);
+      double totalPrice = 0.0;
+      if (totalItem > 0) {
+        totalPrice = items.fold<double>(
+          0,
+          (sum, item) => sum + (item['total_purchase_amount'] ?? 0).toDouble(),
+        );
+      }
+
       final newItems = items
           .map<SupplierPurchaseItem>((e) => SupplierPurchaseItem.fromJson(e))
           .toList();
@@ -193,6 +197,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
         currentPage: newPage,
         hasMore: hasMore,
         totalPage: (totalItem / 10).ceil(),
+        totalPurchase: totalPrice.toString(),
       );
     } catch (e) {
       debugPrint("Error fetching purchases: $e");
@@ -269,7 +274,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
         pin: pin.toString(),
         code: code.toString(),
       );
-      
+
       print(code.toString());
       if (response['statusCode'] == 200) {
         final responseData = SupplierResponse.fromJson(response['data']);
@@ -306,16 +311,9 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     }
   }
 
-   void updatePaymentMethod(String value){
+  void updatePaymentMethod(String value) {
     state = state.copyWith(paymentMethod: value);
-   }
-  
-   
-  Future<void> showProductAddModal()async{
-    
+  }
 
-
-  } 
-
-
+  Future<void> showProductAddModal() async {}
 }

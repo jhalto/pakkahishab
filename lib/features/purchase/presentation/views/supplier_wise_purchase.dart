@@ -10,8 +10,8 @@ import 'package:pakkahishab/core/utils/loader.dart';
 
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_add.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_appbar_back_with_search.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchase_details.dart';
+import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/main_purchase_back_with_search.dart';
 
 class SupplierPurchasesView extends StatelessWidget {
   const SupplierPurchasesView({super.key});
@@ -19,7 +19,7 @@ class SupplierPurchasesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurchaseAppbarBackWithSearch(title: "Purchases"),
+      appBar: MainPurchaseAppbarBackWithSearch(title: "Purchases"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -33,6 +33,7 @@ class SupplierPurchasesView extends StatelessWidget {
               child: Consumer(
                 builder: (outerContext, ref, child) {
                   final purchaseState = ref.watch(purchaseViewModelProvider);
+                  final _vmn = ref.watch(purchaseViewModelProvider.notifier);
 
                   if (purchaseState.loading) {
                     return Center(child: loader);
@@ -84,17 +85,8 @@ class SupplierPurchasesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      "",
-                                      // purchaseState.supplierPurchaseList.isEmpty
-                                      //     ? "0"
-                                      //     : ref
-                                      //           .watch(
-                                      //             purchaseViewModelProvider,
-                                      //           )
-                                      //           .supplierPurchaseList
-                                      //           .first
-                                      //           .totalNetAmount
-                                      //           .toString(),
+                                      purchaseState.totalPurchase ?? "0",
+
                                       style: AppTextStyle.labelLarge,
                                     ),
                                   ],
@@ -111,12 +103,7 @@ class SupplierPurchasesView extends StatelessWidget {
                           itemBuilder: (context, index) {
                             final item =
                                 purchaseState.supplierPurchaseList[index];
-                            // final formattedDate = DateFormat(
-                            //   'dd MMM',
-                            // ).format(item.purchaseDate);
-                            // final formattedTime = DateFormat(
-                            //   'hh:mma ',
-                            // ).format(item.purchaseDate);
+
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 2,
@@ -125,20 +112,14 @@ class SupplierPurchasesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (_) =>
-                                  //         PurchaseDetails(purchase: item),
-                                  //   ),
-                                  // );
-
-                                  // final success = await ref
-                                  //     .read(purchaseViewModelProvider.notifier)
-                                  //     .fetchPurchaseDetails(
-                                  //       purchaseNo: item.purchaseNo,
-                                  //     );
-                                  // print(success);
+                                  _vmn.updateSupplierId(item.supplierId);
+                                  _vmn.fetchPurchases();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PurchasesView(),
+                                    ),
+                                  );
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(
@@ -160,31 +141,22 @@ class SupplierPurchasesView extends StatelessWidget {
                                   child: IntrinsicHeight(
                                     child: Row(
                                       children: [
-                                        Container(
+                                        Padding(
                                           padding: const EdgeInsets.only(
-                                            left: 8,
+                                            left: 10,
                                           ),
-                                          child: Column(
-                                            children: [
-                                              // Text(
-                                              //   formattedDate,
-                                              //   style: AppTextStyle.bodyMedium
-                                              //       .copyWith(
-                                              //         color: AppColors
-                                              //             .primaryColor2,
-                                              //         fontSize: 16.sp,
-                                              //       ),
-                                              // ),
-                                              // const SizedBox(height: 4),
-                                              // Text(
-                                              //   formattedTime,
-                                              //   style: AppTextStyle.bodySmall
-                                              //       .copyWith(
-                                              //         color: AppColors
-                                              //             .primaryColor2,
-                                              //       ),
-                                              // ),
-                                            ],
+                                          child: Container(
+                                            alignment: .center,
+                                            padding: EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                              shape: .circle,
+                                              color: AppColors.fillColor2,
+                                            ),
+                                            child: Text(
+                                              item.supplierName[0],
+                                              style: AppTextStyle.labelLarge
+                                                  .copyWith(),
+                                            ),
                                           ),
                                         ),
                                         const VerticalDivider(
