@@ -207,7 +207,7 @@ class PurchasesView extends StatelessWidget {
                                                         AppTextStyle.bodyMedium,
                                                   ),
                                                   Text(
-                                                    item.supplierPhone!,
+                                                    item.supplierPhone ?? "Not Available",
                                                     style:
                                                         AppTextStyle.bodySmall,
                                                   ),
@@ -478,17 +478,17 @@ class PurchasesView extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigator.pushNamed(context, Routes.p)
-          navigateWithSlide(context: context, page: PurchaseAdd());
-        },
-        backgroundColor: AppColors.primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(100),
-        ),
-        child: Icon(CupertinoIcons.add, color: AppColors.whiteColor),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     // Navigator.pushNamed(context, Routes.p)
+      //     navigateWithSlide(context: context, page: PurchaseAdd());
+      //   },
+      //   backgroundColor: AppColors.primaryColor,
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadiusGeometry.circular(100),
+      //   ),
+      //   child: Icon(CupertinoIcons.add, color: AppColors.whiteColor),
+      // ),
     );
   }
 }

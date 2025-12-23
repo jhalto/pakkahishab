@@ -149,8 +149,8 @@ class AddProductItem {
   final double? sellPrice;
   final String? manufacturingDate;
   final String? expiredDate;
-  final String? productCode;
-  final String? productStock;
+ 
+  final int? productStock;
 
   AddProductItem({
     required this.name,
@@ -158,7 +158,6 @@ class AddProductItem {
     this.sellPrice,
     this.manufacturingDate,
     this.expiredDate,
-    this.productCode,
     this.productStock,
   });
 
@@ -169,7 +168,6 @@ class AddProductItem {
       "sell_price": sellPrice ?? 0.0,
       "manufacturing_date": manufacturingDate ?? "",
       "expired_date": expiredDate ?? "",
-      "product_code": productCode ?? "",
       "product_stock": productStock ?? 0,
     };
   }

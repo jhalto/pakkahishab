@@ -38,6 +38,7 @@ class SupplierPurchaseResponse {
 class SupplierPurchaseItem {
   final String supplierId;
   final String supplierName;
+  final String supplierPhoneNo;
   final int schoolCode;
   final String mobile;
   final String password;
@@ -47,6 +48,7 @@ class SupplierPurchaseItem {
   SupplierPurchaseItem({
     required this.supplierId,
     required this.supplierName,
+    required this.supplierPhoneNo,
     required this.schoolCode,
     required this.mobile,
     required this.password,
@@ -58,6 +60,7 @@ class SupplierPurchaseItem {
     return SupplierPurchaseItem(
       supplierId: json['supplier_id'],
       supplierName: json['supplier_name'],
+      supplierPhoneNo: json['supplier_phone_no'] ?? "Not Available",
       schoolCode: json['school_code'],
       mobile: json['mobile'],
       password: json['password'],
@@ -71,6 +74,7 @@ class SupplierPurchaseItem {
     return {
       'supplier_id': supplierId,
       'supplier_name': supplierName,
+      'supplier_phone_no': supplierPhoneNo,
       'school_code': schoolCode,
       'mobile': mobile,
       'password': password,

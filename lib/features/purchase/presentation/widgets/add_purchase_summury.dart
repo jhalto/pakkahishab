@@ -28,7 +28,7 @@ class AddPurchaseSummury extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Net Amount", style: AppTextStyle.bodyLarge),
+                      Text("Total Amount", style: AppTextStyle.bodyLarge),
                       Icon(FontAwesomeIcons.bangladeshiTakaSign, size: 16),
                     ],
                   ),
@@ -58,39 +58,39 @@ class AddPurchaseSummury extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Total Amount", style: AppTextStyle.bodyLarge),
-                      Icon(FontAwesomeIcons.bangladeshiTakaSign, size: 16),
-                    ],
-                  ),
-                ),
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //         children: [
+            //           Text("Total Amount", style: AppTextStyle.bodyLarge),
+            //           Icon(FontAwesomeIcons.bangladeshiTakaSign, size: 16),
+            //         ],
+            //       ),
+            //     ),
 
-                SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: AppColors.whiteColor,
-                      border: Border.all(color: AppColors.dotColor),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: TextField(
-                      controller: _vmn.purchasetotalAmountController,
-                      cursorColor: AppColors.primaryColor,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        border: InputBorder.none),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            //     SizedBox(width: 10),
+            //     Expanded(
+            //       child: Container(
+            //         alignment: Alignment.centerRight,
+            //         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+            //         decoration: BoxDecoration(
+            //           color: AppColors.whiteColor,
+            //           border: Border.all(color: AppColors.dotColor),
+            //           borderRadius: BorderRadius.all(Radius.circular(10)),
+            //         ),
+            //         child: TextField(
+            //           controller: _vmn.purchasetotalAmountController,
+            //           cursorColor: AppColors.primaryColor,
+            //           decoration: InputDecoration(
+            //             isDense: true,
+            //             border: InputBorder.none),
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             SizedBox(height: 10),
             Row(
               children: [

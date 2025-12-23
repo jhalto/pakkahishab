@@ -4,11 +4,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
-import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/utils/custom_box_shadow.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_detail_appbar_back.dart';
 
 class PurchaseDetails extends StatelessWidget {
   final PurchaseItem purchase;
@@ -17,7 +17,7 @@ class PurchaseDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarBack(title: "Purchase Details"),
+      appBar: PurchaseDetailsAppbarBack(title: "Purchase Details", purchase: purchase,),
       body: Consumer(
         builder: (context, ref, child) {
           if (ref.watch(purchaseViewModelProvider).detailLoading) {
@@ -43,7 +43,7 @@ class PurchaseDetails extends StatelessWidget {
                   children: [
                     Text("Bill No: ${item.purchaseNo}"),
                     Text(
-                      "Date: ${DateFormat("dd:MM:yyyy").format(item.purchaseDate!)}",
+                      "Date: ${DateFormat("dd/MM/yyyy").format(item.purchaseDate!)}",
                     ),
                   ],
                 ),
@@ -121,7 +121,6 @@ class PurchaseDetails extends StatelessWidget {
                           textAlign: TextAlign.end,
                         ),
                       ),
-                      SizedBox(width: 30),
                     ],
                   ),
                 ),
@@ -170,8 +169,6 @@ class PurchaseDetails extends StatelessWidget {
                                       textAlign: TextAlign.end,
                                     ),
                                   ),
-                                  SizedBox(width: 10),
-                                  Icon(Icons.edit, size: 20),
                                 ],
                               ),
                             ],

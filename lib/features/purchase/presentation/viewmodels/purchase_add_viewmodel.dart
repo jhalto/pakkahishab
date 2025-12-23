@@ -6,15 +6,17 @@ import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/global_widgets/custom_pakka_form_field.dart';
+import 'package:pakkahishab/core/helper/date_picker_helper.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
+import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_details_add_widget.dart';
-import 'package:riverpod/riverpod.dart';
 
 final purchaseAddViewModelProvider =
     NotifierProvider.autoDispose<PurchaseAddNotifier, PurchaseAddState>(
@@ -77,6 +79,7 @@ final class PurchaseAddState {
   final String? errorMessage;
 
   final String? selectedManufacturingDate;
+  final String? followUpDate;
   final String? purchaseDate;
   final String? selectedExpiredDate;
   final String? supplierId;
@@ -89,8 +92,9 @@ final class PurchaseAddState {
     this.isLoading = false,
 
     String? selectedManufacturingDate,
+    this.followUpDate,
     String? purchaseDate,
-    this.selectedExpiredDate,
+    String? selectedExpiredDate,
     this.errorMessage,
     this.supplierId,
     this.paymentMethod,
@@ -99,12 +103,14 @@ final class PurchaseAddState {
   }) : selectedManufacturingDate =
            selectedManufacturingDate ??
            DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          selectedExpiredDate = "YYYY-MM-DD",
        purchaseDate =
            purchaseDate ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   PurchaseAddState copyWith({
     bool? isLoading,
     String? selectedManufacturingDate,
+    String? followUpDate,
     String? selectedExpiredDate,
     String? purchaseDate,
     String? errorMessage,
@@ -118,6 +124,7 @@ final class PurchaseAddState {
       isLoading: isLoading ?? this.isLoading,
       selectedManufacturingDate:
           selectedManufacturingDate ?? this.selectedManufacturingDate,
+      followUpDate: followUpDate ?? this.followUpDate,
       selectedExpiredDate: selectedExpiredDate ?? this.selectedExpiredDate,
       purchaseDate: purchaseDate ?? this.purchaseDate,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -165,7 +172,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   // purchase purchase add controllers and variable
 
   TextEditingController purchaseNetAmmountController = TextEditingController();
-  TextEditingController purchasetotalAmountController = TextEditingController();
+  // TextEditingController purchasetotalAmountController = TextEditingController();
   TextEditingController purchasePaidPriceController = TextEditingController();
   TextEditingController purchaseDuePriceController = TextEditingController();
 
@@ -175,7 +182,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
 
   void _updateDueAmount() {
     double totalAmount =
-        double.tryParse(purchasetotalAmountController.text) ?? 0.0;
+        double.tryParse(purchaseNetAmmountController.text) ?? 0.0;
     double paidAmount =
         double.tryParse(purchasePaidPriceController.text) ?? 0.0;
     double dueAmount = totalAmount - paidAmount;
@@ -186,24 +193,35 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   void calculatePurchaseAmounts() {
     final products = state.selectedPurchaseProducts ?? [];
 
-    double netAmount = products.fold(
+    // 1️⃣ Net amount calculated from products
+    final calculatedNetAmount = products.fold<double>(
       0.0,
       (sum, item) => sum + (item.unitPrice * item.quantity),
     );
 
-    double totalAmount =
-        netAmount; // If you add VAT or discount later, update here
+    // 2️⃣ Use user input if exists, otherwise use calculated value
+    final netAmount = purchaseNetAmmountController.text.isNotEmpty
+        ? double.tryParse(purchaseNetAmmountController.text) ??
+              calculatedNetAmount
+        : calculatedNetAmount;
 
-    double paidPrice = double.tryParse(purchasePaidPriceController.text) ?? 0.0;
+    // 3️⃣ Paid amount
+    final paidAmount = double.tryParse(purchasePaidPriceController.text) ?? 0.0;
 
-    double duePrice = totalAmount - paidPrice;
+    // 4️⃣ Due amount
+    final dueAmount = netAmount - paidAmount;
 
-    // Update controllers
-    purchaseNetAmmountController.text = netAmount.toStringAsFixed(2);
-    purchasetotalAmountController.text = totalAmount.toStringAsFixed(2);
-    purchaseDuePriceController.text = duePrice.toStringAsFixed(2);
-    _updateDueAmount();
+    // 5️⃣ Update UI
+    if (purchaseNetAmmountController.text.isEmpty) {
+      purchaseNetAmmountController.text = calculatedNetAmount.toStringAsFixed(
+        2,
+      );
+    }
+
+    purchaseDuePriceController.text = dueAmount.toStringAsFixed(2);
   }
+
+ 
 
   void updatePurchaseType(String value) {
     state = state.copyWith(purchaseType: value);
@@ -260,6 +278,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   PurchaseAddState build() {
     _repo = ref.read(purchaseRepositoryProvider);
     purchasePaidPriceController.addListener(_updateDueAmount);
+    purchaseNetAmmountController.addListener(_updateDueAmount);
 
     return PurchaseAddState();
   }
@@ -340,6 +359,19 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     print(state.supplierId);
   }
 
+  void updateFollowUpDate({required String followUpDate}) {
+    state = state.copyWith(followUpDate: followUpDate);
+  }
+
+  void updateManufacturingDate({required String date}) {
+    state = state.copyWith(selectedManufacturingDate: date);
+  }
+
+   void updateExpireDate({required String expireDate}) {
+    state = state.copyWith(selectedExpiredDate: expireDate);
+  }
+
+
   // void searchCustomer(String query) {
   //   final allCustomers = state.customer?.items ?? [];
 
@@ -416,19 +448,14 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     final List<AddProductItem> productList = [
       AddProductItem(
         name: productNameController.text.trim(),
-        purchasePrice: double.tryParse(productPriceController.text.trim()),
-        sellPrice: double.tryParse(productSellPriceController.text.trim()),
+        purchasePrice: double.tryParse(productPriceController.text.trim()) ?? 0,
+        sellPrice: double.tryParse(productSellPriceController.text.trim()) ?? 0,
         manufacturingDate: state.selectedManufacturingDate.toString(),
-        productStock: productStockController.text.trim(),
-        productCode: productCodeController.text.trim(),
+        expiredDate: state.selectedManufacturingDate.toString(),
+        productStock: int.tryParse(productStockController.text.trim()) ?? 0,
       ),
     ];
-    print(productList.first.name);
-    print(productList.first.purchasePrice);
-    print(productList.first.sellPrice);
-    print(productList.first.manufacturingDate);
-    print(productList.first.productStock);
-    print(productList.first.productCode);
+
     try {
       final response = await _repo.addProduct(
         code: code.toString(),
@@ -436,36 +463,37 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
         pin: pin.toString(),
         product: productList,
       );
-      print(response);
 
-      if (response['statusCode'] == 200 &&
-          response['data']['status'] == 'success') {
+      print(" response is : $response");
+      state = state.copyWith(isLoading: false);
+      if (response['data']['status'] == 'success') {
         state = state.copyWith(isLoading: false);
 
         if (!context.mounted) return;
         FocusScope.of(context).unfocus();
         Navigator.pop(context);
+        print("successful");
 
         showCustomSnackBar(
           context,
           "Products inserted successfully",
           type: SnackBarType.success,
         );
-        // selectedPurchaseProductId = response['data']['inserted_products'][0]['product_id'];
-        // selectedPurchaseProductName = productList.first.name;
-        // selectedPurchaseProductPrice = productList.first.purchasePrice.toString();
-        // purchaseProductQuantity.text = "1";
+        selectedPurchaseProductId =
+            response['data']['inserted_products'][0]['product_id'].toString();
+        selectedPurchaseProductName = productList.first.name;
+        selectedPurchaseProductPrice = productList.first.purchasePrice
+            .toString();
+        purchaseProductQuantity.text = "1";
 
-        // selectedPurchaseProductId = productList.first.;
-
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => PurchaseProductDetailsAddWidget(
-        //       selectedProductAdd: productList.first,
-        //     ),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PurchaseProductDetailsAddWidget(
+              selectedProductAdd: productList.first,
+            ),
+          ),
+        );
         ref.invalidate(productListProvider);
         clearProductAddController();
       } else if (response['data']['status'] == 'error') {
@@ -477,17 +505,6 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       state = state.copyWith(isLoading: false);
       print(e);
     }
-  }
-
-  String generateInvoiceNumber() {
-    final random = Random();
-    String numbers = '';
-
-    for (int i = 0; i < 8; i++) {
-      numbers += random.nextInt(10).toString(); // generates a digit 0-9
-    }
-
-    return 'PM$numbers';
   }
 
   List<Map<String, dynamic>> getPurchaseDetailsApiFormat(
@@ -509,13 +526,25 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   }
 
   Future<void> addPurchase(BuildContext context) async {
+    if (state.supplierId == null) {
+      showCustomSnackBar(context, "Please select a supplier");
+      return;
+    }
+
     state = state.copyWith(isLoading: true);
 
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
-    final purchaseTypeValue = state.purchaseType == 'Credit' ? "0" : "1";
+    final purchaseTypeValue = int.tryParse(
+      state.purchaseType == 'Credit' ? "0" : "1",
+    );
+
+    final purchasePaidAmmountValue =
+        purchasePaidPriceController.text.trim().isNotEmpty
+        ? purchasePaidPriceController.text.trim()
+        : "0";
 
     // Safe product list (empty allowed)
     final productList = (state.selectedPurchaseProducts ?? [])
@@ -535,18 +564,26 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       purchaseType: purchaseTypeValue,
       netAmount: purchaseNetAmmountController.text.trim(),
       due: purchaseDuePriceController.text.trim(),
-      paidPrice: purchasePaidPriceController.text.trim(),
+      paidPrice: purchasePaidAmmountValue,
+      followUpDate: state.followUpDate,
       mobile: phone ?? "",
       password: pin ?? "",
       schoolCode: code ?? "",
       productList: productList, // works even when empty
     );
-
+   
     print(response);
 
     if (response['data']['status'] == 'success') {
       if (!context.mounted) return;
-      showCustomSnackBar(context, "Purchase Add Successfully");
+      showCustomSnackBar(
+        context,
+        "Purchase Add Successfully",
+        type: SnackBarType.success,
+      );
+      Navigator.pop(context);
+      ref.read(purchaseViewModelProvider.notifier).fetchSupplierWisePurchases();
+      ref.read(homeProvider.notifier).fetchDashBoard('YEAR');
     } else if (response['data']['status'] == 'error') {}
 
     state = state.copyWith(isLoading: false);
@@ -554,7 +591,6 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
 
   Future<void> showProductAddBottomSheet(BuildContext context) async {
     showModalBottomSheet(
-      // isScrollControlled: true,
       backgroundColor: Colors.white,
       context: context,
       builder: (context) {
@@ -624,22 +660,78 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                                 textInputAction: TextInputAction.next,
                               ),
                               SizedBox(height: 12),
-                              Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 14,
-                                  horizontal: 19,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(8),
+                              InkWell(
+                                borderRadius: BorderRadius.all(Radius.circular(8)),
+                                onTap: () async{
+                                   final date = await pickDate(
+                                    context: context,
+                                  );
+                                  if (date != null) {
+                                    updateManufacturingDate(date: date);
+                                  }
+                                },
+                                child: Ink(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 14,
+                                    horizontal: 19,
                                   ),
-                                  color: AppColors.fillColor,
-                                  border: Border.all(color: Colors.grey),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(8),
+                                    ),
+                                    color: AppColors.fillColor,
+                                    border: Border.all(color: Colors.grey),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: .spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Product Stock-In : ${_vm.selectedManufacturingDate}",
+                                        style: AppTextStyle.bodyMediumSecondary,
+                                      ),
+                                      Icon(Icons.calendar_today_outlined)
+                                    ],
+                                  ),
                                 ),
-                                child: Text(
-                                  "Product Stock-In : ${_vm.selectedManufacturingDate}",
-                                  style: AppTextStyle.bodyMediumSecondary,
+                              ),
+                              SizedBox(height: 12),
+                              InkWell(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                                onTap: () async {
+                                  final date = await pickDate(
+                                    context: context,
+                                  );
+                                  if (date != null) {
+                                    updateExpireDate(expireDate: date);
+                                  }
+                                },
+                                child: Ink(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 14,
+                                    horizontal: 19,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(8),
+                                    ),
+                                    color: AppColors.fillColor,
+                                    border: Border.all(color: Colors.grey),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: .spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Product Expire-In : ${_vm.selectedExpiredDate}",
+                                        style:
+                                            AppTextStyle.bodyMediumSecondary,
+                                      ),
+                                      Icon(Icons.calendar_today_outlined),
+                                    ],
+                                  ),
                                 ),
                               ),
 
@@ -652,28 +744,13 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                                 onComplete: () async {
                                   if (_vmn.customerAddFormKey.currentState!
                                       .validate()) {
-                                    await _vmn.addSupplier(context);
+                                    await _vmn.addProduct(context);
 
-                                    /// refresh dropdown list
+                                    /// reload supplier list
                                   }
                                 },
                               ),
                               SizedBox(height: 12),
-
-                              CustomPakkaFormField(
-                                controller: _vmn.productCodeController,
-                                label: "Product Code",
-                                textInputAction: TextInputAction.done,
-                                onComplete: () async {
-                                  if (_vmn.customerAddFormKey.currentState!
-                                      .validate()) {
-                                    await _vmn.addSupplier(context);
-
-                                    /// refresh dropdown list
-                                    ref.invalidate(supplierListProvider);
-                                  }
-                                },
-                              ),
                             ],
                           ),
                         ),

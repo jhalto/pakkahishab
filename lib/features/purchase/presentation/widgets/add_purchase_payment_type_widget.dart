@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
+import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/core/helper/date_picker_helper.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 
 class AddPurchasePaymentTypeWidget extends StatelessWidget {
@@ -38,9 +40,8 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
                     ),
                     DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
-                        
-                         borderRadius: BorderRadius.all(Radius.circular(10)),
-                         dropdownColor: AppColors.whiteColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        dropdownColor: AppColors.whiteColor,
                         value: _vm.purchaseType, // Shows selected value
                         onChanged: (value) {
                           if (value != null) {
@@ -60,6 +61,33 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
+                if (_vm.purchaseType == 'Credit')
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: .spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Follow up date: ",
+                              style: AppTextStyle.bodyMediumSecondary,
+                            ),
+                            Text(_vm.followUpDate ?? "YYYY/MM/DD"),
+                          ],
+                        ),
+
+                        IconButton(
+                          onPressed: () async {
+                            final date = await pickDate(context: context);
+                            if (date != null) {
+                              _vmn.updateFollowUpDate(followUpDate: date);
+                            }
+                          },
+                          icon: Icon(Icons.calendar_today_outlined),
+                        ),
+                      ],
+                    ),
+                  ),
                 if (_vm.purchaseType == 'Cash')
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),

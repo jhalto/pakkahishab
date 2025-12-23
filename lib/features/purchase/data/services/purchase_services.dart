@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/urls.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
+import 'package:http/http.dart' as http;
 
 final purchaseServiceProvider = Provider<PurchaseServices>(
   (ref) => PurchaseServices(),
@@ -288,83 +291,58 @@ class PurchaseServices {
     required String code,
     required String phone,
     required String pin,
-
     required List<AddProductItem> products,
   }) async {
     final body = {"products": products.map((e) => e.toJson()).toList()};
 
     final url =
         "${Urls.baseUrl}Insert_Pa_Product/?school_code=$code&MOBILE=$phone&PASSWORD=$pin";
-    print(body);
-    Dio dio = Dio();
+
     try {
-      final response = await dio.post(url, data: body);
+      final response = await http.post(
+        Uri.parse(url),
+        body: jsonEncode(body),
+        headers: {"Content-Type": "application/json"},
+      );
 
-      print(response.statusCode);
+      print("RAW RESPONSE => ${response.body}");
 
-      if (response.statusCode == 200 && response.data['stutus'] == 'success') {
-        return {"statusCode": response.statusCode, "data": response.data};
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+
+        print("DECODED DATA => $data");
+
+        // ✅ CHECK STATUS
+        if (data['status'] == 'success') {
+          print("Product inserted successfully");
+
+          return {
+            'status': 'error',
+            'data': data,
+          }; // return full response
+        } else {
+          return {
+            'status': 'error',
+            'data': data['message'] ?? 'Unknown error',
+          };
+        }
       } else {
-        return {"statusCode": response.statusCode, "data": response.data};
-      }
-    } on DioException catch (e) {
-      switch (e.type) {
-        case DioExceptionType.connectionTimeout:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Connection timeout. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.receiveTimeout:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Recieve timeout. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.sendTimeout:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Send timeout. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.badResponse:
-          return {
-            "success": false,
-            "statusCode": e.response?.statusCode,
-            "error": e.response?.data ?? "Bad Response",
-          };
-        case DioExceptionType.cancel:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Request cancel. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.unknown:
-        default:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Unexpected network error: ${e.message}",
-            "data": e.response?.data,
-          };
+        return {
+          'status': 'error',
+          'message': 'Server error: ${response.statusCode}',
+        };
       }
     } catch (e) {
-      return {
-        "statusCode": 666,
-        "success": false,
-        "message": "Unexpected error: $e",
-      };
+      print('UNKNOWN ERROR => $e');
+      return {'status': 'error', 'message': e.toString()};
     }
   }
 
   Future<Map<String, dynamic>> addPurchase({
     String? purchaseDate,
+    String? followUpDate,
     String? supplierId,
-    String? purchaseType,
+    int? purchaseType,
     String? netAmount,
     String? due,
     String? paidPrice,
@@ -381,6 +359,7 @@ class PurchaseServices {
     final queryParams = {
       "SCHOOL_CODE": schoolCode,
       "PASSWORD": password,
+      "FOLLOW_UP_DATE": followUpDate,
       "MOBILE": mobile,
       "PURCHASE_DATE": purchaseDate,
       "SUPPLIER_ID": supplierId,
@@ -394,10 +373,11 @@ class PurchaseServices {
     queryParams.removeWhere(
       (key, value) => value == null || value.toString().isEmpty,
     );
-    print(queryParams);
+    print("query param $queryParams");
+
     final body = {"purchase_details": productList};
 
-    print(url);
+    print("body: $body");
 
     try {
       final response = await dio.post(
@@ -438,7 +418,6 @@ class PurchaseServices {
     required String pin,
     required String offset,
     required String code,
-
     String? supplierId,
   }) async {
     final Dio dio = Dio();

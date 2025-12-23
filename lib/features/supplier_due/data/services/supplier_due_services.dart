@@ -17,7 +17,9 @@ class SupplierDueServices {
     String? supplierId,
   }) async {
     final Dio dio = Dio();
-
+    print("Code: $code");
+    print("Pin: $pin");
+    print("Phone: $phone");
     // Base query parameters
     final Map<String, dynamic> queryParams = {
       'school_code': code,

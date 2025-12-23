@@ -126,7 +126,8 @@ class PurchaseRepository {
   Future<Map<String, dynamic>> addPurchase({
     String? purchaseDate,
     String? supplierId,
-    String? purchaseType,
+    String? followUpDate,
+    int? purchaseType,
     String? netAmount,
     String? due,
     String? paidPrice,
@@ -135,10 +136,11 @@ class PurchaseRepository {
     required String schoolCode,
     List<Map<String, dynamic>>? productList,
   }) async {
-    final response = _purchaseServices.addPurchase(
+    final response =await _purchaseServices.addPurchase(
       purchaseDate: purchaseDate,
       supplierId: supplierId,
       purchaseType: purchaseType,
+      followUpDate: followUpDate,
       netAmount: netAmount,
       due: due,
       paidPrice: paidPrice,

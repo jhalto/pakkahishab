@@ -9,6 +9,7 @@ import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/views/update_supplier_view.dart';
 
 class PurchaseSupplierWidget extends ConsumerWidget {
   const PurchaseSupplierWidget({super.key});
@@ -54,6 +55,37 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                       border: InputBorder.none,
                     ),
                   ),
+                  itemBuilder: (context, supplier, isSelected, isDisabled) {
+                    return IgnorePointer(
+                      ignoring: true, // disable dropdown tap
+                      child: ListTile(
+                        title: Text(supplier.supplierName),
+                        subtitle: Text(supplier.phone ?? ''),
+                        trailing: IgnorePointer(
+                          ignoring: false, // enable ONLY edit icon
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () async {
+                              // close dropdown safely
+                              Navigator.of(context, rootNavigator: true).pop();
+
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      UpdateSupplierView(supplier: supplier),
+                                ),
+                              );
+
+                              // refresh supplier list
+                              ref.invalidate(supplierListProvider);
+                            },
+                            child: const Icon(Icons.edit, size: 20),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                   emptyBuilder: (context, searchEntry) {
                     // This shows when no item matches the search
                     return ListTile(
@@ -61,7 +93,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                       trailing: CustomButton(
                         title: "Add Supplier",
                         onTap: () {
-                          _vmn.supplierNameController.text =searchEntry;
+                          _vmn.supplierNameController.text = searchEntry;
                           showModalBottomSheet(
                             isScrollControlled: true,
                             backgroundColor: Colors.white,
@@ -100,7 +132,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                 ),
                                               ),
                                               SizedBox(height: 20),
-                      
+
                                               Text(
                                                 "Add New Supplier",
                                                 style: TextStyle(
@@ -108,9 +140,9 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                      
+
                                               SizedBox(height: 20),
-                      
+
                                               Form(
                                                 key: _vmn.customerAddFormKey,
                                                 child: Column(
@@ -128,7 +160,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                           TextInputAction.next,
                                                     ),
                                                     SizedBox(height: 12),
-                      
+
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierPhoneController,
@@ -142,7 +174,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                           TextInputAction.next,
                                                     ),
                                                     SizedBox(height: 12),
-                      
+
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierEmailController,
@@ -151,7 +183,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                           TextInputAction.next,
                                                     ),
                                                     SizedBox(height: 12),
-                      
+
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierAddressController,
@@ -160,7 +192,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                           TextInputAction.next,
                                                     ),
                                                     SizedBox(height: 12),
-                      
+
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierOpeningBalanceController,
@@ -176,7 +208,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                               .addSupplier(
                                                                 context,
                                                               );
-                      
+
                                                           /// refresh dropdown list
                                                           ref.invalidate(
                                                             supplierListProvider,
@@ -187,9 +219,9 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                   ],
                                                 ),
                                               ),
-                      
+
                                               SizedBox(height: 20),
-                      
+
                                               SizedBox(
                                                 width: double.infinity,
                                                 child: ElevatedButton(
@@ -215,7 +247,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                       await _vmn.addSupplier(
                                                         context,
                                                       );
-                      
+
                                                       /// reload supplier list
                                                       ref.invalidate(
                                                         supplierListProvider,
@@ -231,7 +263,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                   ),
                                                 ),
                                               ),
-                      
+
                                               SizedBox(height: 16),
                                             ],
                                           ),
@@ -255,7 +287,6 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                           );
                         },
                         icon: Icon(Icons.add),
-                       
                       ),
                     );
                   },
