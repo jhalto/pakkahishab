@@ -138,7 +138,7 @@ class LoginNotifier extends Notifier<LoginState> {
 
         Navigator.pushNamedAndRemoveUntil(
           context,
-          Routes.navbar,
+          Routes.home,
           (route) => false,
         );
 

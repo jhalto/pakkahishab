@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/urls.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
+import 'package:http/http.dart' as http;
 
 final purchaseServiceProvider = Provider<PurchaseServices>(
   (ref) => PurchaseServices(),
@@ -288,79 +291,170 @@ class PurchaseServices {
     required String code,
     required String phone,
     required String pin,
-
     required List<AddProductItem> products,
   }) async {
-    final body = {"products": products};
+    final body = {"products": products.map((e) => e.toJson()).toList()};
 
     final url =
         "${Urls.baseUrl}Insert_Pa_Product/?school_code=$code&MOBILE=$phone&PASSWORD=$pin";
 
-    Dio dio = Dio();
     try {
-      final response = await dio.post(url, data: body);
-     
+      final response = await http.post(
+        Uri.parse(url),
+        body: jsonEncode(body),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      print("RAW RESPONSE => ${response.body}");
+
       if (response.statusCode == 200) {
-        return {"statusCode": response.statusCode ,"success": true, "data": response.data};
+        final Map<String, dynamic> data = jsonDecode(response.body);
+
+        print("DECODED DATA => $data");
+
+        // ✅ CHECK STATUS
+        if (data['status'] == 'success') {
+          print("Product inserted successfully");
+
+          return {
+            'status': 'error',
+            'data': data,
+          }; // return full response
+        } else {
+          return {
+            'status': 'error',
+            'data': data['message'] ?? 'Unknown error',
+          };
+        }
       } else {
         return {
-          "success": false,
-          "statusCode": response.statusCode,
-          "message": "Unexpected status",
-          "data": response.data,
+          'status': 'error',
+          'message': 'Server error: ${response.statusCode}',
         };
       }
+    } catch (e) {
+      print('UNKNOWN ERROR => $e');
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+
+  Future<Map<String, dynamic>> addPurchase({
+    String? purchaseDate,
+    String? followUpDate,
+    String? supplierId,
+    int? purchaseType,
+    String? netAmount,
+    String? due,
+    String? paidPrice,
+    required String mobile,
+    required String password,
+    required String schoolCode,
+    List<Map<String, dynamic>>? productList,
+  }) async {
+    final url = "${Urls.baseUrl}Insert_pa_purchase_and_p_details/";
+
+    final dio = Dio();
+
+    // Build query parameter map
+    final queryParams = {
+      "SCHOOL_CODE": schoolCode,
+      "PASSWORD": password,
+      "FOLLOW_UP_DATE": followUpDate,
+      "MOBILE": mobile,
+      "PURCHASE_DATE": purchaseDate,
+      "SUPPLIER_ID": supplierId,
+      "PURCHASE_TYPE": purchaseType,
+      "NET_AMOUNT": netAmount,
+      "DUE": due,
+      "PAID_PRICE": paidPrice,
+    };
+
+    // Remove null or empty values
+    queryParams.removeWhere(
+      (key, value) => value == null || value.toString().isEmpty,
+    );
+    print("query param $queryParams");
+
+    final body = {"purchase_details": productList};
+
+    print("body: $body");
+
+    try {
+      final response = await dio.post(
+        url,
+        data: body,
+        queryParameters: queryParams,
+      );
+      print(response.data);
+
+      if (response.statusCode == 200 && response.data['status'] == "success") {
+        return {"statusCode": response.statusCode, "data": response.data};
+      } else {
+        return {"statusCode": response.statusCode, "data": response.data};
+      }
     } on DioException catch (e) {
-      switch (e.type) {
-        case DioExceptionType.connectionTimeout:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Connection timeout. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.receiveTimeout:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Recieve timeout. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.sendTimeout:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Send timeout. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.badResponse:
-          return {
-            "success": false,
-            "statusCode": e.response?.statusCode,
-            "error": e.response?.data ?? "Bad Response",
-          };
-        case DioExceptionType.cancel:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Request cancel. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.unknown:
-        default:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Unexpected network error: ${e.message}",
-            "data": e.response?.data,
-          };
+      if (e.type == DioExceptionType.connectionTimeout) {
+        return {"success": false, "message": "Connection timeout"};
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        return {"success": false, "message": "Server took too long to respond"};
+      } else if (e.type == DioExceptionType.badResponse) {
+        return {
+          "success": false,
+          "message": "Server error: ${e.response?.statusCode}",
+          "data": e.response?.data,
+        };
+      } else if (e.type == DioExceptionType.connectionError) {
+        return {"success": false, "message": "No internet connection"};
+      } else {
+        return {"success": false, "message": "Unexpected error: ${e.message}"};
       }
     } catch (e) {
+      return {"success": false, "message": "Unknown error: $e"};
+    }
+  }
+
+  Future<Map<String, dynamic>> getPuchaseSupplierWise({
+    required String phone,
+    required String pin,
+    required String offset,
+    required String code,
+    String? supplierId,
+  }) async {
+    final Dio dio = Dio();
+
+    // Base query parameters
+    final Map<String, dynamic> queryParams = {
+      'school_code': code,
+      'mobile': phone,
+      'password': pin,
+      'offset': offset,
+      'limit': '10',
+
+      'supplier': supplierId,
+    };
+    print(supplierId);
+
+    // ✅ Remove any null or empty parameters before request
+    queryParams.removeWhere(
+      (key, value) => value == null || value.toString().isEmpty,
+    );
+
+    final String url = "${Urls.baseUrl}get_supplier_wise_total_purchase/";
+
+    try {
+      final response = await dio.get(url, queryParameters: queryParams);
+
+      print("Request URL: ${response.realUri}");
+      print("Response: ${response.data}");
+
+      return {"statusCode": response.statusCode, "data": response.data};
+    } on DioException catch (e) {
       return {
-        "statusCode": 666,
-        "success": false,
-        "message": "Unexpected error: $e",
+        "statusCode": e.response?.statusCode ?? 666,
+        "data": e.response?.data ?? "Dio error: ${e.message}",
       };
+    } catch (e) {
+      return {"statusCode": 666, "data": "Unexpected error: $e"};
     }
   }
 }

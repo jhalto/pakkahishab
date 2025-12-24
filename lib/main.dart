@@ -49,6 +49,8 @@ class MyApp extends ConsumerWidget {
             useMaterial3: true,
           ),
           initialRoute: Routes.login,
+          // home: Home(),
+        
           onGenerateRoute: Routes.generateRoute,
         );
       },

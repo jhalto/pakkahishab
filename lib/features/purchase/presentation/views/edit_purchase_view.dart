@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/global_widgets/custom_fullwidth_button.dart';
+import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/add_purchase_payment_type_widget.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/add_purchase_summury.dart';
@@ -11,9 +12,10 @@ import 'package:pakkahishab/features/purchase/presentation/widgets/invoice_name_
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_item_widget.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_widget.dart';
 
-class PurchaseAdd extends StatelessWidget {
-  const PurchaseAdd({super.key});
-
+class EditPurchaseView extends StatelessWidget {
+  final PurchaseItem purchaseHead;
+  const EditPurchaseView({super.key, required this.purchaseHead});
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -62,233 +62,7 @@ class PurchaseProductWidget extends ConsumerWidget {
                       trailing: CustomButton(
                         title: "Add Product",
                         onTap: () {
-                          showModalBottomSheet(
-                            // isScrollControlled: true,
-                            backgroundColor: Colors.white,
-                            context: context,
-                            builder: (context) {
-                              return Consumer(
-                                builder: (context, ref, _) {
-                                  final _vm = ref.watch(
-                                    purchaseAddViewModelProvider,
-                                  ); // <- watch here
-                                  final _vmn = ref.watch(
-                                    purchaseAddViewModelProvider.notifier,
-                                  );
-                                  return Stack(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          bottom: MediaQuery.of(
-                                            context,
-                                          ).viewInsets.bottom,
-                                          left: 18,
-                                          right: 18,
-                                          top: 20,
-                                        ),
-                                        child: SingleChildScrollView(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Container(
-                                                height: 5,
-                                                width: 40,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey.shade400,
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                ),
-                                              ),
-                                              SizedBox(height: 20),
-
-                                              Text(
-                                                "Add New Product",
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-
-                                              SizedBox(height: 20),
-
-                                              Form(
-                                                key: _vmn.customerAddFormKey,
-                                                child: Column(
-                                                  children: [
-                                                    CustomPakkaFormField(
-                                                      controller: _vmn
-                                                          .productNameController,
-                                                      label: "Product Name *",
-                                                      validator: (value) =>
-                                                          Validation.validateName(
-                                                            value,
-                                                            context,
-                                                          ),
-                                                      textInputAction:
-                                                          TextInputAction.next,
-                                                    ),
-
-                                                    SizedBox(height: 12),
-
-                                                    CustomPakkaFormField(
-                                                      controller: _vmn
-                                                          .productPriceController,
-                                                      label:
-                                                          "Product Purchase Price",
-                                                      textInputAction:
-                                                          TextInputAction.next,
-                                                    ),
-                                                    SizedBox(height: 12),
-
-                                                    CustomPakkaFormField(
-                                                      controller: _vmn
-                                                          .productSellPriceController,
-                                                      label:
-                                                          "Product Sell Price",
-                                                      textInputAction:
-                                                          TextInputAction.next,
-                                                    ),
-                                                    SizedBox(height: 12),
-                                                    Container(
-                                                      width: double.infinity,
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                            vertical: 14,
-                                                            horizontal: 19,
-                                                          ),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                              Radius.circular(
-                                                                8,
-                                                              ),
-                                                            ),
-                                                        color:
-                                                            AppColors.fillColor,
-                                                        border: Border.all(
-                                                          color: Colors.grey,
-                                                        ),
-                                                      ),
-                                                      child: Text(
-                                                        "Product Stock-In : ${_vm.selectedManufacturingDate}",
-                                                        style: AppTextStyle
-                                                            .bodyMediumSecondary,
-                                                      ),
-                                                    ),
-
-                                                    SizedBox(height: 12),
-
-                                                    CustomPakkaFormField(
-                                                      controller: _vmn
-                                                          .productStockController,
-                                                      label: "Product Stock",
-                                                      textInputAction:
-                                                          TextInputAction.done,
-                                                      onComplete: () async {
-                                                        if (_vmn
-                                                            .customerAddFormKey
-                                                            .currentState!
-                                                            .validate()) {
-                                                          await _vmn
-                                                              .addSupplier(
-                                                                context,
-                                                              );
-
-                                                          /// refresh dropdown list
-                                                        }
-                                                      },
-                                                    ),
-                                                    SizedBox(height: 12),
-
-                                                    CustomPakkaFormField(
-                                                      controller: _vmn
-                                                          .productCodeController,
-                                                      label: "Product Code",
-                                                      textInputAction:
-                                                          TextInputAction.done,
-                                                      onComplete: () async {
-                                                        if (_vmn
-                                                            .customerAddFormKey
-                                                            .currentState!
-                                                            .validate()) {
-                                                          await _vmn
-                                                              .addSupplier(
-                                                                context,
-                                                              );
-
-                                                          /// refresh dropdown list
-                                                          ref.invalidate(
-                                                            supplierListProvider,
-                                                          );
-                                                        }
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-
-                                              SizedBox(height: 20),
-
-                                              SizedBox(
-                                                width: double.infinity,
-                                                child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        AppColors.primaryColor,
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          vertical: 14,
-                                                        ),
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            10,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  onPressed: () async {
-                                                    if (_vmn
-                                                        .customerAddFormKey
-                                                        .currentState!
-                                                        .validate()) {
-                                                      await _vmn.addProduct(
-                                                        context,
-                                                      );
-
-                                                      /// reload supplier list
-                                                    }
-                                                  },
-                                                  child: Text(
-                                                    "Save Product",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 16,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-
-                                              SizedBox(height: 16),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      if (_vm.isLoading)
-                                        Positioned.fill(
-                                          child: Container(
-                                            color: Colors.black.withAlpha(25),
-                                            child: Center(
-                                              child:
-                                                  loader, // your custom loader
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                          );
+                           _vmn.showProductAddBottomSheet(context);
                         },
                         icon: Icon(Icons.add, color: AppColors.whiteColor),
                       ),
@@ -312,6 +86,7 @@ class PurchaseProductWidget extends ConsumerWidget {
 
                 onChanged: (value) {
                   if (value != null) {
+                    _vmn.selectedPurchaseProductId = value.productId.toString();
                     _vmn.selectedPurchaseProductName = value.productName;
                     _vmn.selectedPurchaseProductPrice = value.purchasePrice.toString();
                      Navigator.push(context, MaterialPageRoute(builder: (context) => PurchaseProductDetailsAddWidget(selectedProductAll: value),));
@@ -326,214 +101,215 @@ class PurchaseProductWidget extends ConsumerWidget {
             InkWell(
               borderRadius: BorderRadius.circular(10),
               onTap: () {
-                showModalBottomSheet(
-                  // isScrollControlled: true,
-                  backgroundColor: Colors.white,
-                  context: context,
-                  builder: (context) {
-                    return Consumer(
-                      builder: (context, ref, _) {
-                        final _vm = ref.watch(
-                          purchaseAddViewModelProvider,
-                        ); // <- watch here
-                        final _vmn = ref.watch(
-                          purchaseAddViewModelProvider.notifier,
-                        );
-                        return Stack(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: MediaQuery.of(
-                                  context,
-                                ).viewInsets.bottom,
-                                left: 18,
-                                right: 18,
-                                top: 20,
-                              ),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      height: 5,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade400,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                    ),
-                                    SizedBox(height: 20),
+                // showModalBottomSheet(
+                //   // isScrollControlled: true,
+                //   backgroundColor: Colors.white,
+                //   context: context,
+                //   builder: (context) {
+                //     return Consumer(
+                //       builder: (context, ref, _) {
+                //         final _vm = ref.watch(
+                //           purchaseAddViewModelProvider,
+                //         ); // <- watch here
+                //         final _vmn = ref.watch(
+                //           purchaseAddViewModelProvider.notifier,
+                //         );
+                //         return Stack(
+                //           children: [
+                //             Padding(
+                //               padding: EdgeInsets.only(
+                //                 bottom: MediaQuery.of(
+                //                   context,
+                //                 ).viewInsets.bottom,
+                //                 left: 18,
+                //                 right: 18,
+                //                 top: 20,
+                //               ),
+                //               child: SingleChildScrollView(
+                //                 child: Column(
+                //                   mainAxisSize: MainAxisSize.min,
+                //                   children: [
+                //                     Container(
+                //                       height: 5,
+                //                       width: 40,
+                //                       decoration: BoxDecoration(
+                //                         color: Colors.grey.shade400,
+                //                         borderRadius: BorderRadius.circular(20),
+                //                       ),
+                //                     ),
+                //                     SizedBox(height: 20),
 
-                                    Text(
-                                      "Add New Product",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                //                     Text(
+                //                       "Add New Product",
+                //                       style: TextStyle(
+                //                         fontSize: 20,
+                //                         fontWeight: FontWeight.bold,
+                //                       ),
+                //                     ),
 
-                                    SizedBox(height: 20),
+                //                     SizedBox(height: 20),
 
-                                    Form(
-                                      key: _vmn.customerAddFormKey,
-                                      child: Column(
-                                        children: [
-                                          CustomPakkaFormField(
-                                            controller:
-                                                _vmn.productNameController,
-                                            label: "Product Name *",
-                                            validator: (value) =>
-                                                Validation.validateName(
-                                                  value,
-                                                  context,
-                                                ),
-                                            textInputAction:
-                                                TextInputAction.next,
-                                          ),
+                //                     Form(
+                //                       key: _vmn.customerAddFormKey,
+                //                       child: Column(
+                //                         children: [
+                //                           CustomPakkaFormField(
+                //                             controller:
+                //                                 _vmn.productNameController,
+                //                             label: "Product Name *",
+                //                             validator: (value) =>
+                //                                 Validation.validateName(
+                //                                   value,
+                //                                   context,
+                //                                 ),
+                //                             textInputAction:
+                //                                 TextInputAction.next,
+                //                           ),
 
-                                          SizedBox(height: 12),
+                //                           SizedBox(height: 12),
 
-                                          CustomPakkaFormField(
-                                            controller:
-                                                _vmn.productPriceController,
-                                            label: "Product Purchase Price",
-                                            textInputAction:
-                                                TextInputAction.next,
-                                          ),
-                                          SizedBox(height: 12),
+                //                           CustomPakkaFormField(
+                //                             controller:
+                //                                 _vmn.productPriceController,
+                //                             label: "Product Purchase Price",
+                //                             textInputAction:
+                //                                 TextInputAction.next,
+                //                           ),
+                //                           SizedBox(height: 12),
 
-                                          CustomPakkaFormField(
-                                            controller:
-                                                _vmn.productSellPriceController,
-                                            label: "Product Sell Price",
-                                            textInputAction:
-                                                TextInputAction.next,
-                                          ),
-                                          SizedBox(height: 12),
-                                          Container(
-                                            width: double.infinity,
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: 14,
-                                              horizontal: 19,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(8),
-                                              ),
-                                              color: AppColors.fillColor,
-                                              border: Border.all(
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                            child: Text(
-                                              "Product Stock-In : ${_vm.selectedManufacturingDate}",
-                                              style: AppTextStyle
-                                                  .bodyMediumSecondary,
-                                            ),
-                                          ),
+                //                           CustomPakkaFormField(
+                //                             controller:
+                //                                 _vmn.productSellPriceController,
+                //                             label: "Product Sell Price",
+                //                             textInputAction:
+                //                                 TextInputAction.next,
+                //                           ),
+                //                           SizedBox(height: 12),
+                //                           Container(
+                //                             width: double.infinity,
+                //                             padding: EdgeInsets.symmetric(
+                //                               vertical: 14,
+                //                               horizontal: 19,
+                //                             ),
+                //                             decoration: BoxDecoration(
+                //                               borderRadius: BorderRadius.all(
+                //                                 Radius.circular(8),
+                //                               ),
+                //                               color: AppColors.fillColor,
+                //                               border: Border.all(
+                //                                 color: Colors.grey,
+                //                               ),
+                //                             ),
+                //                             child: Text(
+                //                               "Product Stock-In : ${_vm.selectedManufacturingDate}",
+                //                               style: AppTextStyle
+                //                                   .bodyMediumSecondary,
+                //                             ),
+                //                           ),
 
-                                          SizedBox(height: 12),
+                //                           SizedBox(height: 12),
 
-                                          CustomPakkaFormField(
-                                            controller:
-                                                _vmn.productStockController,
-                                            label: "Product Stock",
-                                            textInputAction:
-                                                TextInputAction.done,
-                                            onComplete: () async {
-                                              if (_vmn
-                                                  .customerAddFormKey
-                                                  .currentState!
-                                                  .validate()) {
-                                                await _vmn.addSupplier(context);
+                //                           CustomPakkaFormField(
+                //                             controller:
+                //                                 _vmn.productStockController,
+                //                             label: "Product Stock",
+                //                             textInputAction:
+                //                                 TextInputAction.done,
+                //                             onComplete: () async {
+                //                               if (_vmn
+                //                                   .customerAddFormKey
+                //                                   .currentState!
+                //                                   .validate()) {
+                //                                 await _vmn.addSupplier(context);
 
-                                                /// refresh dropdown list
-                                              }
-                                            },
-                                          ),
-                                          SizedBox(height: 12),
+                //                                 /// refresh dropdown list
+                //                               }
+                //                             },
+                //                           ),
+                //                           SizedBox(height: 12),
 
-                                          CustomPakkaFormField(
-                                            controller:
-                                                _vmn.productCodeController,
-                                            label: "Product Code",
-                                            textInputAction:
-                                                TextInputAction.done,
-                                            onComplete: () async {
-                                              if (_vmn
-                                                  .customerAddFormKey
-                                                  .currentState!
-                                                  .validate()) {
-                                                await _vmn.addSupplier(context);
+                //                           CustomPakkaFormField(
+                //                             controller:
+                //                                 _vmn.productCodeController,
+                //                             label: "Product Code",
+                //                             textInputAction:
+                //                                 TextInputAction.done,
+                //                             onComplete: () async {
+                //                               if (_vmn
+                //                                   .customerAddFormKey
+                //                                   .currentState!
+                //                                   .validate()) {
+                //                                 await _vmn.addSupplier(context);
 
-                                                /// refresh dropdown list
-                                                ref.invalidate(
-                                                  supplierListProvider,
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                //                                 /// refresh dropdown list
+                //                                 ref.invalidate(
+                //                                   supplierListProvider,
+                //                                 );
+                //                               }
+                //                             },
+                //                           ),
+                //                         ],
+                //                       ),
+                //                     ),
 
-                                    SizedBox(height: 20),
+                //                     SizedBox(height: 20),
 
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              AppColors.primaryColor,
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 14,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                          ),
-                                        ),
-                                        onPressed: () async {
-                                          if (_vmn
-                                              .customerAddFormKey
-                                              .currentState!
-                                              .validate()) {
-                                            await _vmn.addProduct(context);
+                //                     SizedBox(
+                //                       width: double.infinity,
+                //                       child: ElevatedButton(
+                //                         style: ElevatedButton.styleFrom(
+                //                           backgroundColor:
+                //                               AppColors.primaryColor,
+                //                           padding: EdgeInsets.symmetric(
+                //                             vertical: 14,
+                //                           ),
+                //                           shape: RoundedRectangleBorder(
+                //                             borderRadius: BorderRadius.circular(
+                //                               10,
+                //                             ),
+                //                           ),
+                //                         ),
+                //                         onPressed: () async {
+                //                           if (_vmn
+                //                               .customerAddFormKey
+                //                               .currentState!
+                //                               .validate()) {
+                //                             await _vmn.addProduct(context);
 
-                                            /// reload supplier list
-                                          }
-                                        },
-                                        child: Text(
-                                          "Save Product",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                //                             /// reload supplier list
+                //                           }
+                //                         },
+                //                         child: Text(
+                //                           "Save Product",
+                //                           style: TextStyle(
+                //                             color: Colors.white,
+                //                             fontSize: 16,
+                //                           ),
+                //                         ),
+                //                       ),
+                //                     ),
 
-                                    SizedBox(height: 16),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            if (_vm.isLoading)
-                              Positioned.fill(
-                                child: Container(
-                                  color: Colors.black.withAlpha(25),
-                                  child: Center(
-                                    child: loader, // your custom loader
-                                  ),
-                                ),
-                              ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                );
+                //                     SizedBox(height: 16),
+                //                   ],
+                //                 ),
+                //               ),
+                //             ),
+                //             if (_vm.isLoading)
+                //               Positioned.fill(
+                //                 child: Container(
+                //                   color: Colors.black.withAlpha(25),
+                //                   child: Center(
+                //                     child: loader, // your custom loader
+                //                   ),
+                //                 ),
+                //               ),
+                //           ],
+                //         );
+                //       },
+                //     );
+                //   },
+                // );
+                  _vmn.showProductAddBottomSheet(context);
               },
               child: Container(
                 decoration: BoxDecoration(

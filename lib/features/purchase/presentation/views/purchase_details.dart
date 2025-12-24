@@ -4,20 +4,20 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
-import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/utils/custom_box_shadow.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_detail_appbar_back.dart';
 
 class PurchaseDetails extends StatelessWidget {
-  PurchaseItem purchase;
-  PurchaseDetails({super.key, required this.purchase});
+  final PurchaseItem purchase;
+  const PurchaseDetails({super.key, required this.purchase});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarBack(title: "Purchase Details"),
+      appBar: PurchaseDetailsAppbarBack(title: "Purchase Details", purchase: purchase,),
       body: Consumer(
         builder: (context, ref, child) {
           if (ref.watch(purchaseViewModelProvider).detailLoading) {
@@ -43,7 +43,7 @@ class PurchaseDetails extends StatelessWidget {
                   children: [
                     Text("Bill No: ${item.purchaseNo}"),
                     Text(
-                      "Date: ${DateFormat("dd:MM:yyyy").format(item.purchaseDate!)}",
+                      "Date: ${DateFormat("dd/MM/yyyy").format(item.purchaseDate!)}",
                     ),
                   ],
                 ),
@@ -121,7 +121,6 @@ class PurchaseDetails extends StatelessWidget {
                           textAlign: TextAlign.end,
                         ),
                       ),
-                      SizedBox(width: 30),
                     ],
                   ),
                 ),
@@ -170,8 +169,6 @@ class PurchaseDetails extends StatelessWidget {
                                       textAlign: TextAlign.end,
                                     ),
                                   ),
-                                  SizedBox(width: 10),
-                                  Icon(Icons.edit, size: 20),
                                 ],
                               ),
                             ],
@@ -439,13 +436,13 @@ class PurchaseDetails extends StatelessWidget {
               //                         ),
               //                         SizedBox(height: 10,),
               //                         TextField(
-                                        
+
               //                           decoration: InputDecoration(
-                                        
+
               //                             enabledBorder: OutlineInputBorder(
               //                               borderRadius: BorderRadius.all(
               //                                 Radius.circular(10),
-                                          
+
               //                               ),
               //                               borderSide: BorderSide(
               //                                 color: AppColors.dotColor
@@ -454,7 +451,7 @@ class PurchaseDetails extends StatelessWidget {
               //                             focusedBorder: OutlineInputBorder(
               //                               borderRadius: BorderRadius.all(
               //                                 Radius.circular(10),
-                                               
+
               //                               ),
               //                               borderSide: BorderSide(
               //                                 color: AppColors.primaryColor
@@ -488,7 +485,7 @@ class PurchaseDetails extends StatelessWidget {
               //     ),
               //   ),
               // ),
-                Padding(
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Container(
                   width: double.infinity,
@@ -511,17 +508,19 @@ class PurchaseDetails extends StatelessWidget {
                               fontSize: 16,
                             ),
                           ),
-                           Container(
+                          Container(
                             color: AppColors.primaryColor,
-                          
-                             child: Text(
-                              purchase.purchaseType.toString() == '1'?"Cash":"Credit",
+
+                            child: Text(
+                              purchase.purchaseType.toString() == '1'
+                                  ? "Cash"
+                                  : "Credit",
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
                               ),
-                                                       ),
-                           ),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 10),
@@ -542,9 +541,11 @@ class PurchaseDetails extends StatelessWidget {
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      SizedBox(height: 10,),
+                                      SizedBox(height: 10),
                                       Container(
-                                         padding: const EdgeInsets.symmetric(horizontal: 12),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                        ),
                                         decoration: BoxDecoration(
                                           border: Border.all(
                                             color: Colors.grey.shade400,
@@ -581,37 +582,34 @@ class PurchaseDetails extends StatelessWidget {
                                           },
                                         ),
                                       ),
-                                      SizedBox(height: 10,),
+                                      SizedBox(height: 10),
                                       TextField(
-                                        
                                         decoration: InputDecoration(
-                                        
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
                                               Radius.circular(10),
-                                          
                                             ),
                                             borderSide: BorderSide(
-                                              color: AppColors.dotColor
-                                            )
+                                              color: AppColors.dotColor,
+                                            ),
                                           ),
                                           focusedBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
                                               Radius.circular(10),
-                                               
                                             ),
                                             borderSide: BorderSide(
-                                              color: AppColors.primaryColor
-                                            )
+                                              color: AppColors.primaryColor,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                      SizedBox(height: 10,)
+                                      SizedBox(height: 10),
                                     ],
                                   ),
                                 ),
                                 Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     IconButton(
                                       onPressed: () {},
@@ -620,7 +618,10 @@ class PurchaseDetails extends StatelessWidget {
                                         color: AppColors.dotColor,
                                       ),
                                     ),
-                                    IconButton(onPressed: (){}, icon: Icon(Icons.add))
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(Icons.add),
+                                    ),
                                   ],
                                 ),
                               ],
@@ -636,22 +637,20 @@ class PurchaseDetails extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
-                   padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10),
                   height: 150,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                    border: Border.all(
-                     color: AppColors.dotColor
-                    )
+                    border: Border.all(color: AppColors.dotColor),
                   ),
                   child: TextField(
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: "Description"
+                      hintText: "Description",
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           );
         },

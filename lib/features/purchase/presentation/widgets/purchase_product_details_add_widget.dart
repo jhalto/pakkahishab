@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
+import 'package:pakkahishab/core/global_widgets/custom_fullwidth_button.dart';
 import 'package:pakkahishab/core/global_widgets/custom_pakka_form_field.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
@@ -10,11 +11,13 @@ import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_a
 class PurchaseProductDetailsAddWidget extends StatelessWidget {
   final AllProduct? selectedProductAll;
   final AddProductItem? selectedProductAdd;
+  final PurchaseDetailsProduct? selectedPurchaseDetailProduct;
 
   const PurchaseProductDetailsAddWidget({
     super.key,
     this.selectedProductAll,
-    this.selectedProductAdd
+    this.selectedProductAdd,
+    this.selectedPurchaseDetailProduct
   });
 
   @override
@@ -66,6 +69,11 @@ class PurchaseProductDetailsAddWidget extends StatelessWidget {
                     style: AppTextStyle.bodyMediumSecondary,
                   ),
                 ),
+                SizedBox(height: 100,),
+
+                CustomFullwidthButton(onTap: ()async{
+                  _vmn.addProductInPurchaseList(context);
+                }, title: "Add")
               ],
             ),
           );

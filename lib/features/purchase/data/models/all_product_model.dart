@@ -149,8 +149,8 @@ class AddProductItem {
   final double? sellPrice;
   final String? manufacturingDate;
   final String? expiredDate;
-  final String? productCode;
-  final String? productStock;
+ 
+  final int? productStock;
 
   AddProductItem({
     required this.name,
@@ -158,7 +158,6 @@ class AddProductItem {
     this.sellPrice,
     this.manufacturingDate,
     this.expiredDate,
-    this.productCode,
     this.productStock,
   });
 
@@ -169,18 +168,19 @@ class AddProductItem {
       "sell_price": sellPrice ?? 0.0,
       "manufacturing_date": manufacturingDate ?? "",
       "expired_date": expiredDate ?? "",
-      "product_code": productCode ?? "",
       "product_stock": productStock ?? 0,
     };
   }
 }
 
 class PurchaseDetailsProduct {
-  int productId;
+  String productName;
+  String productId;
   int quantity;
   double unitPrice;
 
   PurchaseDetailsProduct({
+    required this.productName,
     required this.productId,
     this.quantity = 1,
     required this.unitPrice,
@@ -189,6 +189,7 @@ class PurchaseDetailsProduct {
 
   Map<String, dynamic> toJson(){
     return {
+      "product_name": productName,
       "product_id": productId,
       "quantity":  quantity,
       "unit_price": unitPrice,

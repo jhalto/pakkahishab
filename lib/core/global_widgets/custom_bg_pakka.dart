@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/di/translation_provider.dart';
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class CustomBgPakka extends StatelessWidget {
+  const CustomBgPakka({super.key});
 
   @override
   Widget build(BuildContext context) {

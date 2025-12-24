@@ -13,52 +13,57 @@ class CustomFeatureWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        child: Ink(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: AppColors.primaryColor4.withAlpha(50),
-              width: 3,
-              strokeAlign: .3,
+      child: Material(
+        
+        color: Colors.transparent,
+        child: InkWell(
+           borderRadius: BorderRadius.circular(8),
+          onTap: onTap,
+          child: Ink(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: AppColors.primaryColor4.withAlpha(50),
+                width: 3,
+                strokeAlign: .3,
+              ),
+              borderRadius: BorderRadius.circular(8),
             ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8,),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(6)),
-                    color: AppColors.primaryColor2,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8,),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      color: AppColors.primaryColor2,
+                    ),
+        
+                    child: const Icon(
+                      FontAwesomeIcons.bangladeshiTakaSign,
+                      color: AppColors.whiteColor,
+                    ),
                   ),
-
-                  child: const Icon(
-                    FontAwesomeIcons.bangladeshiTakaSign,
-                    color: AppColors.whiteColor,
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        title,
+                        consumer,
+                        // Text(AppLocalizations.of(context)!.expenses),
+                        // Consumer(
+                        //   builder: (context, ref, child) =>
+                        //       Text(ref.watch(homeProvider).expenses),
+                        // ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      title,
-                      consumer,
-                      // Text(AppLocalizations.of(context)!.expenses),
-                      // Consumer(
-                      //   builder: (context, ref, child) =>
-                      //       Text(ref.watch(homeProvider).expenses),
-                      // ),
-                    ],
-                  ),
-                ),
-                const Icon(CupertinoIcons.forward, color: AppColors.primaryColor2),
-              ],
+                  const Icon(CupertinoIcons.forward, color: AppColors.primaryColor2),
+                ],
+              ),
             ),
           ),
         ),

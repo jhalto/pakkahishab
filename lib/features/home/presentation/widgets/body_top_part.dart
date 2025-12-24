@@ -105,7 +105,7 @@ class BodyTopPart extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       onTap: () {
-                        Navigator.pushNamed(context, Routes.purchase);
+                        Navigator.pushNamed(context, Routes.supplierpurchase);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4),
@@ -198,7 +198,7 @@ class BodyTopPart extends StatelessWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.totalPayable,
+                                  AppLocalizations.of(context)!.totalReceivable,
                                   style: AppTextStyle.bodyMedium.copyWith(
                                     color: AppColors.primaryColor4,
                                   ),
@@ -240,7 +240,7 @@ class BodyTopPart extends StatelessWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.totalReceivable,
+                                  AppLocalizations.of(context)!.totalPayable,
                                   style: AppTextStyle.bodyMedium.copyWith(
                                     color: AppColors.primaryColor4,
                                   ),

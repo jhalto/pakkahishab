@@ -67,7 +67,9 @@ class SupplierDueItem {
   factory SupplierDueItem.fromJson(Map<String, dynamic> json) {
     return SupplierDueItem(
       supplierId: json['supplier_id'] ?? '',
-      followUpDate:DateTime.parse(json['follow_up_date']),
+       followUpDate: json['follow_up_date'] != null
+        ? DateTime.parse(json['follow_up_date'])
+        : DateTime(1970, 1, 1), // default date
       accountName: json['account_name'] ?? '',
       amount: json['amount'] ?? 0,
       totalAmount: json['total_amount'] ?? 0,
