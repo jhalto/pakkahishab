@@ -42,8 +42,9 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                 itemAsString: (s) => s.supplierName,
 
                 compareFn: (a, b) => a.supplierId == b.supplierId,
-
+              
                 popupProps: PopupProps.menu(
+                 
                   showSearchBox: true,
                   searchFieldProps: TextFieldProps(
                     decoration: InputDecoration(
@@ -56,33 +57,27 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                     ),
                   ),
                   itemBuilder: (context, supplier, isSelected, isDisabled) {
-                    return IgnorePointer(
-                      ignoring: true, // disable dropdown tap
-                      child: ListTile(
-                        title: Text(supplier.supplierName),
-                        subtitle: Text(supplier.phone ?? ''),
-                        trailing: IgnorePointer(
-                          ignoring: false, // enable ONLY edit icon
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () async {
-                              // close dropdown safely
-                              Navigator.of(context, rootNavigator: true).pop();
-
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      UpdateSupplierView(supplier: supplier),
-                                ),
-                              );
-
-                              // refresh supplier list
-                              ref.invalidate(supplierListProvider);
-                            },
-                            child: const Icon(Icons.edit, size: 20),
-                          ),
-                        ),
+                    return ListTile(
+                      title: Text(supplier.supplierName),
+                      subtitle: Text(supplier.phone ?? ''),
+                      trailing: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () async {
+                          // close dropdown safely
+                          Navigator.of(context, rootNavigator: true).pop();
+                    
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  UpdateSupplierView(supplier: supplier),
+                            ),
+                          );
+                    
+                          // refresh supplier list
+                          // ref.invalidate(supplierListProvider);
+                        },
+                        child: const Icon(Icons.edit, size: 20),
                       ),
                     );
                   },
@@ -150,7 +145,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierNameController,
-                                                      label: "Customer Name *",
+                                                      label: "Supplier Name *",
                                                       validator: (value) =>
                                                           Validation.validateName(
                                                             value,
@@ -164,7 +159,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierPhoneController,
-                                                      label: "Customer Phone *",
+                                                      label: "Supplier Phone *",
                                                       validator: (value) =>
                                                           Validation.validatePhone(
                                                             value,
@@ -178,7 +173,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierEmailController,
-                                                      label: "Customer Email",
+                                                      label: "Supplier Email",
                                                       textInputAction:
                                                           TextInputAction.next,
                                                     ),
@@ -187,7 +182,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierAddressController,
-                                                      label: "Customer Address",
+                                                      label: "Supplier Address",
                                                       textInputAction:
                                                           TextInputAction.next,
                                                     ),
@@ -196,7 +191,8 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierOpeningBalanceController,
-                                                      label: "Opening Balance",
+                                                      label:
+                                                          "Supplier Opening Balance",
                                                       textInputAction:
                                                           TextInputAction.done,
                                                       onComplete: () async {
@@ -337,9 +333,9 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                           children: [
                             Padding(
                               padding: EdgeInsets.only(
-                                bottom: MediaQuery.of(
-                                  context,
-                                ).viewInsets.bottom,
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom +
+                                    10,
                                 left: 18,
                                 right: 18,
                                 top: 20,
@@ -375,7 +371,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           CustomPakkaFormField(
                                             controller:
                                                 _vmn.supplierNameController,
-                                            label: "Customer Name *",
+                                            label: "Supplier Name *",
                                             validator: (value) =>
                                                 Validation.validateName(
                                                   value,
@@ -389,7 +385,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           CustomPakkaFormField(
                                             controller:
                                                 _vmn.supplierPhoneController,
-                                            label: "Customer Phone *",
+                                            label: "Supplier Phone *",
                                             validator: (value) =>
                                                 Validation.validatePhone(
                                                   value,
@@ -403,7 +399,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           CustomPakkaFormField(
                                             controller:
                                                 _vmn.supplierEmailController,
-                                            label: "Customer Email",
+                                            label: "Supplier Email",
                                             textInputAction:
                                                 TextInputAction.next,
                                           ),
@@ -412,7 +408,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           CustomPakkaFormField(
                                             controller:
                                                 _vmn.supplierAddressController,
-                                            label: "Customer Address",
+                                            label: "Supplier Address",
                                             textInputAction:
                                                 TextInputAction.next,
                                           ),
@@ -421,7 +417,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           CustomPakkaFormField(
                                             controller: _vmn
                                                 .supplierOpeningBalanceController,
-                                            label: "Opening Balance",
+                                            label: "Supplier Opening Balance",
                                             textInputAction:
                                                 TextInputAction.done,
                                             onComplete: () async {
@@ -473,7 +469,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           }
                                         },
                                         child: Text(
-                                          "Save Customer",
+                                          "Save Supplier",
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
@@ -482,7 +478,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                       ),
                                     ),
 
-                                    SizedBox(height: 16),
+                                    SizedBox(height: 20),
                                   ],
                                 ),
                               ),

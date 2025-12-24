@@ -457,4 +457,51 @@ class PurchaseServices {
       return {"statusCode": 666, "data": "Unexpected error: $e"};
     }
   }
+
+   Future<Map<String, dynamic>> getPurchaseSupplierDues({
+    required String phone,
+    required String pin,
+   
+    required String code,
+
+    required String supplierId,
+  }) async {
+    final Dio dio = Dio();
+    print("Code: $code");
+    print("Pin: $pin");
+    print("Phone: $phone");
+    // Base query parameters
+    final Map<String, dynamic> queryParams = {
+      'school_code': code,
+      'mobile': phone,
+      'password': pin,
+      'offset': "0",
+      'limit': '10',
+      
+      'ACCOUNT_NO': supplierId,
+    };
+    // ✅ Remove any null or empty parameters before request
+    queryParams.removeWhere(
+      (key, value) => value == null || value.toString().isEmpty,
+    );
+
+    final String url = "${Urls.baseUrl}Get_PA_Supplier_due/";
+
+    try {
+      final response = await dio.get(url, queryParameters: queryParams);
+
+      print("Request URL: ${response.realUri}");
+      print("Response: ${response.data}");
+
+      return {"statusCode": response.statusCode, "data": response.data};
+    } on DioException catch (e) {
+      return {
+        "statusCode": e.response?.statusCode ?? 666,
+        "data": e.response?.data ?? "Dio error: ${e.message}",
+      };
+    } catch (e) {
+      return {"statusCode": 666, "data": "Unexpected error: $e"};
+    }
+  }
+
 }

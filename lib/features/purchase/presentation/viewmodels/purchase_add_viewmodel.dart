@@ -16,6 +16,7 @@ import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart
 import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/views/purchase_payment_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_details_add_widget.dart';
 
 final purchaseAddViewModelProvider =
@@ -103,7 +104,7 @@ final class PurchaseAddState {
   }) : selectedManufacturingDate =
            selectedManufacturingDate ??
            DateFormat('yyyy-MM-dd').format(DateTime.now()),
-          selectedExpiredDate = "YYYY-MM-DD",
+       selectedExpiredDate = "YYYY-MM-DD",
        purchaseDate =
            purchaseDate ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
 
@@ -180,51 +181,59 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   int purchaseType = 0;
   String paymentMethod = '';
 
-  void _updateDueAmount() {
-    double totalAmount =
-        double.tryParse(purchaseNetAmmountController.text) ?? 0.0;
-    double paidAmount =
-        double.tryParse(purchasePaidPriceController.text) ?? 0.0;
-    double dueAmount = totalAmount - paidAmount;
+  
+  Future<void> fetchPurchaseSupplierDues({
+    bool loadMore = false,
+    int? page,
+  }) async {
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
 
-    purchaseDuePriceController.text = dueAmount.toStringAsFixed(2);
+    try {
+      print("fetching supplier");
+      state = state.copyWith(isLoading: true);
+
+
+      final result = await _repo.getPurchaseSupplierDues(
+
+        phone: phone ?? '',
+        pin: pin ?? '',
+        code: code ?? '',
+     
+  
+        supplierId: state.supplierId.toString(),
+      );
+      
+  
+      print(result);
+      
+
+     
+     
+     
+    
+    } catch (e) {
+      debugPrint("Error fetching purchases: $e");
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  void updatePurchaseType(String value) {
+    state = state.copyWith(purchaseType: value);
   }
 
   void calculatePurchaseAmounts() {
     final products = state.selectedPurchaseProducts ?? [];
 
-    // 1️⃣ Net amount calculated from products
     final calculatedNetAmount = products.fold<double>(
       0.0,
       (sum, item) => sum + (item.unitPrice * item.quantity),
     );
 
-    // 2️⃣ Use user input if exists, otherwise use calculated value
-    final netAmount = purchaseNetAmmountController.text.isNotEmpty
-        ? double.tryParse(purchaseNetAmmountController.text) ??
-              calculatedNetAmount
-        : calculatedNetAmount;
-
-    // 3️⃣ Paid amount
-    final paidAmount = double.tryParse(purchasePaidPriceController.text) ?? 0.0;
-
-    // 4️⃣ Due amount
-    final dueAmount = netAmount - paidAmount;
-
-    // 5️⃣ Update UI
-    if (purchaseNetAmmountController.text.isEmpty) {
-      purchaseNetAmmountController.text = calculatedNetAmount.toStringAsFixed(
-        2,
-      );
-    }
-
-    purchaseDuePriceController.text = dueAmount.toStringAsFixed(2);
-  }
-
- 
-
-  void updatePurchaseType(String value) {
-    state = state.copyWith(purchaseType: value);
+    // ✅ ALWAYS update net amount
+    purchaseNetAmmountController.text = calculatedNetAmount.toStringAsFixed(0);
   }
 
   Future<void> addProductInPurchaseList(BuildContext context) async {
@@ -277,8 +286,6 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   @override
   PurchaseAddState build() {
     _repo = ref.read(purchaseRepositoryProvider);
-    purchasePaidPriceController.addListener(_updateDueAmount);
-    purchaseNetAmmountController.addListener(_updateDueAmount);
 
     return PurchaseAddState();
   }
@@ -367,10 +374,9 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     state = state.copyWith(selectedManufacturingDate: date);
   }
 
-   void updateExpireDate({required String expireDate}) {
+  void updateExpireDate({required String expireDate}) {
     state = state.copyWith(selectedExpiredDate: expireDate);
   }
-
 
   // void searchCustomer(String query) {
   //   final allCustomers = state.customer?.items ?? [];
@@ -537,9 +543,9 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
-    final purchaseTypeValue = int.tryParse(
-      state.purchaseType == 'Credit' ? "0" : "1",
-    );
+    // final purchaseTypeValue = int.tryParse(
+    //   state.purchaseType == 'Credit' ? "0" : "1",
+    // );
 
     final purchasePaidAmmountValue =
         purchasePaidPriceController.text.trim().isNotEmpty
@@ -561,7 +567,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     final response = await _repo.addPurchase(
       purchaseDate: state.purchaseDate.toString(),
       supplierId: state.supplierId.toString(),
-      purchaseType: purchaseTypeValue,
+      // purchaseType: purchaseTypeValue,
       netAmount: purchaseNetAmmountController.text.trim(),
       due: purchaseDuePriceController.text.trim(),
       paidPrice: purchasePaidAmmountValue,
@@ -571,17 +577,22 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       schoolCode: code ?? "",
       productList: productList, // works even when empty
     );
-   
+
     print(response);
 
     if (response['data']['status'] == 'success') {
       if (!context.mounted) return;
+
       showCustomSnackBar(
         context,
         "Purchase Add Successfully",
         type: SnackBarType.success,
       );
-      Navigator.pop(context);
+      // Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PurchasePaymentView()),
+      );
       ref.read(purchaseViewModelProvider.notifier).fetchSupplierWisePurchases();
       ref.read(homeProvider.notifier).fetchDashBoard('YEAR');
     } else if (response['data']['status'] == 'error') {}
@@ -661,11 +672,11 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                               ),
                               SizedBox(height: 12),
                               InkWell(
-                                borderRadius: BorderRadius.all(Radius.circular(8)),
-                                onTap: () async{
-                                   final date = await pickDate(
-                                    context: context,
-                                  );
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                                onTap: () async {
+                                  final date = await pickDate(context: context);
                                   if (date != null) {
                                     updateManufacturingDate(date: date);
                                   }
@@ -690,7 +701,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                                         "Product Stock-In : ${_vm.selectedManufacturingDate}",
                                         style: AppTextStyle.bodyMediumSecondary,
                                       ),
-                                      Icon(Icons.calendar_today_outlined)
+                                      Icon(Icons.calendar_today_outlined),
                                     ],
                                   ),
                                 ),
@@ -701,9 +712,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                                   Radius.circular(8),
                                 ),
                                 onTap: () async {
-                                  final date = await pickDate(
-                                    context: context,
-                                  );
+                                  final date = await pickDate(context: context);
                                   if (date != null) {
                                     updateExpireDate(expireDate: date);
                                   }
@@ -726,8 +735,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                                     children: [
                                       Text(
                                         "Product Expire-In : ${_vm.selectedExpiredDate}",
-                                        style:
-                                            AppTextStyle.bodyMediumSecondary,
+                                        style: AppTextStyle.bodyMediumSecondary,
                                       ),
                                       Icon(Icons.calendar_today_outlined),
                                     ],
