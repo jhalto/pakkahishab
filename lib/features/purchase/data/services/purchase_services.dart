@@ -316,10 +316,7 @@ class PurchaseServices {
         if (data['status'] == 'success') {
           print("Product inserted successfully");
 
-          return {
-            'status': 'error',
-            'data': data,
-          }; // return full response
+          return {'status': 'error', 'data': data}; // return full response
         } else {
           return {
             'status': 'error',
@@ -458,10 +455,10 @@ class PurchaseServices {
     }
   }
 
-   Future<Map<String, dynamic>> getPurchaseSupplierDues({
+  Future<Map<String, dynamic>> getPurchaseSupplierDues({
     required String phone,
     required String pin,
-   
+
     required String code,
 
     required String supplierId,
@@ -477,7 +474,7 @@ class PurchaseServices {
       'password': pin,
       'offset': "0",
       'limit': '10',
-      
+
       'ACCOUNT_NO': supplierId,
     };
     // ✅ Remove any null or empty parameters before request
@@ -503,5 +500,39 @@ class PurchaseServices {
       return {"statusCode": 666, "data": "Unexpected error: $e"};
     }
   }
+Future<Map<String, dynamic>> updateSupplier({
+  required String phone,
+  required String pin,
+  required String code,
+  required Map<String, dynamic> supplier,
+}) async {
+  final url =
+      "${Urls.baseUrl}Update_Supplier/?school_code=$code&MOBILE=$phone&PASSWORD=$pin";
+
+  final body = {
+    "suppliers": [supplier],
+  };
+
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode(body), // ✅ VERY IMPORTANT
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200 && data['status'] == 'success') {
+      return {'status': 'success', 'data': data};
+    } else {
+      return {'status': 'error', 'data': data};
+    }
+  } catch (e) {
+    print("UPDATE SUPPLIER ERROR: $e");
+    return {'status': "error", 'data': e.toString()};
+  }
+}
 
 }

@@ -77,8 +77,9 @@ final productListProvider = FutureProvider<List<AllProduct>>((ref) async {
 
 final class PurchaseAddState {
   final bool isLoading;
+  final bool isSupplierSelecting;
   final String? errorMessage;
-
+  final AllSupplier? selectedSupplier;
   final String? selectedManufacturingDate;
   final String? followUpDate;
   final String? purchaseDate;
@@ -91,7 +92,8 @@ final class PurchaseAddState {
 
   PurchaseAddState({
     this.isLoading = false,
-
+    this.isSupplierSelecting = false,
+this.selectedSupplier, // ⭐
     String? selectedManufacturingDate,
     this.followUpDate,
     String? purchaseDate,
@@ -109,7 +111,9 @@ final class PurchaseAddState {
            purchaseDate ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   PurchaseAddState copyWith({
+     AllSupplier? selectedSupplier, // ⭐
     bool? isLoading,
+    bool? isSupplierSelecting,
     String? selectedManufacturingDate,
     String? followUpDate,
     String? selectedExpiredDate,
@@ -123,8 +127,10 @@ final class PurchaseAddState {
   }) {
     return PurchaseAddState(
       isLoading: isLoading ?? this.isLoading,
+      isSupplierSelecting: isSupplierSelecting ?? this.isSupplierSelecting,
       selectedManufacturingDate:
           selectedManufacturingDate ?? this.selectedManufacturingDate,
+           selectedSupplier: selectedSupplier ?? this.selectedSupplier, // ⭐
       followUpDate: followUpDate ?? this.followUpDate,
       selectedExpiredDate: selectedExpiredDate ?? this.selectedExpiredDate,
       purchaseDate: purchaseDate ?? this.purchaseDate,
@@ -140,6 +146,12 @@ final class PurchaseAddState {
 
 class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   late final PurchaseRepository _repo;
+    @override
+  PurchaseAddState build() {
+    _repo = ref.read(purchaseRepositoryProvider);
+
+    return PurchaseAddState();
+  }
   // supplier add controllers
   TextEditingController supplierNameController = TextEditingController();
   TextEditingController supplierPhoneController = TextEditingController();
@@ -182,6 +194,30 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   String paymentMethod = '';
 
   
+  void toggleSupplierDropdown() {
+    state = state.copyWith(
+      isSupplierSelecting: !state.isSupplierSelecting,
+    );
+  }
+
+  void closeSupplierDropdown() {
+    state = state.copyWith(isSupplierSelecting: false);
+  }
+
+  // void selectSupplier(String supplierId) {
+  //   state = state.copyWith(
+  //     supplierId: supplierId,
+      
+  //     isSupplierSelecting: false,
+  //   );
+  // }
+void selectSupplier(AllSupplier supplier) {
+  state = state.copyWith(
+    selectedSupplier: supplier,
+    supplierId: supplier.supplierId,
+    isSupplierSelecting: false,
+  );
+}
   Future<void> fetchPurchaseSupplierDues({
     bool loadMore = false,
     int? page,
@@ -283,12 +319,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
 
   final customerAddFormKey = GlobalKey<FormState>();
 
-  @override
-  PurchaseAddState build() {
-    _repo = ref.read(purchaseRepositoryProvider);
 
-    return PurchaseAddState();
-  }
 
   // Future<void> addSale({
   //   required String phone,

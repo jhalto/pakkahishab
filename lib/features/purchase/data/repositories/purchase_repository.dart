@@ -190,4 +190,19 @@ class PurchaseRepository {
     print(dueData.length);
     return dueData;
   }
+
+  Future<Map<String, dynamic>> updateSupplier({
+    required String code,
+    required String mobile,
+    required String pin,
+    required Map<String, dynamic> supplier,
+  }) async {
+    final response = await _purchaseServices.updateSupplier(
+      code: code,
+      phone: mobile,
+      pin: pin,
+      supplier: supplier,
+    );
+    return response;
+  }
 }
