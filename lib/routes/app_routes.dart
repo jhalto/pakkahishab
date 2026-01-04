@@ -10,6 +10,7 @@ import 'package:pakkahishab/features/income/presentation/views/income_view.dart'
 import 'package:pakkahishab/features/loan/presentation/views/loan_view.dart';
 import 'package:pakkahishab/features/mobile_banking/presentation/views/mobile_bank_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/supplier_wise_purchase.dart';
+import 'package:pakkahishab/features/sales/presentation/views/customer_wise_sales.dart';
 import 'package:pakkahishab/features/stock/presentation/views/stock_view.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_dues_view.dart';
 import 'package:pakkahishab/features/home/presentation/views/home_view.dart';
@@ -25,6 +26,7 @@ class Routes {
   static const String purchase = '/purchase';
   static const String supplierpurchase = '/supplierpurchase';
   static const String sales = '/sales';
+  static const String customerSales = '/customerSales';
   static const String supplierDues = '/supplierDues';
   static const String customerDues = '/customerDues';
   static const String expenses = '/expenses';
@@ -60,6 +62,9 @@ class Routes {
         break;
       case sales:
         page = const SalesView();
+        break;
+      case customerSales:
+        page = const CustomerWiseSalesView();
         break;
       case supplierDues:
         page = const SupplierDuesView();

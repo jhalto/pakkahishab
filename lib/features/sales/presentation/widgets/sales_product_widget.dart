@@ -2,24 +2,20 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
-import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/global_widgets/custom_button.dart';
-import 'package:pakkahishab/core/global_widgets/custom_pakka_form_field.dart';
-import 'package:pakkahishab/core/helper/validation_helper.dart';
-import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_details_add_widget.dart';
+import 'package:pakkahishab/features/sales/data/models/sales_product_model.dart';
+import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_add_viewmodel.dart';
+import 'package:pakkahishab/features/sales/presentation/widgets/sale_product_details_add_widget.dart';
 
-class PurchaseProductWidget extends ConsumerWidget {
-  const PurchaseProductWidget({super.key});
+class SalesProductWidget extends ConsumerWidget {
+  const SalesProductWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _vm = ref.watch(purchaseAddViewModelProvider);
-    final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+    final _vm = ref.watch(saleAddViewModelProvider);
+    final _vmn = ref.watch(saleAddViewModelProvider.notifier);
 
-    final productAsync = ref.watch(productListProvider);
+    final productAsync = ref.watch(productListProviderSales);
 
     return productAsync.when(
       loading: () => Center(child: CircularProgressIndicator()),
@@ -62,7 +58,7 @@ class PurchaseProductWidget extends ConsumerWidget {
                       trailing: CustomButton(
                         title: "Add Product",
                         onTap: () {
-                           _vmn.showProductAddBottomSheet(context);
+                          //  _vmn.showProductAddBottomSheet(context);
                         },
                         icon: Icon(Icons.add, color: AppColors.whiteColor),
                       ),
@@ -86,10 +82,10 @@ class PurchaseProductWidget extends ConsumerWidget {
 
                 onChanged: (value) {
                   if (value != null) {
-                    _vmn.selectedPurchaseProductId = value.productId.toString();
-                    _vmn.selectedPurchaseProductName = value.productName;
-                    _vmn.selectedPurchaseProductPrice = value.purchasePrice.toString();
-                     Navigator.push(context, MaterialPageRoute(builder: (context) => PurchaseProductDetailsAddWidget(selectedProductAll: value),));
+                    _vmn.selectedSaleProductId = value.productId.toString();
+                    _vmn.selectedSaleProductName = value.productName;
+                    _vmn.selectedSaleProductPrice = value.purchasePrice.toString();
+                     Navigator.push(context, MaterialPageRoute(builder: (context) => SaleProductDetailsAddWidget(selectedProductAll: value),));
                   }
                 },
               ),
@@ -309,7 +305,7 @@ class PurchaseProductWidget extends ConsumerWidget {
                 //     );
                 //   },
                 // );
-                  _vmn.showProductAddBottomSheet(context);
+                  // _vmn.showProductAddBottomSheet(context);
               },
               child: Container(
                 decoration: BoxDecoration(

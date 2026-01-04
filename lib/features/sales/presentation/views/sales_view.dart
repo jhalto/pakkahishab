@@ -30,7 +30,7 @@ class SalesView extends StatelessWidget {
               child: Consumer(
                 builder: (outerContext, ref, child) {
                   final saleState = ref.watch(salesViewModelProvider);
-                 
+
                   if (saleState.loading) {
                     return Center(child: loader);
                   }
@@ -194,80 +194,78 @@ class SalesView extends StatelessWidget {
                                                     style:
                                                         AppTextStyle.bodyMedium,
                                                   ),
-                                                  Text(
-                                                    item.customerName,
-                                                    style:
-                                                        AppTextStyle.bodySmall,
-                                                  ),
 
                                                   const SizedBox(height: 10),
                                                   Text(
-                                                    "${item.netAmount.toString()} Tk",
+                                                    item.customerPhone.toString(),style: AppTextStyle.bodyMediumSecondary,
                                                   ),
                                                 ],
                                               ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  if (item.due == 0)
-                                                    Text(
-                                                      "Paid",
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: const Color(
-                                                              0xff50AA53,
-                                                            ),
-                                                          ),
-                                                    ),
-
-                                                  if (item.due ==
-                                                      item.netAmount)
-                                                    Text(
-                                                      "Unpaid",
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: const Color(
-                                                              0xfff5a848,
-                                                            ),
-                                                          ),
-                                                    ),
-                                                  if (item.due != 0 &&
-                                                      item.due !=
-                                                          item.netAmount)
-                                                    Text(
-                                                      "Partial",
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: AppColors
-                                                                .primaryColor2,
-                                                          ),
-                                                    ),
-                                                  if (item.due != 0)
-                                                    Text(
-                                                      item.due.toString(),
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: AppColors
-                                                                .primaryColor2,
-                                                          ),
-                                                    ),
-
-                                                  // if (item.due == item.netAmount)
-                                                  //   Text(
-                                                  //     item.netAmount.toString(),
-                                                  //     style:
-                                                  //         AppTextStyle.bodyMedium,
-                                                  //   ),
-                                                ],
+                                              Text(
+                                                "${item.netAmount.toString()} Tk",
                                               ),
+                                              // Column(
+                                              //   mainAxisAlignment:
+                                              //       MainAxisAlignment
+                                              //           .spaceBetween,
+                                              //   crossAxisAlignment:
+                                              //       CrossAxisAlignment.end,
+                                              //   children: [
+                                              //     if (item.due == 0)
+                                              //       Text(
+                                              //         "Paid",
+                                              //         style: AppTextStyle
+                                              //             .bodyMedium
+                                              //             .copyWith(
+                                              //               color: const Color(
+                                              //                 0xff50AA53,
+                                              //               ),
+                                              //             ),
+                                              //       ),
+
+                                              //     if (item.due ==
+                                              //         item.netAmount)
+                                              //       Text(
+                                              //         "Unpaid",
+                                              //         style: AppTextStyle
+                                              //             .bodyMedium
+                                              //             .copyWith(
+                                              //               color: const Color(
+                                              //                 0xfff5a848,
+                                              //               ),
+                                              //             ),
+                                              //       ),
+                                              //     if (item.due != 0 &&
+                                              //         item.due !=
+                                              //             item.netAmount)
+                                              //       Text(
+                                              //         "Partial",
+                                              //         style: AppTextStyle
+                                              //             .bodyMedium
+                                              //             .copyWith(
+                                              //               color: AppColors
+                                              //                   .primaryColor2,
+                                              //             ),
+                                              //       ),
+                                              //     if (item.due != 0)
+                                              //       Text(
+                                              //         item.due.toString(),
+                                              //         style: AppTextStyle
+                                              //             .bodyMedium
+                                              //             .copyWith(
+                                              //               color: AppColors
+                                              //                   .primaryColor2,
+                                              //             ),
+                                              //       ),
+
+                                              //     // if (item.due == item.netAmount)
+                                              //     //   Text(
+                                              //     //     item.netAmount.toString(),
+                                              //     //     style:
+                                              //     //         AppTextStyle.bodyMedium,
+                                              //     //   ),
+                                              //   ],
+                                              // ),
                                             ],
                                           ),
                                         ),
@@ -348,7 +346,14 @@ class SalesView extends StatelessWidget {
                           },
                         ),
                       ),
-                      SalesPagination(),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          return ref.watch(salesViewModelProvider).totalPage ==
+                                  1
+                              ? SizedBox()
+                              : SalesPagination();
+                        },
+                      ),
                     ],
                   );
                 },

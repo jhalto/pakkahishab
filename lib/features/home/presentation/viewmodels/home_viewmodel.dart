@@ -109,14 +109,7 @@ class HomeNotifier extends StateNotifier<HomeState> {
           phone: '',
           company: '',
 
-          icons: [
-            FontAwesomeIcons.bangladeshiTakaSign,
-            FontAwesomeIcons.bangladeshiTakaSign,
-            FontAwesomeIcons.bangladeshiTakaSign,
-            FontAwesomeIcons.bangladeshiTakaSign,
-            FontAwesomeIcons.bangladeshiTakaSign,
-            FontAwesomeIcons.bangladeshiTakaSign,
-          ],
+          icons: [],
 
           cashInHand: '',
           cashAtBank: '',
@@ -134,7 +127,6 @@ class HomeNotifier extends StateNotifier<HomeState> {
         ),
       ) {
     loadUserData();
-    fetchDashBoard(state.filter);
   }
   void updateFilter(String value) {
     state = state.copyWith(filter: value);
@@ -146,6 +138,7 @@ class HomeNotifier extends StateNotifier<HomeState> {
       SharedPreferencesHelper.getString('email'),
       SharedPreferencesHelper.getString('phone'),
       SharedPreferencesHelper.getString('company'),
+      SharedPreferencesHelper.getString('code'),
     ]);
 
     state = state.copyWith(
@@ -154,6 +147,12 @@ class HomeNotifier extends StateNotifier<HomeState> {
       phone: results[2] ?? '',
       company: results[3] ?? '',
     );
+
+    final schoolCode = results[4];
+
+    if (schoolCode != null && schoolCode.isNotEmpty) {
+      await fetchDashBoard(state.filter);
+    }
   }
 
   Future<void> logout(BuildContext context) async {

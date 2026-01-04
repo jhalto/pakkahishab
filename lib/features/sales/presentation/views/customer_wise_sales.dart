@@ -1,46 +1,40 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
+import 'package:pakkahishab/features/sales/presentation/views/sales_add.dart';
+import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_viewmodel.dart';
+import 'package:pakkahishab/features/sales/presentation/views/sales_view.dart';
+import 'package:pakkahishab/features/sales/presentation/widgets/customer_wise_sales_appbar_back_with_search.dart';
 
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchase_add.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_appbar_back_with_search.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchase_details.dart';
-
-class PurchasesView extends StatelessWidget {
-  const PurchasesView({super.key});
+class CustomerWiseSalesView extends StatelessWidget {
+  const CustomerWiseSalesView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurchaseAppbarBackWithSearch(title: "Purchases"),
+      appBar: CustomerWiseSalesAppbarBackWithSearch(title: "Sales"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
             return RefreshIndicator(
               color: AppColors.primaryColor,
               onRefresh: () {
-                return ref
-                    .read(purchaseViewModelProvider.notifier)
-                    .refreshPurchases();
+                return ref.read(salesViewModelProvider.notifier).refreshSales();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final purchaseState = ref.watch(purchaseViewModelProvider);
-                  final purchaseNotifier = ref.watch(
-                    purchaseViewModelProvider.notifier,
-                  );
-                  if (purchaseState.loading) {
+                  final saleState = ref.watch(salesViewModelProvider);
+                  final _vmn = ref.watch(salesViewModelProvider.notifier);
+
+                  if (saleState.loading) {
                     return Center(child: loader);
                   }
-                  if (purchaseState.purchaseList.isEmpty) {
-                    return Center(child: Text("No purchases"));
+                  if (saleState.customerWiseSalesList.isEmpty) {
+                    return Center(child: Text("No Sales"));
                   }
                   return Column(
                     children: [
@@ -59,15 +53,12 @@ class PurchasesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      purchaseState.purchaseList.isEmpty
+                                      saleState.customerWiseSalesList.isEmpty
                                           ? "0"
                                           : ref
-                                                .watch(
-                                                  purchaseViewModelProvider,
-                                                )
-                                                .purchaseList
-                                                .first
-                                                .totalCount
+                                                .watch(salesViewModelProvider)
+                                                .customerWiseSalesList
+                                                .length
                                                 .toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
@@ -87,15 +78,13 @@ class PurchasesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      purchaseState.purchaseList.isEmpty
+                                      saleState.customerWiseSalesList.isEmpty
                                           ? "0"
                                           : ref
-                                                .watch(
-                                                  purchaseViewModelProvider,
-                                                )
-                                                .purchaseList
+                                                .watch(salesViewModelProvider)
+                                                .customerWiseSalesList
                                                 .first
-                                                .totalNetAmount
+                                                .totalSalesAmount
                                                 .toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
@@ -109,15 +98,15 @@ class PurchasesView extends StatelessWidget {
                       const SizedBox(height: 8),
                       Expanded(
                         child: ListView.builder(
-                          itemCount: purchaseState.purchaseList.length,
+                          itemCount: saleState.customerWiseSalesList.length,
                           itemBuilder: (context, index) {
-                            final item = purchaseState.purchaseList[index];
-                            final formattedDate = DateFormat(
-                              'dd MMM',
-                            ).format(item.purchaseDate);
-                            final formattedTime = DateFormat(
-                              'hh:mma ',
-                            ).format(item.purchaseDate);
+                            final item = saleState.customerWiseSalesList[index];
+                            // final formattedDate = DateFormat(
+                            //   'dd MMM',
+                            // ).format(item.salesDate);
+                            // final formattedTime = DateFormat(
+                            //   'hh:mma ',
+                            // ).format(item.salesDate);
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 2,
@@ -126,20 +115,14 @@ class PurchasesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
+                                  _vmn.updateCustomerId(item.customerId);
+                                  _vmn.fetchSales();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) =>
-                                          PurchaseDetails(purchase: item),
+                                      builder: (context) => SalesView(),
                                     ),
                                   );
-
-                                  final success = await ref
-                                      .read(purchaseViewModelProvider.notifier)
-                                      .fetchPurchaseDetails(
-                                        purchaseNo: item.purchaseNo,
-                                      );
-                                  print(success);
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(
@@ -161,31 +144,23 @@ class PurchasesView extends StatelessWidget {
                                   child: IntrinsicHeight(
                                     child: Row(
                                       children: [
-                                        Container(
+                                        Padding(
                                           padding: const EdgeInsets.only(
-                                            left: 8,
+                                            left: 10,
                                           ),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                formattedDate,
-                                                style: AppTextStyle.bodyMedium
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryColor2,
-                                                      fontSize: 16.sp,
-                                                    ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                formattedTime,
-                                                style: AppTextStyle.bodySmall
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryColor2,
-                                                    ),
-                                              ),
-                                            ],
+                                          child: Container(
+                                            alignment: .center,
+                                            padding: EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                              shape: .circle,
+                                              color: AppColors.fillColor2,
+                                            ),
+                                            child: Text(
+                                              item.supplierName[0]
+                                                  .toUpperCase(),
+                                              style: AppTextStyle.labelLarge
+                                                  .copyWith(),
+                                            ),
                                           ),
                                         ),
                                         const VerticalDivider(
@@ -206,79 +181,21 @@ class PurchasesView extends StatelessWidget {
                                                     style:
                                                         AppTextStyle.bodyMedium,
                                                   ),
+
+                                                  // Text(
+                                                  //   item.,
+                                                  //   style:
+                                                  //       AppTextStyle.bodySmall,
+                                                  // ),
                                                   const SizedBox(height: 10),
                                                   Text(
-                                                    item.supplierPhone ??
-                                                        "Not Available",
-                                                    style: AppTextStyle
-                                                        .bodyMediumSecondary,
+                                                    item.customerPhoneNo
+                                                        .toString(),style: AppTextStyle.bodyMediumSecondary,
                                                   ),
                                                 ],
                                               ),
-                                              // Column(
-                                              //   mainAxisAlignment:
-                                              //       MainAxisAlignment
-                                              //           .spaceBetween,
-                                              //   crossAxisAlignment:
-                                              //       CrossAxisAlignment.end,
-                                              //   children: [
-                                              //     if (item.due == 0)
-                                              //       Text(
-                                              //         "Paid",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: const Color(
-                                              //                 0xff50AA53,
-                                              //               ),
-                                              //             ),
-                                              //       ),
-
-                                              //     if (item.due ==
-                                              //         item.netAmount)
-                                              //       Text(
-                                              //         "Unpaid",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: const Color(
-                                              //                 0xfff5a848,
-                                              //               ),
-                                              //             ),
-                                              //       ),
-                                              //     if (item.due != 0 &&
-                                              //         item.due !=
-                                              //             item.netAmount)
-                                              //       Text(
-                                              //         "Partial",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: AppColors
-                                              //                   .primaryColor2,
-                                              //             ),
-                                              //       ),
-                                              //     if (item.due != 0)
-                                              //       Text(
-                                              //         item.due.toString(),
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: AppColors
-                                              //                   .primaryColor2,
-                                              //             ),
-                                              //       ),
-
-                                              //     // if (item.due == item.netAmount)
-                                              //     //   Text(
-                                              //     //     item.netAmount.toString(),
-                                              //     //     style:
-                                              //     //         AppTextStyle.bodyMedium,
-                                              //     //   ),
-                                              //   ],
-                                              // ),
                                               Text(
-                                                "${item.netAmount.toString()} Tk",
+                                                "${item.totalSalesAmount.toString()} Tk",
                                               ),
                                             ],
                                           ),
@@ -363,11 +280,11 @@ class PurchasesView extends StatelessWidget {
                       Consumer(
                         builder: (context, ref, child) {
                           return ref
-                                      .watch(purchaseViewModelProvider)
+                                      .watch(salesViewModelProvider)
                                       .totalPage ==
                                   1
                               ? SizedBox()
-                              : PurchasesPagination();
+                              : CustomerWiseSalesPagination();
                         },
                       ),
                     ],
@@ -478,30 +395,28 @@ class PurchasesView extends StatelessWidget {
           },
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     // Navigator.pushNamed(context, Routes.p)
-      //     navigateWithSlide(context: context, page: PurchaseAdd());
-      //   },
-      //   backgroundColor: AppColors.primaryColor,
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadiusGeometry.circular(100),
-      //   ),
-      //   child: Icon(CupertinoIcons.add, color: AppColors.whiteColor),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          navigateWithSlide(context: context, page: SaleAdd());
+        },
+        backgroundColor: AppColors.primaryColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(100),
+        ),
+        child: Icon(CupertinoIcons.add, color: AppColors.whiteColor),
+      ),
     );
   }
 }
 
-class PurchasesPagination extends ConsumerStatefulWidget {
-  const PurchasesPagination({super.key});
+class CustomerWiseSalesPagination extends ConsumerStatefulWidget {
+  const CustomerWiseSalesPagination({super.key});
 
   @override
-  ConsumerState<PurchasesPagination> createState() =>
-      _PurchasesPaginationState();
+  ConsumerState<CustomerWiseSalesPagination> createState() => _SalesPaginationState();
 }
 
-class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
+class _SalesPaginationState extends ConsumerState<CustomerWiseSalesPagination> {
   final ScrollController _scrollController = ScrollController();
   int? _previousPage;
 
@@ -514,7 +429,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
     super.initState();
     // Scroll to current page after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentPage = ref.read(purchaseViewModelProvider).currentPage;
+      final currentPage = ref.read(salesViewModelProvider).currentPage;
       if (currentPage > 1) {
         _scrollToPageImmediate(currentPage);
       }
@@ -559,12 +474,11 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(purchaseViewModelProvider);
-    final notifier = ref.read(purchaseViewModelProvider.notifier);
+    final purchaseState = ref.watch(salesViewModelProvider);
+    final notifier = ref.read(salesViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
     final totalPage = purchaseState.totalPage;
-    print("total purchase view page = $totalPage");
 
     // Detect page change and scroll to it
     if (_previousPage != null && _previousPage != currentPage) {

@@ -153,7 +153,8 @@ class SupplierPurchasesView extends StatelessWidget {
                                               color: AppColors.fillColor2,
                                             ),
                                             child: Text(
-                                              item.supplierName[0].toUpperCase(),
+                                              item.supplierName[0]
+                                                  .toUpperCase(),
                                               style: AppTextStyle.labelLarge
                                                   .copyWith(),
                                             ),
@@ -184,12 +185,12 @@ class SupplierPurchasesView extends StatelessWidget {
                                                   //       AppTextStyle.bodySmall,
                                                   // ),
                                                   const SizedBox(height: 10),
-                                                  Text(
-                                                    item.supplierPhoneNo,
-                                                  ),
+                                                  Text(item.supplierPhoneNo, style: AppTextStyle.bodyMediumSecondary,),
                                                 ],
                                               ),
-                                             Text("${item.totalPurchaseAmount.toString()} Tk")
+                                              Text(
+                                                "${item.totalPurchaseAmount.toString()} Tk",
+                                              ),
                                             ],
                                           ),
                                         ),
