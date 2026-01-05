@@ -54,12 +54,22 @@ class _PurchaseSupplierWidgetState
                   showSearchBox: true,
                   disableFilter: false,
                   interceptCallBacks: true,
+                  menuProps: MenuProps(
+                    backgroundColor: Colors.white, // 🔥 popup background
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+
                   searchFieldProps: TextFieldProps(
                     decoration: InputDecoration(
                       hintText: "সাপ্লায়ার খুঁজুন...",
+
                       prefixIcon: Icon(Icons.search),
                       filled: true,
                       fillColor: Colors.grey.shade100,
+                      // fillColor: AppColors.whiteColor,
                       border: InputBorder.none,
                     ),
                   ),
@@ -72,11 +82,11 @@ class _PurchaseSupplierWidgetState
                       title: Text(supplier.supplierName),
                       subtitle: Text(supplier.phone ?? ''),
 
-                      trailing: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
+                      trailing: InkWell(
+                        // behavior: HitTestBehavior.opaque,
                         onTapDown: (_) {
                           // close dropdown first
-                         Navigator.pop(context);
+                          Navigator.pop(context);
                           // navigate AFTER popup is closed
 
                           print("tapp");
@@ -97,9 +107,14 @@ class _PurchaseSupplierWidgetState
                             ),
                           );
                         },
-                        child: const Padding(
+                        child: Padding(
                           padding: EdgeInsets.all(6),
-                          child: Icon(Icons.edit, size: 20),
+                          child: Material(
+                            child: Ink(
+                              decoration: BoxDecoration(shape: BoxShape.circle),
+                              child: Icon(Icons.edit, size: 20),
+                            ),
+                          ),
                         ),
                       ),
                     );

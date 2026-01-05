@@ -122,6 +122,20 @@ class PurchaseRepository {
     );
     return response;
   }
+  Future<Map<String, dynamic>> updateProduct({
+    required String code,
+    required String mobile,
+    required String pin,
+    required List<AddProductItem> product,
+  }) async {
+    final response = await _purchaseServices.updateProduct(
+      code: code,
+      phone: mobile,
+      pin: pin,
+      products: product,
+    );
+    return response;
+  }
 
   Future<Map<String, dynamic>> addPurchase({
     String? purchaseDate,

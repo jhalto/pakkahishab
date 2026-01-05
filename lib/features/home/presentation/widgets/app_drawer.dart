@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
+import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
@@ -85,6 +86,13 @@ class AppDrawer extends StatelessWidget {
                           leading: const Icon(FontAwesomeIcons.cartShopping),
                         ),
                         ListTile(
+                           onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(
+                              context,
+                              Routes.addPurchase,
+                            );
+                          },
                           title: Text(
                             AppLocalizations.of(context)!.newPurchase,
                             style: AppTextStyle.bodyMediumSecondary,
@@ -93,7 +101,8 @@ class AppDrawer extends StatelessWidget {
                         ),
                         ListTile(
                           title: Text(
-                            AppLocalizations.of(context)!.purchaseReturn,style: AppTextStyle.bodyMediumSecondary,
+                            AppLocalizations.of(context)!.purchaseReturn,
+                            style: AppTextStyle.bodyMediumSecondary,
                           ),
                           leading: const Icon(FontAwesomeIcons.arrowRotateLeft),
                         ),
@@ -114,7 +123,7 @@ class AppDrawer extends StatelessWidget {
                         ListTile(
                           onTap: () {
                             Navigator.pop(context);
-                            Navigator.pushNamed(context, Routes.sales);
+                            Navigator.pushNamed(context, Routes.customerSales);
                           },
                           title: Text(
                             AppLocalizations.of(context)!.sales,
@@ -123,6 +132,10 @@ class AppDrawer extends StatelessWidget {
                           leading: const Icon(FontAwesomeIcons.cashRegister),
                         ),
                         ListTile(
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, Routes.addSales);
+                          },
                           title: Text(
                             AppLocalizations.of(context)!.newSales,
                             style: AppTextStyle.bodyMediumSecondary,
@@ -269,11 +282,17 @@ class AppDrawer extends StatelessWidget {
                             Navigator.pop(context);
                             Navigator.pushNamed(context, Routes.advance);
                           },
-                          title: Text(AppLocalizations.of(context)!.head, style: AppTextStyle.bodyMediumSecondary,),
+                          title: Text(
+                            AppLocalizations.of(context)!.head,
+                            style: AppTextStyle.bodyMediumSecondary,
+                          ),
                           leading: const Icon(Icons.category),
                         ),
                         ListTile(
-                          title: Text(AppLocalizations.of(context)!.addAdvance, style: AppTextStyle.bodyMediumSecondary,),
+                          title: Text(
+                            AppLocalizations.of(context)!.addAdvance,
+                            style: AppTextStyle.bodyMediumSecondary,
+                          ),
                           leading: const Icon(Icons.add_circle_outline),
                         ),
                         ListTile(
@@ -282,13 +301,15 @@ class AppDrawer extends StatelessWidget {
                             Navigator.pushNamed(context, Routes.advance);
                           },
                           title: Text(
-                            AppLocalizations.of(context)!.editAdvance, style: AppTextStyle.bodyMediumSecondary,
+                            AppLocalizations.of(context)!.editAdvance,
+                            style: AppTextStyle.bodyMediumSecondary,
                           ),
                           leading: const Icon(Icons.edit),
                         ),
                         ListTile(
                           title: Text(
-                            AppLocalizations.of(context)!.advanceRefund,  style: AppTextStyle.bodyMediumSecondary,
+                            AppLocalizations.of(context)!.advanceRefund,
+                            style: AppTextStyle.bodyMediumSecondary,
                           ),
                           leading: const Icon(Icons.undo),
                         ),
@@ -311,11 +332,17 @@ class AppDrawer extends StatelessWidget {
                             Navigator.pop(context);
                             Navigator.pushNamed(context, Routes.loan);
                           },
-                          title: Text(AppLocalizations.of(context)!.head, style: AppTextStyle.bodyMediumSecondary,),
+                          title: Text(
+                            AppLocalizations.of(context)!.head,
+                            style: AppTextStyle.bodyMediumSecondary,
+                          ),
                           leading: const Icon(Icons.category),
                         ),
                         ListTile(
-                          title: Text(AppLocalizations.of(context)!.addLoan, style: AppTextStyle.bodyMediumSecondary,),
+                          title: Text(
+                            AppLocalizations.of(context)!.addLoan,
+                            style: AppTextStyle.bodyMediumSecondary,
+                          ),
                           leading: const Icon(Icons.add_circle_outline),
                         ),
                         ListTile(
@@ -323,11 +350,17 @@ class AppDrawer extends StatelessWidget {
                             Navigator.pop(context);
                             Navigator.pushNamed(context, Routes.loan);
                           },
-                          title: Text(AppLocalizations.of(context)!.editLoan, style: AppTextStyle.bodyMediumSecondary,),
+                          title: Text(
+                            AppLocalizations.of(context)!.editLoan,
+                            style: AppTextStyle.bodyMediumSecondary,
+                          ),
                           leading: const Icon(Icons.edit),
                         ),
                         ListTile(
-                          title: Text(AppLocalizations.of(context)!.loanPay, style: AppTextStyle.bodyMediumSecondary,),
+                          title: Text(
+                            AppLocalizations.of(context)!.loanPay,
+                            style: AppTextStyle.bodyMediumSecondary,
+                          ),
                           leading: const Icon(Icons.payments),
                         ),
                         const Divider(),
@@ -346,7 +379,8 @@ class AppDrawer extends StatelessWidget {
                       children: [
                         ListTile(
                           title: Text(
-                            AppLocalizations.of(context)!.transactionReports, style: AppTextStyle.bodyMediumSecondary,
+                            AppLocalizations.of(context)!.transactionReports,
+                            style: AppTextStyle.bodyMediumSecondary,
                           ),
                           leading: const Icon(Icons.receipt_long),
                         ),
@@ -356,7 +390,8 @@ class AppDrawer extends StatelessWidget {
                             Navigator.pushNamed(context, Routes.stock);
                           },
                           title: Text(
-                            AppLocalizations.of(context)!.stockReports, style: AppTextStyle.bodyMediumSecondary,
+                            AppLocalizations.of(context)!.stockReports,
+                            style: AppTextStyle.bodyMediumSecondary,
                           ),
                           leading: const Icon(Icons.inventory),
                         ),
@@ -376,37 +411,50 @@ class AppDrawer extends StatelessWidget {
                       children: [
                         ListTile(
                           title: Text(
-                            AppLocalizations.of(context)!.companyInfo, style: AppTextStyle.bodyMediumSecondary,
+                            AppLocalizations.of(context)!.companyInfo,
+                            style: AppTextStyle.bodyMediumSecondary,
                           ),
                           leading: const Icon(Icons.business),
                         ),
                         ListTile(
                           title: Text(
-                            AppLocalizations.of(context)!.chartOfAccounts, style: AppTextStyle.bodyMediumSecondary,
+                            AppLocalizations.of(context)!.chartOfAccounts,
+                            style: AppTextStyle.bodyMediumSecondary,
                           ),
                           leading: const Icon(Icons.account_tree),
                         ),
                         ListTile(
-                          title: Text(AppLocalizations.of(context)!.supplier, style: AppTextStyle.bodyMediumSecondary,),
+                          title: Text(
+                            AppLocalizations.of(context)!.supplier,
+                            style: AppTextStyle.bodyMediumSecondary,
+                          ),
                           leading: const Icon(Icons.store),
                         ),
                         ListTile(
-                          title: Text(AppLocalizations.of(context)!.customer, style: AppTextStyle.bodyMediumSecondary,),
+                          title: Text(
+                            AppLocalizations.of(context)!.customer,
+                            style: AppTextStyle.bodyMediumSecondary,
+                          ),
                           leading: const Icon(Icons.people),
                         ),
                         ListTile(
-                          title: Text(AppLocalizations.of(context)!.product, style: AppTextStyle.bodyMediumSecondary,),
+                          title: Text(
+                            AppLocalizations.of(context)!.product,
+                            style: AppTextStyle.bodyMediumSecondary,
+                          ),
                           leading: const Icon(Icons.shopping_bag),
                         ),
                         ListTile(
                           title: Text(
-                            AppLocalizations.of(context)!.editProfile, style: AppTextStyle.bodyMediumSecondary,
+                            AppLocalizations.of(context)!.editProfile,
+                            style: AppTextStyle.bodyMediumSecondary,
                           ),
                           leading: const Icon(Icons.edit),
                         ),
                         ListTile(
                           title: Text(
-                            AppLocalizations.of(context)!.openingBalance, style: AppTextStyle.bodyMediumSecondary,
+                            AppLocalizations.of(context)!.openingBalance,
+                            style: AppTextStyle.bodyMediumSecondary,
                           ),
                           leading: const Icon(Icons.account_balance_wallet),
                         ),
@@ -414,7 +462,8 @@ class AppDrawer extends StatelessWidget {
                           title: Text(
                             AppLocalizations.of(
                               context,
-                            )!.supplierOpeningBalance, style: AppTextStyle.bodyMediumSecondary,
+                            )!.supplierOpeningBalance,
+                            style: AppTextStyle.bodyMediumSecondary,
                           ),
                           leading: const Icon(Icons.store_mall_directory),
                         ),
@@ -422,7 +471,8 @@ class AppDrawer extends StatelessWidget {
                           title: Text(
                             AppLocalizations.of(
                               context,
-                            )!.customerOpeningBalance, style: AppTextStyle.bodyMediumSecondary,
+                            )!.customerOpeningBalance,
+                            style: AppTextStyle.bodyMediumSecondary,
                           ),
                           leading: const Icon(Icons.people_alt),
                         ),
@@ -436,7 +486,10 @@ class AppDrawer extends StatelessWidget {
 
                       return ListTile(
                         leading: const Icon(Icons.logout),
-                        title: Text(AppLocalizations.of(context)!.logout,style: AppTextStyle.bodyLarge,),
+                        title: Text(
+                          AppLocalizations.of(context)!.logout,
+                          style: AppTextStyle.bodyLarge,
+                        ),
                         onTap: () {
                           vm.logout(context);
                         },

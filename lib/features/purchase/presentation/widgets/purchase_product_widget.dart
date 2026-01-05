@@ -2,13 +2,12 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
-import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/global_widgets/custom_button.dart';
-import 'package:pakkahishab/core/global_widgets/custom_pakka_form_field.dart';
-import 'package:pakkahishab/core/helper/validation_helper.dart';
-import 'package:pakkahishab/core/utils/loader.dart';
+import 'package:pakkahishab/core/helper/date_picker_helper.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/views/edit_product_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_details_add_widget.dart';
 
 class PurchaseProductWidget extends ConsumerWidget {
@@ -18,6 +17,8 @@ class PurchaseProductWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final _vm = ref.watch(purchaseAddViewModelProvider);
     final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+    final _updateVmn = ref.watch(purchaseUpdateViewModel.notifier);
+    final _updateVm = ref.watch(purchaseUpdateViewModel);
 
     final productAsync = ref.watch(productListProvider);
 
@@ -44,6 +45,16 @@ class PurchaseProductWidget extends ConsumerWidget {
                 compareFn: (a, b) => a.productId == b.productId,
 
                 popupProps: PopupProps.menu(
+                  disableFilter: false,
+                  interceptCallBacks: true,
+                  menuProps: MenuProps(
+                    backgroundColor: Colors.white, // 🔥 popup background
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+
                   showSearchBox: true,
                   searchFieldProps: TextFieldProps(
                     decoration: InputDecoration(
@@ -55,6 +66,87 @@ class PurchaseProductWidget extends ConsumerWidget {
                       border: InputBorder.none,
                     ),
                   ),
+                  itemBuilder: (context, product, isSelected, isDisabled) {
+                    return ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        _vmn.selectedPurchaseProductId = product.productId
+                            .toString();
+                        _vmn.selectedPurchaseProductName = product.productName;
+                        _vmn.selectedPurchaseProductPrice = product
+                            .purchasePrice
+                            .toString();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PurchaseProductDetailsAddWidget(
+                                  selectedProductAll: product,
+                                ),
+                          ),
+                        );
+                      },
+                      title: Text(product.productName),
+                      subtitle: Text(product.purchasePrice.toString()),
+
+                      trailing: InkWell(
+                        // behavior: HitTestBehavior.opaque,
+                        onTapDown: (_) {
+                          // close dropdown first
+                          Navigator.pop(context);
+                          // navigate AFTER popup is closed
+
+                          // print("tapp");
+                          // purchaseUpdate.updateSupplierName.text =
+                          //     supplier.supplierName;
+                          // purchaseUpdate.updateSupplierPhone.text =
+                          //     supplier.phone ?? "Not given";
+                          // purchaseUpdate.updateSupplierEmail.text =
+                          //     supplier.email ?? "Not given";
+                          // purchaseUpdate.updateSupplierAddress.text =
+                          //     supplier.address ?? "Not given";
+
+                          // if (!context.mounted) return;
+                          _updateVmn.productNameController.text =
+                              product.productName;
+                          _updateVmn.productPriceController.text = product
+                              .purchasePrice
+                              .toString();
+                          _updateVmn.productSellPriceController.text = product
+                              .sellPrice
+                              .toString();
+                          _updateVmn.updateManufacturingDate(
+                            date: formatApiDate(
+                              product.manufacturingDate.toString(),
+                            ),
+                          );
+                          print(product.expiredDate);
+                          _updateVmn.updateExpireDate(
+                            expireDate: formatApiDate(
+                              product.expiredDate.toString(),
+                            ),
+                          );
+                          _updateVmn.productStockController.text = product
+                              .productStock
+                              .toString();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => EditProductView(
+                                productId: product.productId.toString(),
+                              ),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(6),
+                          child: Ink(
+                            decoration: BoxDecoration(shape: BoxShape.circle),
+                            child: Icon(Icons.edit, size: 20),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                   emptyBuilder: (context, searchEntry) {
                     // This shows when no item matches the search
                     return ListTile(
@@ -62,7 +154,7 @@ class PurchaseProductWidget extends ConsumerWidget {
                       trailing: CustomButton(
                         title: "Add Product",
                         onTap: () {
-                           _vmn.showProductAddBottomSheet(context);
+                          _vmn.showProductAddBottomSheet(context);
                         },
                         icon: Icon(Icons.add, color: AppColors.whiteColor),
                       ),
@@ -72,7 +164,7 @@ class PurchaseProductWidget extends ConsumerWidget {
 
                 decoratorProps: DropDownDecoratorProps(
                   decoration: InputDecoration(
-                    labelText: "Add Product (Optional)",
+                    hintText: "Add Product (Optional)",
                     filled: true,
                     contentPadding: EdgeInsets.zero,
                     fillColor: Colors.grey.shade200,
@@ -84,14 +176,22 @@ class PurchaseProductWidget extends ConsumerWidget {
                   ),
                 ),
 
-                onChanged: (value) {
-                  if (value != null) {
-                    _vmn.selectedPurchaseProductId = value.productId.toString();
-                    _vmn.selectedPurchaseProductName = value.productName;
-                    _vmn.selectedPurchaseProductPrice = value.purchasePrice.toString();
-                     Navigator.push(context, MaterialPageRoute(builder: (context) => PurchaseProductDetailsAddWidget(selectedProductAll: value),));
-                  }
-                },
+                // onChanged: (value) {
+                //   if (value != null) {
+                //     _vmn.selectedPurchaseProductId = value.productId.toString();
+                //     _vmn.selectedPurchaseProductName = value.productName;
+                //     _vmn.selectedPurchaseProductPrice = value.purchasePrice
+                //         .toString();
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => PurchaseProductDetailsAddWidget(
+                //           selectedProductAll: value,
+                //         ),
+                //       ),
+                //     );
+                //   }
+                // },
               ),
             ),
 
@@ -309,7 +409,7 @@ class PurchaseProductWidget extends ConsumerWidget {
                 //     );
                 //   },
                 // );
-                  _vmn.showProductAddBottomSheet(context);
+                _vmn.showProductAddBottomSheet(context);
               },
               child: Container(
                 decoration: BoxDecoration(

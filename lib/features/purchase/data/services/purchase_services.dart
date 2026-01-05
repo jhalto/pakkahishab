@@ -335,6 +335,54 @@ class PurchaseServices {
     }
   }
 
+  Future<Map<String, dynamic>> updateProduct({
+    required String code,
+    required String phone,
+    required String pin,
+    required List<AddProductItem> products,
+  }) async {
+    final body = {"products": products.map((e) => e.toJson()).toList()};
+    print(body);
+    final url =
+        "${Urls.baseUrl}update_pa_product/?school_code=$code&MOBILE=$phone&PASSWORD=$pin";
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: jsonEncode(body),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      print("RAW RESPONSE => ${response.body}");
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+
+        print("DECODED DATA => $data");
+
+        // ✅ CHECK STATUS
+        if (data['status'] == 'success') {
+          print("Product inserted successfully");
+
+          return {'status': 'error', 'data': data}; // return full response
+        } else {
+          return {
+            'status': 'error',
+            'data': data['message'] ?? 'Unknown error',
+          };
+        }
+      } else {
+        return {
+          'status': 'error',
+          'message': 'Server error: ${response.statusCode}',
+        };
+      }
+    } catch (e) {
+      print('UNKNOWN ERROR => $e');
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+  
   Future<Map<String, dynamic>> addPurchase({
     String? purchaseDate,
     String? followUpDate,

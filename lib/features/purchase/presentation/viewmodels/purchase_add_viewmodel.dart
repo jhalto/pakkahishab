@@ -81,9 +81,10 @@ final class PurchaseAddState {
   final String? errorMessage;
   final AllSupplier? selectedSupplier;
   final String? selectedManufacturingDate;
+  final String? selectedExpiredDate;
   final String? followUpDate;
   final String? purchaseDate;
-  final String? selectedExpiredDate;
+
   final String? supplierId;
   final String? paymentMethod;
   final String? purchaseType;
@@ -93,7 +94,7 @@ final class PurchaseAddState {
   PurchaseAddState({
     this.isLoading = false,
     this.isSupplierSelecting = false,
-this.selectedSupplier, // ⭐
+    this.selectedSupplier, // ⭐
     String? selectedManufacturingDate,
     this.followUpDate,
     String? purchaseDate,
@@ -111,7 +112,7 @@ this.selectedSupplier, // ⭐
            purchaseDate ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   PurchaseAddState copyWith({
-     AllSupplier? selectedSupplier, // ⭐
+    AllSupplier? selectedSupplier, // ⭐
     bool? isLoading,
     bool? isSupplierSelecting,
     String? selectedManufacturingDate,
@@ -130,7 +131,7 @@ this.selectedSupplier, // ⭐
       isSupplierSelecting: isSupplierSelecting ?? this.isSupplierSelecting,
       selectedManufacturingDate:
           selectedManufacturingDate ?? this.selectedManufacturingDate,
-           selectedSupplier: selectedSupplier ?? this.selectedSupplier, // ⭐
+      selectedSupplier: selectedSupplier ?? this.selectedSupplier, // ⭐
       followUpDate: followUpDate ?? this.followUpDate,
       selectedExpiredDate: selectedExpiredDate ?? this.selectedExpiredDate,
       purchaseDate: purchaseDate ?? this.purchaseDate,
@@ -146,12 +147,13 @@ this.selectedSupplier, // ⭐
 
 class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   late final PurchaseRepository _repo;
-    @override
+  @override
   PurchaseAddState build() {
     _repo = ref.read(purchaseRepositoryProvider);
 
     return PurchaseAddState();
   }
+
   // supplier add controllers
   TextEditingController supplierNameController = TextEditingController();
   TextEditingController supplierPhoneController = TextEditingController();
@@ -193,11 +195,8 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   int purchaseType = 0;
   String paymentMethod = '';
 
-  
   void toggleSupplierDropdown() {
-    state = state.copyWith(
-      isSupplierSelecting: !state.isSupplierSelecting,
-    );
+    state = state.copyWith(isSupplierSelecting: !state.isSupplierSelecting);
   }
 
   void closeSupplierDropdown() {
@@ -207,17 +206,18 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   // void selectSupplier(String supplierId) {
   //   state = state.copyWith(
   //     supplierId: supplierId,
-      
+
   //     isSupplierSelecting: false,
   //   );
   // }
-void selectSupplier(AllSupplier supplier) {
-  state = state.copyWith(
-    selectedSupplier: supplier,
-    supplierId: supplier.supplierId,
-    isSupplierSelecting: false,
-  );
-}
+  void selectSupplier(AllSupplier supplier) {
+    state = state.copyWith(
+      selectedSupplier: supplier,
+      supplierId: supplier.supplierId,
+      isSupplierSelecting: false,
+    );
+  }
+
   Future<void> fetchPurchaseSupplierDues({
     bool loadMore = false,
     int? page,
@@ -230,25 +230,15 @@ void selectSupplier(AllSupplier supplier) {
       print("fetching supplier");
       state = state.copyWith(isLoading: true);
 
-
       final result = await _repo.getPurchaseSupplierDues(
-
         phone: phone ?? '',
         pin: pin ?? '',
         code: code ?? '',
-     
-  
+
         supplierId: state.supplierId.toString(),
       );
-      
-  
-      print(result);
-      
 
-     
-     
-     
-    
+      print(result);
     } catch (e) {
       debugPrint("Error fetching purchases: $e");
     } finally {
@@ -318,8 +308,6 @@ void selectSupplier(AllSupplier supplier) {
   }
 
   final customerAddFormKey = GlobalKey<FormState>();
-
-
 
   // Future<void> addSale({
   //   required String phone,

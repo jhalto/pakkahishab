@@ -33,3 +33,8 @@ Future<String?> pickDate({
 String formatDate(DateTime date) {
   return DateFormat('yyyy-MM-dd').format(date);
 }
+
+String formatApiDate(String rawDate) {
+  final dateTime = DateTime.parse(rawDate).toLocal();
+  return DateFormat('yyyy-MM-dd').format(dateTime);
+}
