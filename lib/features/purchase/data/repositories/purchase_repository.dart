@@ -141,10 +141,9 @@ class PurchaseRepository {
     String? purchaseDate,
     String? supplierId,
     String? followUpDate,
-    int? purchaseType,
+   
     String? netAmount,
-    String? due,
-    String? paidPrice,
+ 
     required String mobile,
     required String password,
     required String schoolCode,
@@ -153,11 +152,9 @@ class PurchaseRepository {
     final response =await _purchaseServices.addPurchase(
       purchaseDate: purchaseDate,
       supplierId: supplierId,
-      purchaseType: purchaseType,
+   
       followUpDate: followUpDate,
       netAmount: netAmount,
-      due: due,
-      paidPrice: paidPrice,
       mobile: mobile,
       password: password,
       schoolCode: schoolCode,

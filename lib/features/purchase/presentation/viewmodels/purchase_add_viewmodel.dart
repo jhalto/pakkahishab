@@ -588,8 +588,6 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       supplierId: state.supplierId.toString(),
       // purchaseType: purchaseTypeValue,
       netAmount: purchaseNetAmmountController.text.trim(),
-      due: purchaseDuePriceController.text.trim(),
-      paidPrice: purchasePaidAmmountValue,
       followUpDate: state.followUpDate,
       mobile: phone ?? "",
       password: pin ?? "",
@@ -607,11 +605,13 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
         "Purchase Add Successfully",
         type: SnackBarType.success,
       );
-      // Navigator.pop(context);
+      fetchPurchaseSupplierDues();
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => PurchasePaymentView()),
       );
+      // Navigator.pop(context);
+
       ref.read(purchaseViewModelProvider.notifier).fetchSupplierWisePurchases();
       ref.read(homeProvider.notifier).fetchDashBoard('YEAR');
     } else if (response['data']['status'] == 'error') {}

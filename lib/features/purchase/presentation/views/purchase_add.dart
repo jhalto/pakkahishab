@@ -41,11 +41,10 @@ class PurchaseAdd extends StatelessWidget {
               builder: (context, ref, child) {
                 return CustomFullwidthButton(
                   onTap: () async {
-                    // ref
-                    //     .read(purchaseAddViewModelProvider.notifier)
-                    //     .addPurchase(context);
-                    ref.read(purchaseAddViewModelProvider.notifier).fetchPurchaseSupplierDues();
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PurchasePaymentView()));
+                    ref
+                        .read(purchaseAddViewModelProvider.notifier)
+                        .addPurchase(context);
+                    
                   },
                   title: "Add",
                 );

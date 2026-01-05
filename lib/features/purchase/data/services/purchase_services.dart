@@ -387,10 +387,9 @@ class PurchaseServices {
     String? purchaseDate,
     String? followUpDate,
     String? supplierId,
-    int? purchaseType,
+    
     String? netAmount,
-    String? due,
-    String? paidPrice,
+   
     required String mobile,
     required String password,
     required String schoolCode,
@@ -408,10 +407,10 @@ class PurchaseServices {
       "MOBILE": mobile,
       "PURCHASE_DATE": purchaseDate,
       "SUPPLIER_ID": supplierId,
-      "PURCHASE_TYPE": purchaseType,
+      "PURCHASE_TYPE": 0,
       "NET_AMOUNT": netAmount,
-      "DUE": due,
-      "PAID_PRICE": paidPrice,
+      "DUE": 0.0,
+      "PAID_PRICE": 0.0,
     };
 
     // Remove null or empty values
