@@ -2,12 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
+import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/di/translation_provider.dart';
 import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/app_drawer.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/body_middle_part.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/body_top_part.dart';
-import 'package:pakkahishab/features/nav_bar/presentation/widgets/bottom_bar_design.dart';
+import 'package:pakkahishab/features/home/presentation/widgets/bottom_bar_design.dart';
 import 'package:unicons/unicons.dart';
 
 class HomeView extends StatelessWidget {
@@ -43,6 +44,7 @@ class HomeView extends StatelessWidget {
                         );
                       },
                     ),
+                    SizedBox(width: 10,),
                     Container(
                       padding: EdgeInsets.symmetric(
                         vertical: 4,
@@ -93,7 +95,7 @@ class HomeView extends StatelessWidget {
                             return option.map((option) {
                               return PopupMenuItem(
                                 value: option.toUpperCase(),
-                                child: Text(option),
+                                child: Text(option,style: AppTextStyle.bodyMedium,),
                               );
                             }).toList();
                           },
@@ -161,7 +163,7 @@ class HomeView extends StatelessWidget {
                             },
                             child: Container(
                               alignment: .center,
-                              width: 60,
+                              width: 50,
                               padding: EdgeInsets.symmetric(
                                 vertical: 4,
                                 horizontal: 10,
@@ -174,8 +176,8 @@ class HomeView extends StatelessWidget {
                               ),
                               child: Text(
                                 translation.appLocale.languageCode == 'en'
-                                    ? "বাংলা"
-                                    : "EN",
+                                    ? "বাং"
+                                    : "EN", style: AppTextStyle.bodyMedium,
                               ),
                             ),
                           ),

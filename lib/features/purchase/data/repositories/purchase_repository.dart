@@ -122,15 +122,28 @@ class PurchaseRepository {
     );
     return response;
   }
+  Future<Map<String, dynamic>> updateProduct({
+    required String code,
+    required String mobile,
+    required String pin,
+    required List<AddProductItem> product,
+  }) async {
+    final response = await _purchaseServices.updateProduct(
+      code: code,
+      phone: mobile,
+      pin: pin,
+      products: product,
+    );
+    return response;
+  }
 
   Future<Map<String, dynamic>> addPurchase({
     String? purchaseDate,
     String? supplierId,
     String? followUpDate,
-    int? purchaseType,
+   
     String? netAmount,
-    String? due,
-    String? paidPrice,
+ 
     required String mobile,
     required String password,
     required String schoolCode,
@@ -139,11 +152,9 @@ class PurchaseRepository {
     final response =await _purchaseServices.addPurchase(
       purchaseDate: purchaseDate,
       supplierId: supplierId,
-      purchaseType: purchaseType,
+   
       followUpDate: followUpDate,
       netAmount: netAmount,
-      due: due,
-      paidPrice: paidPrice,
       mobile: mobile,
       password: password,
       schoolCode: schoolCode,
@@ -169,5 +180,56 @@ class PurchaseRepository {
     );
     print(purchaseData.length);
     return purchaseData;
+  }
+
+
+  Future<Map<String, dynamic>> getPurchaseSupplierDues({
+    required String phone,
+    required String pin,
+
+    required String code,
+   
+    required String supplierId,
+  }) async {
+    final dueData = await _purchaseServices.getPurchaseSupplierDues(
+      phone: phone,
+      pin: pin,
+
+      code: code,
+      supplierId: supplierId,
+    );
+    print(dueData.length);
+    return dueData;
+  }
+
+  Future<Map<String, dynamic>> updateSupplier({
+    required String code,
+    required String mobile,
+    required String pin,
+    required Map<String, dynamic> supplier,
+  }) async {
+    final response = await _purchaseServices.updateSupplier(
+      code: code,
+      phone: mobile,
+      pin: pin,
+      supplier: supplier,
+    );
+    return response;
+  }
+
+
+   Future<Map<String, dynamic>> deletePurchase({
+    required String phone,
+    required String pin,
+    required String code,
+    required String purchaseId,
+  }) async {
+    final response = await _purchaseServices.deletePurchase(
+      code: code,
+      phone: phone,
+      pin: pin,
+      purchaseId: purchaseId
+    );
+    return response;
   }
 }

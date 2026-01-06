@@ -5,6 +5,50 @@ import 'package:pakkahishab/core/const/urls.dart';
 final salesServiceProvider = Provider<SalesServices>((ref) => SalesServices());
 
 class SalesServices {
+    Future<Map<String, dynamic>> getCustomerWiseSales({
+    required String phone,
+    required String pin,
+    required String offset,
+    required String code,
+    String? saledate,
+    String? customerId,
+  }) async {
+    final Dio dio = Dio();
+
+    // Base query parameters
+    final Map<String, dynamic> queryParams = {
+      'school_code': code,
+      'mobile': phone,
+      'password': pin,
+      'offset': offset,
+      'limit': '10',
+      'SALES_DATE': saledate,
+      'customer_id': customerId,
+    };
+
+    // ✅ Remove any null or empty parameters before request
+    queryParams.removeWhere(
+      (key, value) => value == null || value.toString().isEmpty,
+    );
+
+    final String url = "${Urls.baseUrl}get_customer_wise_total_sales/";
+
+    try {
+      final response = await dio.get(url, queryParameters: queryParams);
+
+      print("Request URL: ${response.realUri}");
+      print("Response: ${response.data}");
+
+      return {"statusCode": response.statusCode, "data": response.data};
+    } on DioException catch (e) {
+      return {
+        "statusCode": e.response?.statusCode ?? 666,
+        "data": e.response?.data ?? "Dio error: ${e.message}",
+      };
+    } catch (e) {
+      return {"statusCode": 666, "data": "Unexpected error: $e"};
+    }
+  }
   Future<Map<String, dynamic>> getSales({
     required String phone,
     required String pin,
@@ -49,6 +93,7 @@ class SalesServices {
       return {"statusCode": 666, "data": "Unexpected error: $e"};
     }
   }
+
 
   Future<Map<String, dynamic>> getSaleDetails({
     required String phone,
@@ -104,6 +149,79 @@ class SalesServices {
       return {"statusCode": response.statusCode, "data": response.data};
     } catch (e) {
       return {"statusCode": 666, "data": "Catch Error $e"};
+    }
+  }
+  
+   Future<Map<String, dynamic>> getAllProduct({
+    required String phone,
+    required String pin,
+    required String code,
+  }) async {
+    final url =
+        "${Urls.baseUrl}Get_PA_Product/?mobile=$phone&password=$pin&school_code=$code";
+    Dio dio = Dio();
+    try {
+      final response = await dio.get(url);
+      print(response);
+      if (response.statusCode == 200) {
+        return {"success": true, "data": response.data};
+      } else {
+        return {
+          "success": false,
+          "statusCode": response.statusCode,
+          "message": "Unexpected status",
+        };
+      }
+    } on DioException catch (e) {
+      switch (e.type) {
+        case DioExceptionType.connectionTimeout:
+          return {
+            "statusCode": e.response!.statusCode,
+            "success": false,
+            "message": "Connection timeout. Please try again.",
+            "data": e.response?.data,
+          };
+        case DioExceptionType.receiveTimeout:
+          return {
+            "statusCode": e.response!.statusCode,
+            "success": false,
+            "message": "Recieve timeout. Please try again.",
+            "data": e.response?.data,
+          };
+        case DioExceptionType.sendTimeout:
+          return {
+            "statusCode": e.response!.statusCode,
+            "success": false,
+            "message": "Send timeout. Please try again.",
+            "data": e.response?.data,
+          };
+        case DioExceptionType.badResponse:
+          return {
+            "success": false,
+            "statusCode": e.response?.statusCode,
+            "error": e.response?.data ?? "Bad Response",
+          };
+        case DioExceptionType.cancel:
+          return {
+            "statusCode": e.response!.statusCode,
+            "success": false,
+            "message": "Request cancel. Please try again.",
+            "data": e.response?.data,
+          };
+        case DioExceptionType.unknown:
+        default:
+          return {
+            "statusCode": e.response!.statusCode,
+            "success": false,
+            "message": "Unexpected network error: ${e.message}",
+          };
+      }
+    } catch (e) {
+      return {
+        "statusCode": 666,
+        "success": false,
+        "message": "Unexpected error: $e",
+      };
     }
   }
 

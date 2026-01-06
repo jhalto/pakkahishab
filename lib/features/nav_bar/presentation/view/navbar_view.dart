@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/features/home/presentation/views/home_view.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/app_drawer.dart';
-import 'package:pakkahishab/features/nav_bar/presentation/widgets/bottom_bar_design.dart';
+import 'package:pakkahishab/features/home/presentation/widgets/bottom_bar_design.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/widgets/custom_appbar.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
 

@@ -142,20 +142,39 @@ class AllProduct {
     };
   }
 }
+class SaleDetailsProduct {
+  String productName;
+  String productId;
+  int quantity;
+  double unitPrice;
 
+  SaleDetailsProduct({
+    required this.productName,
+    required this.productId,
+    this.quantity = 1,
+    required this.unitPrice,
+  });
+
+
+  Map<String, dynamic> toJson(){
+    return {
+      "product_name": productName,
+      "product_id": productId,
+      "quantity":  quantity,
+      "unit_price": unitPrice,
+    };
+  }
+}
 class AddProductItem {
-  final String? productId;
   final String name;
   final double? purchasePrice;
   final double? sellPrice;
   final String? manufacturingDate;
   final String? expiredDate;
-
+ 
   final int? productStock;
 
   AddProductItem({
-    this.productId,
-
     required this.name,
     this.purchasePrice,
     this.sellPrice,
@@ -166,36 +185,12 @@ class AddProductItem {
 
   Map<String, dynamic> toJson() {
     return {
-      if (productId != null) "product_id": productId,
       "product_name": name,
       "purchase_price": purchasePrice ?? 0.0,
       "sell_price": sellPrice ?? 0.0,
       "manufacturing_date": manufacturingDate ?? "",
       "expired_date": expiredDate ?? "",
       "product_stock": productStock ?? 0,
-    };
-  }
-}
-
-class PurchaseDetailsProduct {
-  String productName;
-  String productId;
-  int quantity;
-  double unitPrice;
-
-  PurchaseDetailsProduct({
-    required this.productName,
-    required this.productId,
-    this.quantity = 1,
-    required this.unitPrice,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      "product_name": productName,
-      "product_id": productId,
-      "quantity": quantity,
-      "unit_price": unitPrice,
     };
   }
 }

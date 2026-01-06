@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_add.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';
@@ -19,7 +16,7 @@ class SupplierPurchasesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MainPurchaseAppbarBackWithSearch(title: "Purchases"),
+      appBar: MainPurchaseAppbarBackWithSearch(title: "Purchase"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -33,7 +30,7 @@ class SupplierPurchasesView extends StatelessWidget {
               child: Consumer(
                 builder: (outerContext, ref, child) {
                   final purchaseState = ref.watch(purchaseViewModelProvider);
-                  final _vmn = ref.watch(purchaseViewModelProvider.notifier);
+                  final vmn = ref.watch(purchaseViewModelProvider.notifier);
 
                   if (purchaseState.loading) {
                     return Center(child: loader);
@@ -112,8 +109,8 @@ class SupplierPurchasesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  _vmn.updateSupplierId(item.supplierId);
-                                  _vmn.fetchPurchases();
+                                  vmn.updateSupplierId(item.supplierId);
+                                  vmn.fetchPurchases();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -153,7 +150,8 @@ class SupplierPurchasesView extends StatelessWidget {
                                               color: AppColors.fillColor2,
                                             ),
                                             child: Text(
-                                              item.supplierName[0].toUpperCase(),
+                                              item.supplierName[0]
+                                                  .toUpperCase(),
                                               style: AppTextStyle.labelLarge
                                                   .copyWith(),
                                             ),
@@ -184,12 +182,12 @@ class SupplierPurchasesView extends StatelessWidget {
                                                   //       AppTextStyle.bodySmall,
                                                   // ),
                                                   const SizedBox(height: 10),
-                                                  Text(
-                                                    item.supplierPhoneNo,
-                                                  ),
+                                                  Text(item.supplierPhoneNo, style: AppTextStyle.bodyMediumSecondary,),
                                                 ],
                                               ),
-                                             Text("${item.totalPurchaseAmount.toString()} Tk")
+                                              Text(
+                                                "${item.totalPurchaseAmount.toString()} Tk",
+                                              ),
                                             ],
                                           ),
                                         ),

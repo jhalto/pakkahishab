@@ -4,9 +4,11 @@ import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_details_add_widget.dart';
+import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_add_viewmodel.dart';
+import 'package:pakkahishab/features/sales/presentation/widgets/sale_product_details_add_widget.dart';
 
-class PurchaseProductItemWidget extends StatelessWidget {
-  const PurchaseProductItemWidget({super.key});
+class SalesProductItemWidget extends StatelessWidget {
+  const SalesProductItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +16,9 @@ class PurchaseProductItemWidget extends StatelessWidget {
 
       child: Consumer(
         builder: (context, ref, child) {
-          final _vm = ref.watch(purchaseAddViewModelProvider);
-          final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
-          final productList = _vm.selectedPurchaseProducts?.length ?? [].length;
+          final _vm = ref.watch(saleAddViewModelProvider);
+          final _vmn = ref.watch(saleAddViewModelProvider.notifier);
+          final productList = _vm.selectedSaleProducts?.length ?? [].length;
           return productList == 0? SizedBox(): Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -60,13 +62,12 @@ class PurchaseProductItemWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 10,),
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: productList,
                   itemBuilder: (context, index) {
-                    final product = _vm.selectedPurchaseProducts?[index];
+                    final product = _vm.selectedSaleProducts?[index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 6 ,right: 10, left: 10),
                       child: Column(
@@ -103,11 +104,11 @@ class PurchaseProductItemWidget extends StatelessWidget {
                               SizedBox(width: 10),
                               InkWell(
                                 onTap: () {
-                                  _vmn.selectedPurchaseProductId = product.productId;
-                                  _vmn.selectedPurchaseProductName = product.productName;
-                                  _vmn.selectedPurchaseProductPrice = product.unitPrice.toString();
-                                  _vmn.purchaseProductQuantity.text = product.quantity.toString();
-                                  navigateWithSlide(context: context, page: PurchaseProductDetailsAddWidget(selectedPurchaseDetailProduct: product,));
+                                  _vmn.selectedSaleProductId = product.productId;
+                                  _vmn.selectedSaleProductName = product.productName;
+                                  _vmn.selectedSaleProductPrice = product.unitPrice.toString();
+                                  _vmn.saleProductQuantity.text = product.quantity.toString();
+                                  // navigateWithSlide(context: context, page: SaleProductDetailsAddWidget(selectedPurchaseDetailProduct: product,));
                                 },
                                 child: Icon(Icons.edit, size: 20)),
                             ],

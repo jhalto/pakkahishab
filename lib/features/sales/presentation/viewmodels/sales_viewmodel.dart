@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/features/sales/data/models/customer_model.dart';
+import 'package:pakkahishab/features/sales/data/models/customer_wise_sale_model.dart';
 import 'package:pakkahishab/features/sales/data/models/sale_details_model.dart';
 import 'package:pakkahishab/features/sales/data/models/sales_model.dart';
 import 'package:pakkahishab/features/sales/data/repositories/sales_repository.dart';
@@ -30,6 +31,7 @@ final class SalesState {
   final String pin;
   final String offset;
   final List<SalesItem> salesList;
+  final List<CustomerWiseSalesItem> customerWiseSalesList;
   final String? customerId;
   final String? paymentMethod;
   // final String purchaseDate;
@@ -48,6 +50,7 @@ final class SalesState {
     this.pin = '',
     this.offset = '0',
     this.salesList = const [],
+    this.customerWiseSalesList = const [],
     this.customerId,
     this.paymentMethod,
   });
@@ -65,6 +68,7 @@ final class SalesState {
     String? pin,
     String? offset,
     List<SalesItem>? salesList,
+    List<CustomerWiseSalesItem>? customerWiseSalesList,
     String? customerId,
     String? paymentMethod,
   }) {
@@ -81,6 +85,7 @@ final class SalesState {
       pin: pin ?? this.pin,
       offset: offset ?? this.offset,
       salesList: salesList ?? this.salesList,
+      customerWiseSalesList: customerWiseSalesList ?? this.customerWiseSalesList,
       customerId: customerId ?? this.customerId,
       paymentMethod: paymentMethod ?? this.paymentMethod
     );
@@ -93,12 +98,59 @@ class SalesNotifier extends Notifier<SalesState> {
   @override
   SalesState build() {
     _repo = ref.read(salesRepositoryProvider);
-    fetchSales(); // call async stuff manually
+    fetchCustomerWiseSales(); // call async stuff manually
     return const SalesState();
   }
 
   TextEditingController searchSupplierController = TextEditingController();
   String paymentMethod  = "Cash";
+  
+  Future<void> fetchCustomerWiseSales({
+    bool loadMore = false,
+    int? page,
+    String? saleDate,
+  }) async {
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
+
+    try {
+      state = state.copyWith(loading: true);
+
+      // if user taps a page number, use that page’s offset
+      final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
+      final int newOffset = (newPage - 1) * 10;
+
+      final result = await _repo.getCustomerWiseSales(
+        phone: phone ?? '',
+        pin: pin ?? '',
+        code: code ?? '',
+        offset: newOffset.toString(),
+        customerId: state.customerId,
+      );
+
+      final items = (result['data']['items'] ?? []) as List;
+      final hasMore = result['data']['hasMore'] ?? false;
+      final totalItem = result['data']['count'] ?? 0;
+      print(totalItem);
+      state = state.copyWith(totalPage: (totalItem / 10).ceil());
+      print(state.totalPage);
+      final newItems = items
+          .map<CustomerWiseSalesItem>((e) => CustomerWiseSalesItem.fromJson(e))
+          .toList();
+
+      state = state.copyWith(
+       customerWiseSalesList: newItems,
+        offset: newOffset.toString(),
+        currentPage: newPage,
+        hasMore: hasMore,
+      );
+    } catch (e) {
+      debugPrint("Error fetching purchases: $e");
+    } finally {
+      state = state.copyWith(loading: false);
+    }
+  }
 
   Future<void> fetchSales({
     bool loadMore = false,

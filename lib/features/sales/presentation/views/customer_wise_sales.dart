@@ -1,24 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/sales/presentation/views/sales_add.dart';
 import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_viewmodel.dart';
-import 'package:pakkahishab/features/sales/presentation/views/sale_details.dart';
-import 'package:pakkahishab/features/sales/presentation/widgets/sales_appbar_back_with_search.dart';
+import 'package:pakkahishab/features/sales/presentation/views/sales_view.dart';
+import 'package:pakkahishab/features/sales/presentation/widgets/customer_wise_sales_appbar_back_with_search.dart';
 
-class SalesView extends StatelessWidget {
-  const SalesView({super.key});
+class CustomerWiseSalesView extends StatelessWidget {
+  const CustomerWiseSalesView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SalesAppbarBackWithSearch(title: "Sales"),
+      appBar: CustomerWiseSalesAppbarBackWithSearch(title: "Sales"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -30,11 +28,12 @@ class SalesView extends StatelessWidget {
               child: Consumer(
                 builder: (outerContext, ref, child) {
                   final saleState = ref.watch(salesViewModelProvider);
+                  final _vmn = ref.watch(salesViewModelProvider.notifier);
 
                   if (saleState.loading) {
                     return Center(child: loader);
                   }
-                  if (saleState.salesList.isEmpty) {
+                  if (saleState.customerWiseSalesList.isEmpty) {
                     return Center(child: Text("No Sales"));
                   }
                   return Column(
@@ -54,13 +53,12 @@ class SalesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      saleState.salesList.isEmpty
+                                      saleState.customerWiseSalesList.isEmpty
                                           ? "0"
                                           : ref
                                                 .watch(salesViewModelProvider)
-                                                .salesList
-                                                .first
-                                                .totalCount
+                                                .customerWiseSalesList
+                                                .length
                                                 .toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
@@ -80,13 +78,13 @@ class SalesView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      saleState.salesList.isEmpty
+                                      saleState.customerWiseSalesList.isEmpty
                                           ? "0"
                                           : ref
                                                 .watch(salesViewModelProvider)
-                                                .salesList
+                                                .customerWiseSalesList
                                                 .first
-                                                .totalNetAmount
+                                                .totalSalesAmount
                                                 .toString(),
                                       style: AppTextStyle.labelLarge,
                                     ),
@@ -100,15 +98,15 @@ class SalesView extends StatelessWidget {
                       const SizedBox(height: 8),
                       Expanded(
                         child: ListView.builder(
-                          itemCount: saleState.salesList.length,
+                          itemCount: saleState.customerWiseSalesList.length,
                           itemBuilder: (context, index) {
-                            final item = saleState.salesList[index];
-                            final formattedDate = DateFormat(
-                              'dd MMM',
-                            ).format(item.salesDate);
-                            final formattedTime = DateFormat(
-                              'hh:mma ',
-                            ).format(item.salesDate);
+                            final item = saleState.customerWiseSalesList[index];
+                            // final formattedDate = DateFormat(
+                            //   'dd MMM',
+                            // ).format(item.salesDate);
+                            // final formattedTime = DateFormat(
+                            //   'hh:mma ',
+                            // ).format(item.salesDate);
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 2,
@@ -117,17 +115,14 @@ class SalesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
+                                  _vmn.updateCustomerId(item.customerId);
+                                  _vmn.fetchSales();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => SaleDetails(sale: item),
+                                      builder: (context) => SalesView(),
                                     ),
                                   );
-
-                                  final success = await ref
-                                      .read(salesViewModelProvider.notifier)
-                                      .fetchSalesDetails(saleNo: item.salesNo);
-                                  print(success);
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(
@@ -149,31 +144,23 @@ class SalesView extends StatelessWidget {
                                   child: IntrinsicHeight(
                                     child: Row(
                                       children: [
-                                        Container(
+                                        Padding(
                                           padding: const EdgeInsets.only(
-                                            left: 8,
+                                            left: 10,
                                           ),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                formattedDate,
-                                                style: AppTextStyle.bodyMedium
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryColor2,
-                                                      fontSize: 16.sp,
-                                                    ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                formattedTime,
-                                                style: AppTextStyle.bodySmall
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryColor2,
-                                                    ),
-                                              ),
-                                            ],
+                                          child: Container(
+                                            alignment: .center,
+                                            padding: EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                              shape: .circle,
+                                              color: AppColors.fillColor2,
+                                            ),
+                                            child: Text(
+                                              item.supplierName[0]
+                                                  .toUpperCase(),
+                                              style: AppTextStyle.labelLarge
+                                                  .copyWith(),
+                                            ),
                                           ),
                                         ),
                                         const VerticalDivider(
@@ -189,83 +176,27 @@ class SalesView extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    item.customerName
+                                                    item.supplierName
                                                         .toString(),
                                                     style:
                                                         AppTextStyle.bodyMedium,
                                                   ),
 
+                                                  // Text(
+                                                  //   item.,
+                                                  //   style:
+                                                  //       AppTextStyle.bodySmall,
+                                                  // ),
                                                   const SizedBox(height: 10),
                                                   Text(
-                                                    item.customerPhone.toString(),style: AppTextStyle.bodyMediumSecondary,
+                                                    item.customerPhoneNo
+                                                        .toString(),style: AppTextStyle.bodyMediumSecondary,
                                                   ),
                                                 ],
                                               ),
                                               Text(
-                                                "${item.netAmount.toString()} Tk",
+                                                "${item.totalSalesAmount.toString()} Tk",
                                               ),
-                                              // Column(
-                                              //   mainAxisAlignment:
-                                              //       MainAxisAlignment
-                                              //           .spaceBetween,
-                                              //   crossAxisAlignment:
-                                              //       CrossAxisAlignment.end,
-                                              //   children: [
-                                              //     if (item.due == 0)
-                                              //       Text(
-                                              //         "Paid",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: const Color(
-                                              //                 0xff50AA53,
-                                              //               ),
-                                              //             ),
-                                              //       ),
-
-                                              //     if (item.due ==
-                                              //         item.netAmount)
-                                              //       Text(
-                                              //         "Unpaid",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: const Color(
-                                              //                 0xfff5a848,
-                                              //               ),
-                                              //             ),
-                                              //       ),
-                                              //     if (item.due != 0 &&
-                                              //         item.due !=
-                                              //             item.netAmount)
-                                              //       Text(
-                                              //         "Partial",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: AppColors
-                                              //                   .primaryColor2,
-                                              //             ),
-                                              //       ),
-                                              //     if (item.due != 0)
-                                              //       Text(
-                                              //         item.due.toString(),
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: AppColors
-                                              //                   .primaryColor2,
-                                              //             ),
-                                              //       ),
-
-                                              //     // if (item.due == item.netAmount)
-                                              //     //   Text(
-                                              //     //     item.netAmount.toString(),
-                                              //     //     style:
-                                              //     //         AppTextStyle.bodyMedium,
-                                              //     //   ),
-                                              //   ],
-                                              // ),
                                             ],
                                           ),
                                         ),
@@ -348,10 +279,12 @@ class SalesView extends StatelessWidget {
                       ),
                       Consumer(
                         builder: (context, ref, child) {
-                          return ref.watch(salesViewModelProvider).totalPage ==
+                          return ref
+                                      .watch(salesViewModelProvider)
+                                      .totalPage ==
                                   1
                               ? SizedBox()
-                              : SalesPagination();
+                              : CustomerWiseSalesPagination();
                         },
                       ),
                     ],
@@ -476,14 +409,14 @@ class SalesView extends StatelessWidget {
   }
 }
 
-class SalesPagination extends ConsumerStatefulWidget {
-  const SalesPagination({super.key});
+class CustomerWiseSalesPagination extends ConsumerStatefulWidget {
+  const CustomerWiseSalesPagination({super.key});
 
   @override
-  ConsumerState<SalesPagination> createState() => _SalesPaginationState();
+  ConsumerState<CustomerWiseSalesPagination> createState() => _SalesPaginationState();
 }
 
-class _SalesPaginationState extends ConsumerState<SalesPagination> {
+class _SalesPaginationState extends ConsumerState<CustomerWiseSalesPagination> {
   final ScrollController _scrollController = ScrollController();
   int? _previousPage;
 

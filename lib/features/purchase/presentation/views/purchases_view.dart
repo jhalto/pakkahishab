@@ -5,11 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
-import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchase_add.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_appbar_back_with_search.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_details.dart';
 
@@ -19,7 +16,7 @@ class PurchasesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PurchaseAppbarBackWithSearch(title: "Purchases"),
+      appBar: PurchaseAppbarBackWithSearch(title: "Purchase"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -206,79 +203,79 @@ class PurchasesView extends StatelessWidget {
                                                     style:
                                                         AppTextStyle.bodyMedium,
                                                   ),
-                                                  Text(
-                                                    item.supplierPhone ?? "Not Available",
-                                                    style:
-                                                        AppTextStyle.bodySmall,
-                                                  ),
-
                                                   const SizedBox(height: 10),
                                                   Text(
-                                                    "${item.netAmount.toString()} Tk",
+                                                    item.supplierPhone ??
+                                                        "Not Available",
+                                                    style: AppTextStyle
+                                                        .bodyMediumSecondary,
                                                   ),
                                                 ],
                                               ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  if (item.due == 0)
-                                                    Text(
-                                                      "Paid",
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: const Color(
-                                                              0xff50AA53,
-                                                            ),
-                                                          ),
-                                                    ),
+                                              // Column(
+                                              //   mainAxisAlignment:
+                                              //       MainAxisAlignment
+                                              //           .spaceBetween,
+                                              //   crossAxisAlignment:
+                                              //       CrossAxisAlignment.end,
+                                              //   children: [
+                                              //     if (item.due == 0)
+                                              //       Text(
+                                              //         "Paid",
+                                              //         style: AppTextStyle
+                                              //             .bodyMedium
+                                              //             .copyWith(
+                                              //               color: const Color(
+                                              //                 0xff50AA53,
+                                              //               ),
+                                              //             ),
+                                              //       ),
 
-                                                  if (item.due ==
-                                                      item.netAmount)
-                                                    Text(
-                                                      "Unpaid",
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: const Color(
-                                                              0xfff5a848,
-                                                            ),
-                                                          ),
-                                                    ),
-                                                  if (item.due != 0 &&
-                                                      item.due !=
-                                                          item.netAmount)
-                                                    Text(
-                                                      "Partial",
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: AppColors
-                                                                .primaryColor2,
-                                                          ),
-                                                    ),
-                                                  if (item.due != 0)
-                                                    Text(
-                                                      item.due.toString(),
-                                                      style: AppTextStyle
-                                                          .bodyMedium
-                                                          .copyWith(
-                                                            color: AppColors
-                                                                .primaryColor2,
-                                                          ),
-                                                    ),
+                                              //     if (item.due ==
+                                              //         item.netAmount)
+                                              //       Text(
+                                              //         "Unpaid",
+                                              //         style: AppTextStyle
+                                              //             .bodyMedium
+                                              //             .copyWith(
+                                              //               color: const Color(
+                                              //                 0xfff5a848,
+                                              //               ),
+                                              //             ),
+                                              //       ),
+                                              //     if (item.due != 0 &&
+                                              //         item.due !=
+                                              //             item.netAmount)
+                                              //       Text(
+                                              //         "Partial",
+                                              //         style: AppTextStyle
+                                              //             .bodyMedium
+                                              //             .copyWith(
+                                              //               color: AppColors
+                                              //                   .primaryColor2,
+                                              //             ),
+                                              //       ),
+                                              //     if (item.due != 0)
+                                              //       Text(
+                                              //         item.due.toString(),
+                                              //         style: AppTextStyle
+                                              //             .bodyMedium
+                                              //             .copyWith(
+                                              //               color: AppColors
+                                              //                   .primaryColor2,
+                                              //             ),
+                                              //       ),
 
-                                                  // if (item.due == item.netAmount)
-                                                  //   Text(
-                                                  //     item.netAmount.toString(),
-                                                  //     style:
-                                                  //         AppTextStyle.bodyMedium,
-                                                  //   ),
-                                                ],
+                                              //     // if (item.due == item.netAmount)
+                                              //     //   Text(
+                                              //     //     item.netAmount.toString(),
+                                              //     //     style:
+                                              //     //         AppTextStyle.bodyMedium,
+                                              //     //   ),
+                                              //   ],
+                                              // ),
+                                              Text(
+                                                "${item.netAmount.toString()} Tk",
                                               ),
                                             ],
                                           ),

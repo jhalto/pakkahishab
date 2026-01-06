@@ -6,7 +6,6 @@ import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/features/expenses/data/models/expense_catagory_model.dart';
 import 'package:pakkahishab/features/expenses/data/models/expenses_model.dart';
 import 'package:pakkahishab/features/expenses/data/repositories/expenses_repository.dart';
-import 'package:pakkahishab/features/sales/data/models/customer_model.dart';
 
 
 

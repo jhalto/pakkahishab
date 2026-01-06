@@ -144,7 +144,7 @@ class BodyTopPart extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10),
                       onTap: () {
-                        Navigator.pushNamed(context, Routes.sales);
+                        Navigator.pushNamed(context, Routes.customerSales);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4),

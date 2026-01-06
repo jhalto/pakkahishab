@@ -9,7 +9,25 @@ final salesRepositoryProvider = Provider<SalesRepository>((ref) {
 class SalesRepository {
   final SalesServices _salesServices;
   SalesRepository(this._salesServices);
-
+   Future<Map<String, dynamic>> getCustomerWiseSales({
+    required String phone,
+    required String pin,
+    required String offset,
+    required String code,
+    String? saleDate,
+    String? customerId,
+  }) async {
+    final purchaseData = await _salesServices.getCustomerWiseSales(
+      phone: phone,
+      pin: pin,
+      offset: offset,
+      code: code,
+      saledate: saleDate,
+      customerId: customerId,
+    );
+    print(purchaseData.length);
+    return purchaseData;
+  }
   Future<Map<String, dynamic>> getSales({
     required String phone,
     required String pin,
@@ -57,6 +75,19 @@ class SalesRepository {
       phone: phone,
       pin: pin,
       code: code,
+    );
+    return response;
+  }
+
+   Future<Map<String, dynamic>> getAllProduct({
+    required String code,
+    required String mobile,
+    required String pin,
+  }) async {
+    final response = await _salesServices.getAllProduct(
+      code: code,
+      phone: mobile,
+      pin: pin,
     );
     return response;
   }

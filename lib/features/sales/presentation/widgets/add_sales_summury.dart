@@ -3,16 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
+import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_add_viewmodel.dart';
 
-class AddPurchaseSummury extends StatelessWidget {
-  const AddPurchaseSummury({super.key});
+class AddSalesSummury extends StatelessWidget {
+  const AddSalesSummury({super.key});
    
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
-      final vmn = ref.watch(purchaseAddViewModelProvider.notifier);
-      final vm = ref.watch(purchaseAddViewModelProvider);
+      final _vmn = ref.watch(saleAddViewModelProvider.notifier);
 
       return Container(
       decoration: BoxDecoration(
@@ -45,7 +44,15 @@ class AddPurchaseSummury extends StatelessWidget {
                       border: Border.all(color: AppColors.dotColor),
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    child: Text( vm.purchaseTotalAmount == null ? '0':vm.purchaseTotalAmount.toString() ,style: AppTextStyle.titleSmall,)
+                    child: TextField(
+                      
+                      controller: _vmn.saleNetAmountController,
+                      cursorColor: AppColors.primaryColor,
+                      decoration: InputDecoration(
+                      
+                        isDense: true,
+                        border: InputBorder.none),
+                    ),
                   ),
                 ),
               ],

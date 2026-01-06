@@ -177,9 +177,9 @@ class SalesCustomerWidget extends StatelessWidget {
                                 ),
                                 onPressed: () async {
                                   if (_vmn.customerAddFormKey.currentState!.validate()) {
-                                    await _vmn.addCustomer();
+                                    await _vmn.addCustomer(context);
 
-                                    Navigator.pop(context);
+                                  
                                   }
                                 },
                                 child: Text(

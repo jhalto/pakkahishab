@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/global_widgets/custom_fullwidth_button.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/views/purchase_payment_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/add_purchase_payment_type_widget.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/add_purchase_summury.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/puchase_supplier_widget.dart';
@@ -29,8 +30,8 @@ class PurchaseAdd extends StatelessWidget {
           PurchaseProductItemWidget(),
           SizedBox(height: 10),
           AddPurchaseSummury(),
-          SizedBox(height: 20),
-          AddPurchasePaymentTypeWidget(),
+          // SizedBox(height: 20),
+          // AddPurchasePaymentTypeWidget(),
 
           SizedBox(height: 50),
 
@@ -43,6 +44,7 @@ class PurchaseAdd extends StatelessWidget {
                     ref
                         .read(purchaseAddViewModelProvider.notifier)
                         .addPurchase(context);
+                    
                   },
                   title: "Add",
                 );

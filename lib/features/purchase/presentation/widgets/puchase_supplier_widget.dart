@@ -1,7 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/global_widgets/custom_button.dart';
 import 'package:pakkahishab/core/global_widgets/custom_pakka_form_field.dart';
@@ -9,18 +8,26 @@ import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/update_supplier_view.dart';
 
-class PurchaseSupplierWidget extends ConsumerWidget {
+class PurchaseSupplierWidget extends ConsumerStatefulWidget {
   const PurchaseSupplierWidget({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PurchaseSupplierWidget> createState() =>
+      _PurchaseSupplierWidgetState();
+}
+
+class _PurchaseSupplierWidgetState
+    extends ConsumerState<PurchaseSupplierWidget> {
+  @override
+  Widget build(BuildContext context) {
     final _vm = ref.watch(purchaseAddViewModelProvider);
     final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
 
     final supplierAsync = ref.watch(supplierListProvider);
-
+    final purchaseUpdate = ref.watch(purchaseUpdateViewModel.notifier);
     return supplierAsync.when(
       loading: () => Center(child: CircularProgressIndicator()),
       error: (err, st) => Text("Failed to load suppliers"),
@@ -30,9 +37,10 @@ class PurchaseSupplierWidget extends ConsumerWidget {
           children: [
             SizedBox(width: 10),
 
-            /// ------------------ DROPDOWN ------------------
+            // / ------------------ DROPDOWN ------------------
             Expanded(
               child: DropdownSearch<AllSupplier>(
+                selectedItem: _vm.selectedSupplier,
                 items: (filter, loadProps) async => allSuppliers,
 
                 filterFn: (supplier, filter) => supplier.supplierName
@@ -40,47 +48,72 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                     .contains(filter.toLowerCase()),
 
                 itemAsString: (s) => s.supplierName,
-
                 compareFn: (a, b) => a.supplierId == b.supplierId,
 
                 popupProps: PopupProps.menu(
                   showSearchBox: true,
+                  disableFilter: false,
+                  interceptCallBacks: true,
+                  menuProps: MenuProps(
+                    backgroundColor: Colors.white, // 🔥 popup background
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+
                   searchFieldProps: TextFieldProps(
                     decoration: InputDecoration(
                       hintText: "সাপ্লায়ার খুঁজুন...",
+
                       prefixIcon: Icon(Icons.search),
                       filled: true,
-
                       fillColor: Colors.grey.shade100,
+                      // fillColor: AppColors.whiteColor,
                       border: InputBorder.none,
                     ),
                   ),
                   itemBuilder: (context, supplier, isSelected, isDisabled) {
-                    return IgnorePointer(
-                      ignoring: true, // disable dropdown tap
-                      child: ListTile(
-                        title: Text(supplier.supplierName),
-                        subtitle: Text(supplier.phone ?? ''),
-                        trailing: IgnorePointer(
-                          ignoring: false, // enable ONLY edit icon
-                          child: GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () async {
-                              // close dropdown safely
-                              Navigator.of(context, rootNavigator: true).pop();
+                    return ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        _vmn.selectSupplier(supplier);
+                      },
+                      title: Text(supplier.supplierName),
+                      subtitle: Text(supplier.phone ?? ''),
 
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      UpdateSupplierView(supplier: supplier),
-                                ),
-                              );
+                      trailing: InkWell(
+                        // behavior: HitTestBehavior.opaque,
+                        onTapDown: (_) {
+                          // close dropdown first
+                          Navigator.pop(context);
+                          // navigate AFTER popup is closed
 
-                              // refresh supplier list
-                              ref.invalidate(supplierListProvider);
-                            },
-                            child: const Icon(Icons.edit, size: 20),
+                          print("tapp");
+                          purchaseUpdate.updateSupplierName.text =
+                              supplier.supplierName;
+                          purchaseUpdate.updateSupplierPhone.text =
+                              supplier.phone ?? "Not given";
+                          purchaseUpdate.updateSupplierEmail.text =
+                              supplier.email ?? "Not given";
+                          purchaseUpdate.updateSupplierAddress.text =
+                              supplier.address ?? "Not given";
+
+                          if (!context.mounted) return;
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  UpdateSupplierView(supplier: supplier),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(6),
+                          child: Material(
+                            child: Ink(
+                              decoration: BoxDecoration(shape: BoxShape.circle),
+                              child: Icon(Icons.edit, size: 20),
+                            ),
                           ),
                         ),
                       ),
@@ -98,22 +131,23 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                             isScrollControlled: true,
                             backgroundColor: Colors.white,
                             context: context,
-                            builder: (context) {
+                            builder: (modalContext) {
                               return Consumer(
                                 builder: (context, ref, _) {
                                   final _vm = ref.watch(
                                     purchaseAddViewModelProvider,
-                                  ); // <- watch here
+                                  );
                                   final _vmn = ref.watch(
                                     purchaseAddViewModelProvider.notifier,
                                   );
+
                                   return Stack(
                                     children: [
                                       Padding(
                                         padding: EdgeInsets.only(
                                           bottom: MediaQuery.of(
                                             context,
-                                          ).viewPadding.bottom,
+                                          ).viewInsets.bottom,
                                           left: 18,
                                           right: 18,
                                           top: 20,
@@ -150,7 +184,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierNameController,
-                                                      label: "Customer Name *",
+                                                      label: "Supplier Name *",
                                                       validator: (value) =>
                                                           Validation.validateName(
                                                             value,
@@ -164,7 +198,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierPhoneController,
-                                                      label: "Customer Phone *",
+                                                      label: "Supplier Phone *",
                                                       validator: (value) =>
                                                           Validation.validatePhone(
                                                             value,
@@ -178,7 +212,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierEmailController,
-                                                      label: "Customer Email",
+                                                      label: "Supplier Email",
                                                       textInputAction:
                                                           TextInputAction.next,
                                                     ),
@@ -187,7 +221,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierAddressController,
-                                                      label: "Customer Address",
+                                                      label: "Supplier Address",
                                                       textInputAction:
                                                           TextInputAction.next,
                                                     ),
@@ -196,7 +230,8 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                     CustomPakkaFormField(
                                                       controller: _vmn
                                                           .supplierOpeningBalanceController,
-                                                      label: "Opening Balance",
+                                                      label:
+                                                          "Supplier Opening Balance",
                                                       textInputAction:
                                                           TextInputAction.done,
                                                       onComplete: () async {
@@ -255,7 +290,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                                     }
                                                   },
                                                   child: Text(
-                                                    "Save Customer",
+                                                    "Save Supplier",
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 16,
@@ -305,12 +340,6 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                     prefixIcon: Icon(Icons.person),
                   ),
                 ),
-
-                onChanged: (value) {
-                  if (value != null) {
-                    _vmn.updateSupplierId(value.supplierId);
-                  }
-                },
               ),
             ),
 
@@ -321,25 +350,24 @@ class PurchaseSupplierWidget extends ConsumerWidget {
               borderRadius: BorderRadius.circular(10),
               onTap: () {
                 showModalBottomSheet(
-                  // isScrollControlled: true,
+                  isScrollControlled: true,
                   backgroundColor: Colors.white,
                   context: context,
-                  builder: (context) {
+                  builder: (modalContext) {
                     return Consumer(
                       builder: (context, ref, _) {
-                        final _vm = ref.watch(
-                          purchaseAddViewModelProvider,
-                        ); // <- watch here
+                        final _vm = ref.watch(purchaseAddViewModelProvider);
                         final _vmn = ref.watch(
                           purchaseAddViewModelProvider.notifier,
                         );
+
                         return Stack(
                           children: [
                             Padding(
                               padding: EdgeInsets.only(
-                                bottom: MediaQuery.of(
-                                  context,
-                                ).viewInsets.bottom,
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom +
+                                    10,
                                 left: 18,
                                 right: 18,
                                 top: 20,
@@ -375,7 +403,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           CustomPakkaFormField(
                                             controller:
                                                 _vmn.supplierNameController,
-                                            label: "Customer Name *",
+                                            label: "Supplier Name *",
                                             validator: (value) =>
                                                 Validation.validateName(
                                                   value,
@@ -389,7 +417,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           CustomPakkaFormField(
                                             controller:
                                                 _vmn.supplierPhoneController,
-                                            label: "Customer Phone *",
+                                            label: "Supplier Phone *",
                                             validator: (value) =>
                                                 Validation.validatePhone(
                                                   value,
@@ -403,7 +431,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           CustomPakkaFormField(
                                             controller:
                                                 _vmn.supplierEmailController,
-                                            label: "Customer Email",
+                                            label: "Supplier Email",
                                             textInputAction:
                                                 TextInputAction.next,
                                           ),
@@ -412,7 +440,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           CustomPakkaFormField(
                                             controller:
                                                 _vmn.supplierAddressController,
-                                            label: "Customer Address",
+                                            label: "Supplier Address",
                                             textInputAction:
                                                 TextInputAction.next,
                                           ),
@@ -421,7 +449,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           CustomPakkaFormField(
                                             controller: _vmn
                                                 .supplierOpeningBalanceController,
-                                            label: "Opening Balance",
+                                            label: "Supplier Opening Balance",
                                             textInputAction:
                                                 TextInputAction.done,
                                             onComplete: () async {
@@ -473,7 +501,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                           }
                                         },
                                         child: Text(
-                                          "Save Customer",
+                                          "Save Supplier",
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
@@ -482,7 +510,7 @@ class PurchaseSupplierWidget extends ConsumerWidget {
                                       ),
                                     ),
 
-                                    SizedBox(height: 16),
+                                    SizedBox(height: 20),
                                   ],
                                 ),
                               ),
