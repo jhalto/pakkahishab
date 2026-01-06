@@ -314,6 +314,21 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
   void updatePaymentMethod(String value) {
     state = state.copyWith(paymentMethod: value);
   }
+   
 
-  Future<void> showProductAddModal() async {}
+   Future<void> deletePurchase (String purchaseId)async {
+    state = state.copyWith(loading: true);
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
+     
+
+     final response = await _repo.deletePurchase(phone: phone.toString(), pin: pin.toString(), code: code.toString(), purchaseId: purchaseId);
+
+
+     print(response);
+
+
+   }
+  
 }

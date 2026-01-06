@@ -11,7 +11,8 @@ class AddPurchaseSummury extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
-      final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+      final vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+      final vm = ref.watch(purchaseAddViewModelProvider);
 
       return Container(
       decoration: BoxDecoration(
@@ -44,15 +45,7 @@ class AddPurchaseSummury extends StatelessWidget {
                       border: Border.all(color: AppColors.dotColor),
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                    child: TextField(
-                      
-                      controller: _vmn.purchaseNetAmmountController,
-                      cursorColor: AppColors.primaryColor,
-                      decoration: InputDecoration(
-                      
-                        isDense: true,
-                        border: InputBorder.none),
-                    ),
+                    child: Text( vm.purchaseTotalAmount == null ? '0':vm.purchaseTotalAmount.toString() ,style: AppTextStyle.titleSmall,)
                   ),
                 ),
               ],

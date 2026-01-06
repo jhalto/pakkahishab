@@ -135,7 +135,7 @@ class PurchaseServices {
           "phone": customerPhone,
           "address": customerAddress ?? "",
           "email": customerEmail ?? "",
-          "godown_no": "1",
+          "godown_no": null,
           "opening_balance": openingBalance,
         },
       ],
@@ -382,14 +382,14 @@ class PurchaseServices {
       return {'status': 'error', 'message': e.toString()};
     }
   }
-  
+
   Future<Map<String, dynamic>> addPurchase({
     String? purchaseDate,
     String? followUpDate,
     String? supplierId,
-    
+
     String? netAmount,
-   
+
     required String mobile,
     required String password,
     required String schoolCode,
@@ -409,7 +409,7 @@ class PurchaseServices {
       "SUPPLIER_ID": supplierId,
       "PURCHASE_TYPE": 0,
       "NET_AMOUNT": netAmount,
-      "DUE": 0.0,
+      "DUE": netAmount,
       "PAID_PRICE": 0.0,
     };
 
@@ -521,7 +521,6 @@ class PurchaseServices {
       'password': pin,
       'offset': "0",
       'limit': '10',
-
       'ACCOUNT_NO': supplierId,
     };
     // ✅ Remove any null or empty parameters before request
@@ -547,39 +546,116 @@ class PurchaseServices {
       return {"statusCode": 666, "data": "Unexpected error: $e"};
     }
   }
-Future<Map<String, dynamic>> updateSupplier({
-  required String phone,
-  required String pin,
-  required String code,
-  required Map<String, dynamic> supplier,
-}) async {
-  final url =
-      "${Urls.baseUrl}Update_Supplier/?school_code=$code&MOBILE=$phone&PASSWORD=$pin";
 
-  final body = {
-    "suppliers": [supplier],
-  };
+  Future<Map<String, dynamic>> updateSupplier({
+    required String phone,
+    required String pin,
+    required String code,
+    required Map<String, dynamic> supplier,
+  }) async {
+    final url =
+        "${Urls.baseUrl}Update_Supplier/?school_code=$code&MOBILE=$phone&PASSWORD=$pin";
 
-  try {
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: jsonEncode(body), // ✅ VERY IMPORTANT
-    );
+    final body = {
+      "suppliers": [supplier],
+    };
 
-    final data = jsonDecode(response.body);
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(body), // ✅ VERY IMPORTANT
+      );
 
-    if (response.statusCode == 200 && data['status'] == 'success') {
-      return {'status': 'success', 'data': data};
-    } else {
-      return {'status': 'error', 'data': data};
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data['status'] == 'success') {
+        return {'status': 'success', 'data': data};
+      } else {
+        return {'status': 'error', 'data': data};
+      }
+    } catch (e) {
+      print("UPDATE SUPPLIER ERROR: $e");
+      return {'status': "error", 'data': e.toString()};
     }
-  } catch (e) {
-    print("UPDATE SUPPLIER ERROR: $e");
-    return {'status': "error", 'data': e.toString()};
   }
-}
 
+  Future<Map<String, dynamic>> deletePurchase({
+    required String phone,
+    required String pin,
+    required String code,
+    required String purchaseId,
+  }) async {
+    final String url =
+        "${Urls.baseUrl}Update_Supplier/?school_code=$code&MOBILE=$phone&PASSWORD=$pin&purchase_id=$purchaseId";
+
+    final Dio dio = Dio();
+    try {
+      final response = await dio.delete(url);
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return response.data;
+      }
+    } catch (e) {
+      print(e);
+      return {'statusCode': 666, 'data': e.toString()};
+    }
+  }
+
+  Future<Map<String, dynamic>> makePayment({
+    required String phone,
+    required String pin,
+    required String schoolCode,
+    required String supplierId,
+    required double paid,
+    required double due,
+    required int paymentStatus,
+    String? chequeNo,
+    String? transactionId,
+    required String? paymentPhoneNo,
+    required String? followUpDate,
+    required String voucherDate,
+    required int accountNo,
+    required String particulars,
+    required int purchaseId,
+  }) async {
+    final String url =
+        "${Urls.baseUrl}Supplier_due_payment/?MOBILE=$phone&SCHOOL_CODE=$schoolCode&PASSWORD=$pin";
+
+    final Dio dio = Dio();
+
+    final Map<String, dynamic> body = {
+      "SUPPLIER_ID": supplierId,
+      "PAID": paid,
+      "DUE": due,
+      "PAYMENT_STATUS": paymentStatus,
+      "CHEQUE_NO": chequeNo,
+      "TRANSECTION_ID": transactionId,
+      "PAYMENT_PHONENO": paymentPhoneNo,
+      "FOLLOW_UP_DATE": followUpDate, // yyyy-MM-dd
+      "VOUCHER_DATE": voucherDate, // yyyy-MM-dd
+      "ACCOUNT_NO": accountNo,
+      "PARTICULARS": particulars,
+      "PURCHASE_ID": purchaseId,
+    };
+
+    try {
+      final response = await dio.post(
+        url,
+        data: body,
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return response.data;
+      }
+    } catch (e) {
+      print("Make Payment Error: $e");
+      return {'statusCode': 666, 'data': e.toString()};
+    }
+  }
 }

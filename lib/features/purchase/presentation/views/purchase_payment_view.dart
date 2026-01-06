@@ -1,38 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/add_purchase_payment_type_widget.dart';
 
 class PurchasePaymentView extends StatelessWidget {
-  
   const PurchasePaymentView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppbarBack(title: "Make Payment"),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          children: [
-            SizedBox(height: 10),
+      body: Consumer(
+        builder: (context, ref, child) {
+          final vm = ref.watch(purchaseAddViewModelProvider);
+          final vmn = ref.watch(purchaseAddViewModelProvider.notifier);
 
-            Row(
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
               children: [
-                Expanded(child: Text("Total Due:")),
-                Expanded(child: Text("1241255")),
+                SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Expanded(child: Text("Total Due")),
+                    Expanded(child: Text(": ${ vm.totalDueAmount ?? 0}")),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(child: Text("Present purchase")),
+                    Expanded(child: Text(": ${vm.purchaseTotalAmount}")),
+                  ],
+                ),
+                SizedBox(height: 20),
+                AddPurchasePaymentTypeWidget(),
               ],
             ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(child: Text("Present purchase:")),
-                Expanded(child: Text("2500")),
-              ],
-            ),
-            SizedBox(height: 20),
-            AddPurchasePaymentTypeWidget(),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

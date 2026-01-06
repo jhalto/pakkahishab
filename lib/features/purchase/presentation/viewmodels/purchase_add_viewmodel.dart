@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -86,23 +84,27 @@ final class PurchaseAddState {
   final String? purchaseDate;
 
   final String? supplierId;
+  final String? supplierAccountNo;
   final String? paymentMethod;
-  final String? purchaseType;
+  final String? purchaseTotalAmount;
+  final String? totalDueAmount;
 
   final List<PurchaseDetailsProduct>? selectedPurchaseProducts;
 
   PurchaseAddState({
     this.isLoading = false,
     this.isSupplierSelecting = false,
-    this.selectedSupplier, // ⭐
+    this.selectedSupplier,
     String? selectedManufacturingDate,
     this.followUpDate,
     String? purchaseDate,
     String? selectedExpiredDate,
     this.errorMessage,
     this.supplierId,
+    this.supplierAccountNo,
     this.paymentMethod,
-    this.purchaseType = "Credit",
+    this.purchaseTotalAmount,
+    this.totalDueAmount,
     this.selectedPurchaseProducts,
   }) : selectedManufacturingDate =
            selectedManufacturingDate ??
@@ -112,7 +114,7 @@ final class PurchaseAddState {
            purchaseDate ?? DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   PurchaseAddState copyWith({
-    AllSupplier? selectedSupplier, // ⭐
+    AllSupplier? selectedSupplier,
     bool? isLoading,
     bool? isSupplierSelecting,
     String? selectedManufacturingDate,
@@ -121,9 +123,10 @@ final class PurchaseAddState {
     String? purchaseDate,
     String? errorMessage,
     String? supplierId,
+    String? supplierAccountNo,
     String? paymentMethod,
-    String? purchaseType,
-
+    String? purchaseTotalAmount,
+    String? totalDueAmount,
     List<PurchaseDetailsProduct>? selectedPurchaseProducts,
   }) {
     return PurchaseAddState(
@@ -131,14 +134,17 @@ final class PurchaseAddState {
       isSupplierSelecting: isSupplierSelecting ?? this.isSupplierSelecting,
       selectedManufacturingDate:
           selectedManufacturingDate ?? this.selectedManufacturingDate,
-      selectedSupplier: selectedSupplier ?? this.selectedSupplier, // ⭐
+      selectedSupplier: selectedSupplier ?? this.selectedSupplier,
       followUpDate: followUpDate ?? this.followUpDate,
       selectedExpiredDate: selectedExpiredDate ?? this.selectedExpiredDate,
       purchaseDate: purchaseDate ?? this.purchaseDate,
       errorMessage: errorMessage ?? this.errorMessage,
       supplierId: supplierId ?? this.supplierId,
+      purchaseTotalAmount: purchaseTotalAmount ?? this.purchaseTotalAmount,
+      supplierAccountNo: supplierAccountNo ?? this.supplierAccountNo,
       paymentMethod: paymentMethod ?? this.paymentMethod,
-      purchaseType: purchaseType ?? this.purchaseType,
+      totalDueAmount: totalDueAmount ?? this.totalDueAmount,
+
       selectedPurchaseProducts:
           selectedPurchaseProducts ?? this.selectedPurchaseProducts,
     );
@@ -187,14 +193,11 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   // purchase purchase add controllers and variable
 
   TextEditingController purchaseNetAmmountController = TextEditingController();
-  // TextEditingController purchasetotalAmountController = TextEditingController();
-  TextEditingController purchasePaidPriceController = TextEditingController();
-  TextEditingController purchaseDuePriceController = TextEditingController();
 
-  // payment method
-  int purchaseType = 0;
-  String paymentMethod = '';
+  // payment Controller
 
+  TextEditingController paymentAmountController = TextEditingController();
+   
   void toggleSupplierDropdown() {
     state = state.copyWith(isSupplierSelecting: !state.isSupplierSelecting);
   }
@@ -214,40 +217,9 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     state = state.copyWith(
       selectedSupplier: supplier,
       supplierId: supplier.supplierId,
+      supplierAccountNo: supplier.supplierAccountNo,
       isSupplierSelecting: false,
     );
-  }
-
-  Future<void> fetchPurchaseSupplierDues({
-    bool loadMore = false,
-    int? page,
-  }) async {
-    final phone = await SharedPreferencesHelper.getString('phone');
-    final pin = await SharedPreferencesHelper.getString('pin');
-    final code = await SharedPreferencesHelper.getString('code');
-
-    try {
-      print("fetching supplier");
-      state = state.copyWith(isLoading: true);
-
-      final result = await _repo.getPurchaseSupplierDues(
-        phone: phone ?? '',
-        pin: pin ?? '',
-        code: code ?? '',
-
-        supplierId: state.supplierId.toString(),
-      );
-
-      print(result);
-    } catch (e) {
-      debugPrint("Error fetching purchases: $e");
-    } finally {
-      state = state.copyWith(isLoading: false);
-    }
-  }
-
-  void updatePurchaseType(String value) {
-    state = state.copyWith(purchaseType: value);
   }
 
   void calculatePurchaseAmounts() {
@@ -259,7 +231,9 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     );
 
     // ✅ ALWAYS update net amount
-    purchaseNetAmmountController.text = calculatedNetAmount.toStringAsFixed(0);
+    state = state.copyWith(
+      purchaseTotalAmount: calculatedNetAmount.toStringAsFixed(0),
+    );
   }
 
   Future<void> addProductInPurchaseList(BuildContext context) async {
@@ -305,6 +279,10 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
 
   void updatePaymentMethod(String value) {
     state = state.copyWith(paymentMethod: value);
+  }
+
+  void updateTotalPurchaseAmount(String value) {
+    state = state.copyWith(purchaseTotalAmount: value);
   }
 
   final customerAddFormKey = GlobalKey<FormState>();
@@ -555,6 +533,10 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       showCustomSnackBar(context, "Please select a supplier");
       return;
     }
+    if (state.selectedPurchaseProducts == null) {
+      showCustomSnackBar(context, "Please select a product to make purchase");
+      return;
+    }
 
     state = state.copyWith(isLoading: true);
 
@@ -565,11 +547,6 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     // final purchaseTypeValue = int.tryParse(
     //   state.purchaseType == 'Credit' ? "0" : "1",
     // );
-
-    final purchasePaidAmmountValue =
-        purchasePaidPriceController.text.trim().isNotEmpty
-        ? purchasePaidPriceController.text.trim()
-        : "0";
 
     // Safe product list (empty allowed)
     final productList = (state.selectedPurchaseProducts ?? [])
@@ -605,7 +582,11 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
         "Purchase Add Successfully",
         type: SnackBarType.success,
       );
-      fetchPurchaseSupplierDues();
+      await fetchPurchaseSupplierDues(
+        context,
+        supplierAccountNo: state.supplierAccountNo!,
+      );
+      if (!context.mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => PurchasePaymentView()),
@@ -617,6 +598,41 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     } else if (response['data']['status'] == 'error') {}
 
     state = state.copyWith(isLoading: false);
+  }
+
+  Future<void> fetchPurchaseSupplierDues(
+    BuildContext context, {
+    required String supplierAccountNo,
+  }) async {
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
+
+    try {
+      print("fetching supplier");
+      state = state.copyWith(isLoading: true);
+
+      // if user taps a page number, use that page’s offse
+      final response = await _repo.getPurchaseSupplierDues(
+        phone: phone ?? '',
+        pin: pin ?? '',
+        code: code ?? '',
+
+        supplierId: supplierAccountNo,
+      );
+
+      if (response['statusCode'] == 200) {
+        final supplierTotalDue = response['data']['items'][0]['amount']
+            .toString();
+
+        print(supplierTotalDue);
+        state = state.copyWith(totalDueAmount: supplierTotalDue);
+      }
+    } catch (e) {
+      debugPrint("Error fetching purchases: $e");
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
   }
 
   Future<void> showProductAddBottomSheet(BuildContext context) async {

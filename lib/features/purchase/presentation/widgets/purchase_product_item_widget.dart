@@ -60,6 +60,7 @@ class PurchaseProductItemWidget extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 10,),
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,

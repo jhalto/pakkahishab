@@ -216,4 +216,20 @@ class PurchaseRepository {
     );
     return response;
   }
+
+
+   Future<Map<String, dynamic>> deletePurchase({
+    required String phone,
+    required String pin,
+    required String code,
+    required String purchaseId,
+  }) async {
+    final response = await _purchaseServices.deletePurchase(
+      code: code,
+      phone: phone,
+      pin: pin,
+      purchaseId: purchaseId
+    );
+    return response;
+  }
 }

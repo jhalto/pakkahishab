@@ -164,7 +164,7 @@ class PurchaseProductWidget extends ConsumerWidget {
 
                 decoratorProps: DropDownDecoratorProps(
                   decoration: InputDecoration(
-                    hintText: "Add Product (Optional)",
+                    hintText: "Add Product",
                     filled: true,
                     contentPadding: EdgeInsets.zero,
                     fillColor: Colors.grey.shade200,

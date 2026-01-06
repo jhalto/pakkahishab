@@ -22,7 +22,7 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
         builder: (context, ref, child) {
           final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
           final _vm = ref.watch(purchaseAddViewModelProvider);
-    
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -31,85 +31,99 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
                 children: [
                   const Text(
                     "Payment",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                   ),
                   const Text(
                     "Cash",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                   ),
                 ],
               ),
               const SizedBox(height: 10),
-               
-            
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade400),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            SizedBox(height: 10),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
+
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade400),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: DropdownButton<String>(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
                               ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.grey.shade400,
+                              dropdownColor: AppColors.whiteColor,
+
+                              iconSize: 28,
+                              iconEnabledColor: AppColors.primaryColor,
+                              isExpanded: true,
+                              underline: const SizedBox(),
+                              value: _vm.paymentMethod,
+                              hint: const Text("Select method"),
+                              items: const [
+                                DropdownMenuItem(
+                                  value: "15",
+                                  child: Text("Cash"),
                                 ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: DropdownButton<String>(
+                                DropdownMenuItem(
+                                  value: "16",
+                                  child: Text("Bank Cheque"),
+                                ),
+                                DropdownMenuItem(
+                                  value: "17",
+                                  child: Text("Bkash"),
+                                ),
+                                DropdownMenuItem(
+                                  value: "18",
+                                  child: Text("Nagad"),
+                                ),
+                                DropdownMenuItem(
+                                  value: "19",
+                                  child: Text("Rocket"),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                _vmn.updatePaymentMethod(value!);
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 10),
+
+                          TextField(
+                            controller: _vmn.paymentAmountController,
+                            decoration: InputDecoration(
+                              hintText: "Enter your payment amount",
+                              enabledBorder: OutlineInputBorder(
+
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(10),
                                 ),
-                                dropdownColor: AppColors.whiteColor,
-    
-                                iconSize: 28,
-                                iconEnabledColor: AppColors.primaryColor,
-                                isExpanded: true,
-                                underline: const SizedBox(),
-                                value: _vm.paymentMethod,
-                                hint: const Text("Add method"),
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: "15",
-                                    child: Text("Cash"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "16",
-                                    child: Text("Bank Cheque"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "17",
-                                    child: Text("Bkash"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "18",
-                                    child: Text("Nagad"),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "19",
-                                    child: Text("Rocket"),
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  _vmn.updatePaymentMethod(value!);
-                                },
+                                borderSide: BorderSide(
+                                  color: AppColors.dotColor,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                                borderSide: BorderSide(
+                                  color: AppColors.primaryColor,
+                                ),
                               ),
                             ),
-                            SizedBox(height: 10),
+                          ),
+                          if(_vm.paymentMethod == '15')
                             TextField(
                               decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -130,26 +144,13 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 10),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.delete_outline,
-                              color: AppColors.dotColor,
-                            ),
-                          ),
-                          IconButton(onPressed: () {}, icon: Icon(Icons.add)),
+                          SizedBox(height: 10),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
             ],
           );
         },
