@@ -87,6 +87,7 @@ final class PurchaseAddState {
   final String? supplierAccountNo;
   final String? paymentMethod;
   final String? purchaseTotalAmount;
+  final String? purchaseNetAmount;
   final String? totalDueAmount;
 
   final List<PurchaseDetailsProduct>? selectedPurchaseProducts;
@@ -102,8 +103,9 @@ final class PurchaseAddState {
     this.errorMessage,
     this.supplierId,
     this.supplierAccountNo,
-    this.paymentMethod,
+    this.paymentMethod = '15',
     this.purchaseTotalAmount,
+    this.purchaseNetAmount,
     this.totalDueAmount,
     this.selectedPurchaseProducts,
   }) : selectedManufacturingDate =
@@ -126,6 +128,7 @@ final class PurchaseAddState {
     String? supplierAccountNo,
     String? paymentMethod,
     String? purchaseTotalAmount,
+    String? purchaseNetAmount,
     String? totalDueAmount,
     List<PurchaseDetailsProduct>? selectedPurchaseProducts,
   }) {
@@ -144,7 +147,7 @@ final class PurchaseAddState {
       supplierAccountNo: supplierAccountNo ?? this.supplierAccountNo,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       totalDueAmount: totalDueAmount ?? this.totalDueAmount,
-
+      purchaseNetAmount: purchaseNetAmount ?? this.purchaseNetAmount,
       selectedPurchaseProducts:
           selectedPurchaseProducts ?? this.selectedPurchaseProducts,
     );
@@ -192,12 +195,13 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
 
   // purchase purchase add controllers and variable
 
-  TextEditingController purchaseNetAmmountController = TextEditingController();
-
   // payment Controller
 
   TextEditingController paymentAmountController = TextEditingController();
-   
+  TextEditingController paymentBankCheckController = TextEditingController();
+  TextEditingController paymentMobileTransactionController =
+      TextEditingController();
+
   void toggleSupplierDropdown() {
     state = state.copyWith(isSupplierSelecting: !state.isSupplierSelecting);
   }
@@ -232,6 +236,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
 
     // ✅ ALWAYS update net amount
     state = state.copyWith(
+      purchaseNetAmount: calculatedNetAmount.toStringAsFixed(0),
       purchaseTotalAmount: calculatedNetAmount.toStringAsFixed(0),
     );
   }
@@ -564,7 +569,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       purchaseDate: state.purchaseDate.toString(),
       supplierId: state.supplierId.toString(),
       // purchaseType: purchaseTypeValue,
-      netAmount: purchaseNetAmmountController.text.trim(),
+      netAmount: state.purchaseTotalAmount,
       followUpDate: state.followUpDate,
       mobile: phone ?? "",
       password: pin ?? "",
@@ -575,6 +580,8 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     print(response);
 
     if (response['data']['status'] == 'success') {
+      state = state.copyWith(isLoading: false);
+
       if (!context.mounted) return;
 
       showCustomSnackBar(
@@ -586,18 +593,28 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
         context,
         supplierAccountNo: state.supplierAccountNo!,
       );
+
       if (!context.mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => PurchasePaymentView()),
       );
       // Navigator.pop(context);
-
+      clearPurchaseRecord();
       ref.read(purchaseViewModelProvider.notifier).fetchSupplierWisePurchases();
       ref.read(homeProvider.notifier).fetchDashBoard('YEAR');
-    } else if (response['data']['status'] == 'error') {}
+    } else if (response['data']['status'] == 'error') {
+      state = state.copyWith(isLoading: false);
+      if (!context.mounted) return;
+      showCustomSnackBar(context, response['data']['message']);
+    }
+  }
 
-    state = state.copyWith(isLoading: false);
+  void clearPurchaseRecord() {
+    state = state.copyWith(
+      selectedPurchaseProducts: null,
+      purchaseNetAmount: "0",
+    );
   }
 
   Future<void> fetchPurchaseSupplierDues(
@@ -633,6 +650,39 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     } finally {
       state = state.copyWith(isLoading: false);
     }
+  }
+
+  Future<void> makePayment(BuildContext context) async {
+    if (paymentAmountController.text.trim().isEmpty) {
+      showCustomSnackBar(context, "Please Insert Payment Amount");
+    }
+
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
+
+    final dueAmount =
+        (double.tryParse(state.totalDueAmount ?? '0.0') ?? 0.0) -
+        (double.tryParse(paymentAmountController.text.trim()) ?? 0.0);
+
+    final response = await _repo.makePayment(
+      paymentPhoneNo: "01761198103",
+      phone: phone.toString(),
+      pin: pin.toString(),
+      schoolCode: code.toString(),
+      supplierId: state.supplierId.toString(),
+      paid: double.tryParse(paymentAmountController.text.trim()) ?? 0.0,
+      due: dueAmount,
+      paymentStatus: int.tryParse(state.paymentMethod ?? '0') ?? 15,
+      chequeNo: paymentBankCheckController.text.trim(),
+      transactionId: paymentMobileTransactionController.text.trim(),
+      followUpDate: formatDate(DateTime.now()),
+
+      accountNo: int.tryParse(state.supplierAccountNo ?? '0') ?? 0,
+      particulars: "dfljals",
+    );
+
+    print(response);
   }
 
   Future<void> showProductAddBottomSheet(BuildContext context) async {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/urls.dart';
+import 'package:pakkahishab/core/helper/date_picker_helper.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -587,7 +588,7 @@ class PurchaseServices {
     required String purchaseId,
   }) async {
     final String url =
-        "${Urls.baseUrl}Update_Supplier/?school_code=$code&MOBILE=$phone&PASSWORD=$pin&purchase_id=$purchaseId";
+        "${Urls.baseUrl}delete_purchase/?school_code=$code&mobile=$phone&password=$pin&purchase_id=$purchaseId";
 
     final Dio dio = Dio();
     try {
@@ -598,9 +599,8 @@ class PurchaseServices {
       } else {
         return response.data;
       }
-    } catch (e) {
-      print(e);
-      return {'statusCode': 666, 'data': e.toString()};
+    } on DioException catch (e) {
+      return {'statusCode': 666, 'data': e.response!.data};
     }
   }
 
@@ -614,12 +614,12 @@ class PurchaseServices {
     required int paymentStatus,
     String? chequeNo,
     String? transactionId,
-    required String? paymentPhoneNo,
-    required String? followUpDate,
-    required String voucherDate,
+    String? paymentPhoneNo,
+    String? followUpDate,
+
     required int accountNo,
     required String particulars,
-    required int purchaseId,
+   
   }) async {
     final String url =
         "${Urls.baseUrl}Supplier_due_payment/?MOBILE=$phone&SCHOOL_CODE=$schoolCode&PASSWORD=$pin";
@@ -635,10 +635,9 @@ class PurchaseServices {
       "TRANSECTION_ID": transactionId,
       "PAYMENT_PHONENO": paymentPhoneNo,
       "FOLLOW_UP_DATE": followUpDate, // yyyy-MM-dd
-      "VOUCHER_DATE": voucherDate, // yyyy-MM-dd
+      "VOUCHER_DATE": formatDate(DateTime.now()), // yyyy-MM-dd
       "ACCOUNT_NO": accountNo,
       "PARTICULARS": particulars,
-      "PURCHASE_ID": purchaseId,
     };
 
     try {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
+import 'package:pakkahishab/core/utils/show_snackbar.dart';
+import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_detail_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/supplier_model.dart';
@@ -314,21 +316,43 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
   void updatePaymentMethod(String value) {
     state = state.copyWith(paymentMethod: value);
   }
-   
 
-   Future<void> deletePurchase (String purchaseId)async {
+  Future<void> deletePurchase(
+    BuildContext context, {
+    required String purchaseId,
+  }) async {
     state = state.copyWith(loading: true);
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
-     
 
-     final response = await _repo.deletePurchase(phone: phone.toString(), pin: pin.toString(), code: code.toString(), purchaseId: purchaseId);
+    print(purchaseId);
+    print(phone);
+    print(pin);
+    print(code);
 
+    final response = await _repo.deletePurchase(
+      phone: phone.toString(),
+      pin: pin.toString(),
+      code: code.toString(),
+      purchaseId: purchaseId,
+    );
 
-     print(response);
-
-
-   }
-  
+    if (response['status'] == 'success') {
+      await fetchPurchases();
+      fetchSupplierWisePurchases();
+      ref.read(homeProvider.notifier).fetchDashBoard('All');
+      state = state.copyWith(loading: false);
+      if (!context.mounted) return;
+      showCustomSnackBar(
+        context,
+        "Purchase deleted successfully",
+        type: SnackBarType.success,
+      );
+    } else {
+      state = state.copyWith(loading: false);
+      if (!context.mounted) return;
+      showCustomSnackBar(context, response['message']);
+    }
+  }
 }
