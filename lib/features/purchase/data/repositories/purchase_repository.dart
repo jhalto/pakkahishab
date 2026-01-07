@@ -122,6 +122,7 @@ class PurchaseRepository {
     );
     return response;
   }
+
   Future<Map<String, dynamic>> updateProduct({
     required String code,
     required String mobile,
@@ -141,18 +142,18 @@ class PurchaseRepository {
     String? purchaseDate,
     String? supplierId,
     String? followUpDate,
-   
+
     String? netAmount,
- 
+
     required String mobile,
     required String password,
     required String schoolCode,
     List<Map<String, dynamic>>? productList,
   }) async {
-    final response =await _purchaseServices.addPurchase(
+    final response = await _purchaseServices.addPurchase(
       purchaseDate: purchaseDate,
       supplierId: supplierId,
-   
+
       followUpDate: followUpDate,
       netAmount: netAmount,
       mobile: mobile,
@@ -182,13 +183,12 @@ class PurchaseRepository {
     return purchaseData;
   }
 
-
   Future<Map<String, dynamic>> getPurchaseSupplierDues({
     required String phone,
     required String pin,
 
     required String code,
-   
+
     required String supplierId,
   }) async {
     final dueData = await _purchaseServices.getPurchaseSupplierDues(
@@ -217,8 +217,7 @@ class PurchaseRepository {
     return response;
   }
 
-
-   Future<Map<String, dynamic>> deletePurchase({
+  Future<Map<String, dynamic>> deletePurchase({
     required String phone,
     required String pin,
     required String code,
@@ -228,8 +227,46 @@ class PurchaseRepository {
       code: code,
       phone: phone,
       pin: pin,
-      purchaseId: purchaseId
+      purchaseId: purchaseId,
     );
+    return response;
+  }
+
+  Future<Map<String, dynamic>> makePayment({
+    required String phone,
+    required String pin,
+    required String schoolCode,
+    required String supplierId,
+    required double paid,
+    required double due,
+    required int paymentStatus,
+    String? chequeNo,
+    String? transactionId,
+    String? paymentPhoneNo,
+    String? followUpDate,
+  
+    required int accountNo,
+    required String particulars,
+   
+  }) async {
+    final response = await _purchaseServices.makePayment(
+      phone: phone,
+      pin: pin,
+      schoolCode: schoolCode,
+      supplierId: supplierId,
+      paid: paid,
+      due: due,
+      paymentStatus: paymentStatus,
+      chequeNo: chequeNo,
+      transactionId: transactionId,
+      paymentPhoneNo: paymentPhoneNo,
+      followUpDate: followUpDate,
+      
+      accountNo: accountNo,
+      particulars: particulars,
+   
+    );
+
     return response;
   }
 }

@@ -26,18 +26,9 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Payment",
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                  ),
-                  const Text(
-                    "Cash",
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                  ),
-                ],
+              const Text(
+                "Payment",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               ),
               const SizedBox(height: 10),
 
@@ -70,7 +61,7 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
                               isExpanded: true,
                               underline: const SizedBox(),
                               value: _vm.paymentMethod,
-                              hint: const Text("Select method"),
+
                               items: const [
                                 DropdownMenuItem(
                                   value: "15",
@@ -105,7 +96,6 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
                             decoration: InputDecoration(
                               hintText: "Enter your payment amount",
                               enabledBorder: OutlineInputBorder(
-
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(10),
                                 ),
@@ -123,9 +113,41 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
                               ),
                             ),
                           ),
-                          if(_vm.paymentMethod == '15')
+                          if (_vm.paymentMethod == '16') SizedBox(height: 10),
+                          if (_vm.paymentMethod == '16')
                             TextField(
+                              controller: _vmn.paymentBankCheckController,
                               decoration: InputDecoration(
+                                hintText: "Enter Check Number",
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                  borderSide: BorderSide(
+                                    color: AppColors.dotColor,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (_vm.paymentMethod == '17' ||
+                              _vm.paymentMethod == '18' ||
+                              _vm.paymentMethod == '19')
+                            SizedBox(height: 10),
+                          if (_vm.paymentMethod == '17' ||
+                              _vm.paymentMethod == '18' ||
+                              _vm.paymentMethod == '19')
+                            TextField(
+                              controller: _vmn.paymentBankCheckController,
+                              decoration: InputDecoration(
+                                hintText: "Enter Transaction Id",
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(10),

@@ -295,6 +295,48 @@ class PurchasesView extends StatelessWidget {
                                             itemBuilder: (context) {
                                               return [
                                                 PopupMenuItem(
+                                                  onTap: () {
+                                                    purchaseNotifier
+                                                        .deletePurchase(
+                                                          context,
+                                                          purchaseId: item
+                                                              .purchaseId
+                                                              .toString(),
+                                                        );
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      ShaderMask(
+                                                        shaderCallback: (bounds) =>
+                                                            const LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                  0xFF4FACFE,
+                                                                ),
+                                                                Color(
+                                                                  0xFF00F2FE,
+                                                                ),
+                                                              ],
+                                                              begin: Alignment
+                                                                  .topLeft,
+                                                              end: Alignment
+                                                                  .bottomRight,
+                                                            ).createShader(
+                                                              bounds,
+                                                            ),
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          size: 30,
+                                                          color: Colors
+                                                              .white, // Important: Keep white to reveal gradient
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 10),
+                                                      const Text("Delete"),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
                                                   child: Row(
                                                     children: [
                                                       ShaderMask(

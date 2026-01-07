@@ -30,9 +30,9 @@ class PurchaseAdd extends StatelessWidget {
           PurchaseProductItemWidget(),
           SizedBox(height: 10),
           AddPurchaseSummury(),
+
           // SizedBox(height: 20),
           // AddPurchasePaymentTypeWidget(),
-
           SizedBox(height: 50),
 
           Padding(
@@ -44,9 +44,9 @@ class PurchaseAdd extends StatelessWidget {
                     ref
                         .read(purchaseAddViewModelProvider.notifier)
                         .addPurchase(context);
-                    
                   },
-                  title: "Add",
+                  title: "Add Purchase",
+                  isLoading: ref.watch(purchaseAddViewModelProvider).isLoading,
                 );
               },
             ),
