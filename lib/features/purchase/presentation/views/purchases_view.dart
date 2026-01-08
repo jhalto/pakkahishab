@@ -399,16 +399,17 @@ class PurchasesView extends StatelessWidget {
                           },
                         ),
                       ),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          return ref
-                                      .watch(purchaseViewModelProvider)
-                                      .totalPage ==
-                                  1
-                              ? SizedBox()
-                              : PurchasesPagination();
-                        },
-                      ),
+                      // Consumer(
+                      //   builder: (context, ref, child) {
+                      //     return ref
+                      //                 .watch(purchaseViewModelProvider)
+                      //                 .totalPage ==
+                      //             1
+                      //         ? SizedBox()
+                      //         : PurchasesPagination();
+                      //   },
+                      // ),
+                      PurchasesPagination()
                     ],
                   );
                 },

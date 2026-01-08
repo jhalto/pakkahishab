@@ -133,7 +133,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
 
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
-      final totalItem = result['data']['count'] ?? 0;
+      final totalItem = result['data']['items'][0]['total_count'] ?? 0;
       print(totalItem);
       print(state.totalPage);
       final newItems = items

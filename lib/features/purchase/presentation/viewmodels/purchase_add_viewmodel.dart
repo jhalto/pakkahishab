@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -76,6 +78,7 @@ final productListProvider = FutureProvider<List<AllProduct>>((ref) async {
 final class PurchaseAddState {
   final bool isLoading;
   final bool isSupplierSelecting;
+
   final String? errorMessage;
   final AllSupplier? selectedSupplier;
   final String? selectedManufacturingDate;
@@ -95,6 +98,7 @@ final class PurchaseAddState {
   PurchaseAddState({
     this.isLoading = false,
     this.isSupplierSelecting = false,
+    
     this.selectedSupplier,
     String? selectedManufacturingDate,
     this.followUpDate,
@@ -118,6 +122,7 @@ final class PurchaseAddState {
   PurchaseAddState copyWith({
     AllSupplier? selectedSupplier,
     bool? isLoading,
+  
     bool? isSupplierSelecting,
     String? selectedManufacturingDate,
     String? followUpDate,
@@ -193,11 +198,10 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   String selectedPurchaseProductPrice = '';
   String selectedPurchaseProductId = '';
 
-  // purchase purchase add controllers and variable
-
   // payment Controller
 
   TextEditingController paymentAmountController = TextEditingController();
+  TextEditingController paymentPerticularsController = TextEditingController();
   TextEditingController paymentBankCheckController = TextEditingController();
   TextEditingController paymentMobileTransactionController =
       TextEditingController();
@@ -221,9 +225,11 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     state = state.copyWith(
       selectedSupplier: supplier,
       supplierId: supplier.supplierId,
-      supplierAccountNo: supplier.supplierAccountNo,
+      supplierAccountNo: supplier.supplierAccountNo.toString(),
       isSupplierSelecting: false,
     );
+
+    print(state.supplierAccountNo);
   }
 
   void calculatePurchaseAmounts() {
@@ -635,7 +641,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
         pin: pin ?? '',
         code: code ?? '',
 
-        supplierId: supplierAccountNo,
+        supplierAccountNo: supplierAccountNo,
       );
 
       if (response['statusCode'] == 200) {
@@ -655,7 +661,10 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   Future<void> makePayment(BuildContext context) async {
     if (paymentAmountController.text.trim().isEmpty) {
       showCustomSnackBar(context, "Please Insert Payment Amount");
+      return;
     }
+    FocusScope.of(context).unfocus();
+    state = state.copyWith(isLoading: true);
 
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
@@ -679,10 +688,32 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       followUpDate: formatDate(DateTime.now()),
 
       accountNo: int.tryParse(state.supplierAccountNo ?? '0') ?? 0,
-      particulars: "dfljals",
+      particulars: paymentPerticularsController.text.trim(),
     );
 
-    print(response);
+    if (response['status'] == 'success') {
+      state = state.copyWith(isLoading: false ,);
+      if (!context.mounted) return;
+      showCustomSnackBar(context, "Payment Successful");
+
+      clearPaymentController();
+      state = state.copyWith(purchaseTotalAmount: "0");
+      fetchPurchaseSupplierDues(
+        context,
+        supplierAccountNo: state.supplierAccountNo ?? "0",
+      );
+    } else {
+      state = state.copyWith(isLoading: false);
+      if (!context.mounted) return;
+      showCustomSnackBar(context, "Payment Failed");
+    }
+  }
+
+  void clearPaymentController() {
+    paymentAmountController.clear();
+    paymentBankCheckController.clear();
+    paymentMobileTransactionController.clear();
+    paymentPerticularsController.clear();
   }
 
   Future<void> showProductAddBottomSheet(BuildContext context) async {
