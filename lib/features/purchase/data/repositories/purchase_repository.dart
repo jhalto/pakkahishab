@@ -189,14 +189,14 @@ class PurchaseRepository {
 
     required String code,
 
-    required String supplierId,
+    required String supplierAccountNo,
   }) async {
     final dueData = await _purchaseServices.getPurchaseSupplierDues(
       phone: phone,
       pin: pin,
 
       code: code,
-      supplierId: supplierId,
+      supplierAccountNo: supplierAccountNo,
     );
     print(dueData.length);
     return dueData;
@@ -244,10 +244,9 @@ class PurchaseRepository {
     String? transactionId,
     String? paymentPhoneNo,
     String? followUpDate,
-  
+
     required int accountNo,
     required String particulars,
-   
   }) async {
     final response = await _purchaseServices.makePayment(
       phone: phone,
@@ -261,10 +260,9 @@ class PurchaseRepository {
       transactionId: transactionId,
       paymentPhoneNo: paymentPhoneNo,
       followUpDate: followUpDate,
-      
+
       accountNo: accountNo,
       particulars: particulars,
-   
     );
 
     return response;

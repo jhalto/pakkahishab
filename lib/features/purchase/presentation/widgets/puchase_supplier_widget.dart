@@ -109,11 +109,9 @@ class _PurchaseSupplierWidgetState
                         },
                         child: Padding(
                           padding: EdgeInsets.all(6),
-                          child: Material(
-                            child: Ink(
-                              decoration: BoxDecoration(shape: BoxShape.circle),
-                              child: Icon(Icons.edit, size: 20),
-                            ),
+                          child: Ink(
+                            decoration: BoxDecoration(shape: BoxShape.circle),
+                            child: Icon(Icons.edit, size: 20),
                           ),
                         ),
                       ),

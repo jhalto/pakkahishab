@@ -83,33 +83,31 @@ class Routes {
         page = const CustomerDuesView();
         break;
       case expenses:
-        page = const ExpensesView(); 
+        page = const ExpensesView();
         break;
       case income:
-        page = const IncomeView(); 
+        page = const IncomeView();
         break;
       case stock:
-        page = const StockView(); 
+        page = const StockView();
         break;
       case cash:
-        page = const CashView(); 
+        page = const CashView();
         break;
       case bank:
-        page = const BankView(); 
+        page = const BankView();
         break;
       case advance:
-        page = const AdvanceView(); 
+        page = const AdvanceView();
         break;
       case loan:
-        page = const LoanView(); 
+        page = const LoanView();
         break;
       case mobileBank:
-        page = const MobileBankView(); 
+        page = const MobileBankView();
         break;
       default:
-        page = const Scaffold(
-          body: Center(child: Text("Route not found")),
-        );
+        page = const Scaffold(body: Center(child: Text("Route not found")));
     }
 
     return _slideRoute(page);
@@ -123,17 +121,18 @@ class Routes {
       transitionsBuilder: (context, animation, __, child) {
         final isAndroid = Theme.of(context).platform == TargetPlatform.android;
 
-        final begin = isAndroid ? const Offset(1.0, 0.0) : const Offset(0.0, 1.0);
+        final begin = isAndroid
+            ? const Offset(1.0, 0.0)
+            : const Offset(0.0, 1.0);
         const end = Offset.zero;
         const curve = Curves.easeInOut;
 
-        final tween = Tween(begin: begin, end: end)
-            .chain(CurveTween(curve: curve));
+        final tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(CurveTween(curve: curve));
 
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
+        return SlideTransition(position: animation.drive(tween), child: child);
       },
     );
   }

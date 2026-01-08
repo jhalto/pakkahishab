@@ -40,7 +40,7 @@ class AllSupplierModel {
 
 class AllSupplier {
   final String supplierId;
-  final String supplierAccountNo;
+  final int supplierAccountNo;
   final int schoolCode;
   final String supplierName;
   final String deliverReceiver;
@@ -67,7 +67,7 @@ class AllSupplier {
 
   factory AllSupplier.fromJson(Map<String, dynamic> json) {
     return AllSupplier(
-      supplierAccountNo: json['sup_acc_no'] ?? '',
+      supplierAccountNo: json['account_no'] ?? 0,
       supplierId: json['supplier_id'] ?? '',
       schoolCode: json['school_code'] ?? 0,
       supplierName: json['supplier_name'] ?? '',
@@ -86,7 +86,7 @@ class AllSupplier {
   Map<String, dynamic> toJson() {
     return {
       'supplier_id': supplierId,
-      'sup_acc_no':supplierAccountNo,
+      'account_no':supplierAccountNo,
       'school_code': schoolCode,
       'supplier_name': supplierName,
       'deliver_receiver': deliverReceiver,

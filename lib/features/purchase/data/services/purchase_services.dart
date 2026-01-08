@@ -509,7 +509,7 @@ class PurchaseServices {
 
     required String code,
 
-    required String supplierId,
+    required String supplierAccountNo,
   }) async {
     final Dio dio = Dio();
     print("Code: $code");
@@ -522,7 +522,7 @@ class PurchaseServices {
       'password': pin,
       'offset': "0",
       'limit': '10',
-      'ACCOUNT_NO': supplierId,
+      'ACCOUNT_NO': supplierAccountNo,
     };
     // ✅ Remove any null or empty parameters before request
     queryParams.removeWhere(

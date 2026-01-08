@@ -182,7 +182,11 @@ class SupplierPurchasesView extends StatelessWidget {
                                                   //       AppTextStyle.bodySmall,
                                                   // ),
                                                   const SizedBox(height: 10),
-                                                  Text(item.supplierPhoneNo, style: AppTextStyle.bodyMediumSecondary,),
+                                                  Text(
+                                                    item.supplierPhoneNo,
+                                                    style: AppTextStyle
+                                                        .bodyMediumSecondary,
+                                                  ),
                                                 ],
                                               ),
                                               Text(
