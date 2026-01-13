@@ -694,7 +694,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     if (response['status'] == 'success') {
       state = state.copyWith(isLoading: false ,);
       if (!context.mounted) return;
-      showCustomSnackBar(context, "Payment Successful");
+      showCustomSnackBar(context, "Payment Successful", type: SnackBarType.success);
 
       clearPaymentController();
       state = state.copyWith(purchaseTotalAmount: "0");

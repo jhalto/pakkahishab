@@ -20,7 +20,7 @@ class PurchasePaymentView extends StatelessWidget {
               double.tryParse(vm.totalDueAmount ?? "0") ?? 0;
           final double purchaseAmount =
               double.tryParse(vm.purchaseTotalAmount ?? "0") ?? 0;
-
+          
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
@@ -74,6 +74,7 @@ class PurchasePaymentView extends StatelessWidget {
                     vmn.makePayment(context);
                   },
                   title: "Pay",
+                  isLoading: vm.isLoading,
                 ),
               ],
             ),

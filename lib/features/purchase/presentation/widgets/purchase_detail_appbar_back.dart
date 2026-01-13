@@ -1,17 +1,23 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 
 import 'package:pakkahishab/core/const/app_colors.dart';
+import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/edit_purchase_view.dart';
 
-class PurchaseDetailsAppbarBack extends StatelessWidget implements PreferredSizeWidget {
+class PurchaseDetailsAppbarBack extends StatelessWidget
+    implements PreferredSizeWidget {
   final PurchaseItem purchase;
   final String title;
-  const PurchaseDetailsAppbarBack({super.key, required this.title, required this.purchase});
+  const PurchaseDetailsAppbarBack({
+    super.key,
+    required this.title,
+    required this.purchase,
+  });
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
   @override
@@ -29,13 +35,24 @@ class PurchaseDetailsAppbarBack extends StatelessWidget implements PreferredSize
         ),
       ),
       actions: [
-       Consumer(builder: (context, ref, child) {
-         final _pvm = ref.read(purchaseViewModelProvider.notifier);
-         return IconButton(onPressed: (){
-          
-          Navigator.push(context, MaterialPageRoute(builder: (context) => EditPurchaseView(purchaseHead: purchase,)));
-        }, icon: Icon(Icons.edit));
-       },) 
+        Consumer(
+          builder: (context, ref, child) {
+            final _pvm = ref.read(purchaseViewModelProvider.notifier);
+            return IconButton(
+              onPressed: () {
+                // ref.read(purchaseUpdateViewModel.notifier).loadPurchaseEditProduct(ref.read(purchaseViewModelProvider).purchaseDetails!.items);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        EditPurchaseView(purchaseHead: purchase),
+                  ),
+                );
+              },
+              icon: Icon(Icons.edit),
+            );
+          },
+        ),
       ],
       flexibleSpace: Container(
         decoration: const BoxDecoration(
