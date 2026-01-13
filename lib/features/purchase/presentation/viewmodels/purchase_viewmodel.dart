@@ -23,9 +23,11 @@ final class PurchaseState {
   final bool hasMore;
   final int currentPage;
   final int totalPage;
+  final int mainTotalPage;
   final String phone;
   final String pin;
   final String offset;
+  final String offset1;
   final List<PurchaseItem> purchaseList;
   final List<SupplierPurchaseItem> supplierPurchaseList;
   final String? supplierId;
@@ -43,9 +45,11 @@ final class PurchaseState {
     this.hasMore = false,
     this.currentPage = 1,
     this.totalPage = 0,
+    this.mainTotalPage = 0,
     this.phone = '',
     this.pin = '',
     this.offset = '0',
+    this.offset1 = '0',
     this.purchaseList = const [],
     this.supplierPurchaseList = const [],
     this.supplierId,
@@ -62,9 +66,11 @@ final class PurchaseState {
     bool? hasMore,
     int? currentPage,
     int? totalPage,
+    int? mainTotalPage,
     String? phone,
     String? pin,
     String? offset,
+    String? offset1,
     List<PurchaseItem>? purchaseList,
     List<SupplierPurchaseItem>? supplierPurchaseList,
     String? supplierId,
@@ -80,9 +86,11 @@ final class PurchaseState {
       hasMore: hasMore ?? this.hasMore,
       currentPage: currentPage ?? this.currentPage,
       totalPage: totalPage ?? this.totalPage,
+      mainTotalPage: mainTotalPage ?? this.mainTotalPage,
       phone: phone ?? this.phone,
       pin: pin ?? this.pin,
       offset: offset ?? this.offset,
+      offset1: offset ?? this.offset1,
       purchaseList: purchaseList ?? this.purchaseList,
       supplierPurchaseList: supplierPurchaseList ?? this.supplierPurchaseList,
       supplierId: supplierId ?? this.supplierId,
@@ -198,7 +206,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
         offset: newOffset.toString(),
         currentPage: newPage,
         hasMore: hasMore,
-        totalPage: (totalItem / 10).ceil(),
+        mainTotalPage: (totalItem / 10).ceil(),
         totalPurchase: totalPrice.toString(),
       );
     } catch (e) {

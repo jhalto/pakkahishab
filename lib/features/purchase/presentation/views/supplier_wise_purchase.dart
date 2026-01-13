@@ -475,7 +475,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
     final notifier = ref.read(purchaseViewModelProvider.notifier);
 
     final currentPage = purchaseState.currentPage;
-    final totalPage = purchaseState.totalPage;
+    final totalPage = purchaseState.mainTotalPage;
     print("total purchase view page = $totalPage");
 
     // Detect page change and scroll to it

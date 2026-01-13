@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
+import 'package:pakkahishab/features/purchase/data/models/purchase_detail_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 
@@ -16,11 +17,13 @@ class PurchaseUpdateState {
   final bool isLoading;
   final String? selectedManufacturingDate;
   final String? selectedExpiredDate;
+  final List<PurchaseDetailsProduct>? selectedPurchaseProducts;
 
   PurchaseUpdateState({
     this.isLoading = false,
     String? selectedManufacturingDate,
     String? selectedExpiredDate,
+    this.selectedPurchaseProducts,
   }) : selectedManufacturingDate =
            selectedManufacturingDate ??
            DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -32,12 +35,15 @@ class PurchaseUpdateState {
     bool? isLoading,
     String? selectedManufacturingDate,
     String? selectedExpiredDate,
+    List<PurchaseDetailsProduct>? selectedPurchaseProducts,
   }) {
     return PurchaseUpdateState(
       isLoading: isLoading ?? this.isLoading,
       selectedExpiredDate: selectedExpiredDate ?? this.selectedExpiredDate,
       selectedManufacturingDate:
           selectedManufacturingDate ?? this.selectedManufacturingDate,
+      selectedPurchaseProducts:
+          selectedPurchaseProducts ?? this.selectedPurchaseProducts,
     );
   }
 }
@@ -69,6 +75,15 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
   TextEditingController productCodeController = TextEditingController();
   TextEditingController productStockController = TextEditingController();
 
+  // purchase product add controllers and variable
+
+  TextEditingController purchaseProductQuantity = TextEditingController(
+    text: 1.toString(),
+  );
+  String selectedPurchaseProductName = '';
+  String selectedPurchaseProductPrice = '';
+  String selectedPurchaseProductId = '';
+
   // state update method
 
   void updateManufacturingDate({required String date}) {
@@ -79,7 +94,10 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
     state = state.copyWith(selectedExpiredDate: expireDate);
   }
 
-  Future<void> updateProduct(BuildContext context, {required String productId}) async {
+  Future<void> updateProduct(
+    BuildContext context, {
+    required String productId,
+  }) async {
     state = state.copyWith(isLoading: true);
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
@@ -177,6 +195,71 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
     } else {
       if (!context.mounted) return;
       showCustomSnackBar(context, response['message']);
+    }
+  }
+
+ void loadPurchaseEditProduct(List<PurchaseDetailsProduct> products) {
+  state = state.copyWith(
+    selectedPurchaseProducts: [...products],
+  );
+}
+
+  void calculatePurchaseAmounts() {
+    final products = state.selectedPurchaseProducts ?? [];
+
+    final calculatedNetAmount = products.fold<double>(
+      0.0,
+      (sum, item) => sum + (item.unitPrice * item.quantity),
+    );
+
+    // ✅ ALWAYS update net amount
+    // state = state.copyWith(
+    //   purchaseNetAmount: calculatedNetAmount.toStringAsFixed(0),
+    //   purchaseTotalAmount: calculatedNetAmount.toStringAsFixed(0),
+    // );
+  }
+
+  Future<void> addProductInPurchaseList(BuildContext context) async {
+    final existingProducts = state.selectedPurchaseProducts ?? [];
+
+    final newProduct = PurchaseDetailsProduct(
+      productId: selectedPurchaseProductId,
+      productName: selectedPurchaseProductName,
+      unitPrice: double.tryParse(selectedPurchaseProductPrice) ?? 0,
+      quantity: int.tryParse(purchaseProductQuantity.text) ?? 0,
+    );
+
+    // ✅ FIX: compare productId with productId
+    final index = existingProducts.indexWhere(
+      (item) => item.productId == newProduct.productId,
+    );
+
+    List<PurchaseDetailsProduct> updatedProducts;
+
+    if (index != -1) {
+      final existing = existingProducts[index];
+
+      final updatedItem = PurchaseDetailsProduct(
+        productId: existing.productId,
+        productName: existing.productName,
+        unitPrice: existing.unitPrice,
+        quantity: newProduct.quantity, // replace quantity
+      );
+
+      updatedProducts = [...existingProducts];
+      updatedProducts[index] = updatedItem;
+    } else {
+      updatedProducts = [...existingProducts, newProduct];
+    }
+
+    // ✅ Update state
+    state = state.copyWith(selectedPurchaseProducts: updatedProducts);
+
+    // ✅ Recalculate amounts
+    calculatePurchaseAmounts();
+
+    if (context.mounted) {
+      Navigator.pop(context);
     }
   }
 }
