@@ -40,7 +40,18 @@ class PurchaseDetailsAppbarBack extends StatelessWidget
             final _pvm = ref.read(purchaseViewModelProvider.notifier);
             return IconButton(
               onPressed: () {
-                // ref.read(purchaseUpdateViewModel.notifier).loadPurchaseEditProduct(ref.read(purchaseViewModelProvider).purchaseDetails!.items);
+                final items = ref
+                    .read(purchaseViewModelProvider)
+                    .purchaseDetails!
+                    .items;
+
+                final editProducts = items
+                    .map((e) => e.toEditProduct())
+                    .toList();
+
+                ref
+                    .read(purchaseUpdateViewModel.notifier)
+                    .loadPurchaseEditProduct(editProducts);
                 Navigator.push(
                   context,
                   MaterialPageRoute(

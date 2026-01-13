@@ -8,6 +8,7 @@ import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/edit_product_view.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/edit_widgets/edit_purchase_product_details_widget.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_details_add_widget.dart';
 
 class EditPurchaseProductWidget extends ConsumerWidget {
@@ -15,10 +16,8 @@ class EditPurchaseProductWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _vm = ref.watch(purchaseAddViewModelProvider);
-    final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
-    final _updateVmn = ref.watch(purchaseUpdateViewModel.notifier);
-    final _updateVm = ref.watch(purchaseUpdateViewModel);
+    final updateVmn = ref.watch(purchaseUpdateViewModel.notifier);
+    final updateVm = ref.watch(purchaseUpdateViewModel);
 
     final productAsync = ref.watch(productListProvider);
 
@@ -70,17 +69,18 @@ class EditPurchaseProductWidget extends ConsumerWidget {
                     return ListTile(
                       onTap: () {
                         Navigator.pop(context);
-                        _vmn.selectedPurchaseProductId = product.productId
+                        updateVmn.selectedPurchaseProductId = product.productId
                             .toString();
-                        _vmn.selectedPurchaseProductName = product.productName;
-                        _vmn.selectedPurchaseProductPrice = product
+                        updateVmn.selectedPurchaseProductName = product.productName;
+                        updateVmn.selectedPurchaseProductPrice = product
                             .purchasePrice
                             .toString();
+                        updateVmn.purchaseProductQuantity.text = product.productQuantity.toString();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                PurchaseProductDetailsAddWidget(
+                                EditPurchaseProductDetailsAddWidget(
                                   selectedProductAll: product,
                                 ),
                           ),
@@ -107,26 +107,26 @@ class EditPurchaseProductWidget extends ConsumerWidget {
                           //     supplier.address ?? "Not given";
 
                           // if (!context.mounted) return;
-                          _updateVmn.productNameController.text =
+                          updateVmn.productNameController.text =
                               product.productName;
-                          _updateVmn.productPriceController.text = product
+                          updateVmn.productPriceController.text = product
                               .purchasePrice
                               .toString();
-                          _updateVmn.productSellPriceController.text = product
+                          updateVmn.productSellPriceController.text = product
                               .sellPrice
                               .toString();
-                          _updateVmn.updateManufacturingDate(
+                          updateVmn.updateManufacturingDate(
                             date: formatApiDate(
                               product.manufacturingDate.toString(),
                             ),
                           );
                           print(product.expiredDate);
-                          _updateVmn.updateExpireDate(
+                          updateVmn.updateExpireDate(
                             expireDate: formatApiDate(
                               product.expiredDate.toString(),
                             ),
                           );
-                          _updateVmn.productStockController.text = product
+                          updateVmn.productStockController.text = product
                               .productStock
                               .toString();
                           Navigator.of(context).push(
@@ -154,7 +154,7 @@ class EditPurchaseProductWidget extends ConsumerWidget {
                       trailing: CustomButton(
                         title: "Add Product",
                         onTap: () {
-                          _vmn.showProductAddBottomSheet(context);
+                          updateVmn.showProductAddBottomSheet(context);
                         },
                         icon: Icon(Icons.add, color: AppColors.whiteColor),
                       ),
@@ -409,7 +409,7 @@ class EditPurchaseProductWidget extends ConsumerWidget {
                 //     );
                 //   },
                 // );
-                _vmn.showProductAddBottomSheet(context);
+                updateVmn.showProductAddBottomSheet(context);
               },
               child: Container(
                 decoration: BoxDecoration(

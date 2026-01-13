@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
 
 class EditPurchaseSummury extends StatelessWidget {
   const EditPurchaseSummury({super.key});
@@ -12,8 +12,8 @@ class EditPurchaseSummury extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final vmn = ref.watch(purchaseAddViewModelProvider.notifier);
-        final vm = ref.watch(purchaseAddViewModelProvider);
+        final vmn = ref.watch(purchaseUpdateViewModel);
+        final vm = ref.watch(purchaseUpdateViewModel);
 
         return Container(
           decoration: BoxDecoration(

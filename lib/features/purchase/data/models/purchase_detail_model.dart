@@ -40,6 +40,7 @@ class PurchaseDetailsResponse {
 class PurchaseDetailsItem {
   final String purchaseNo;
   final DateTime? purchaseDate;
+  final int productId;
   final String supplierName;
   final String product;
   final int quantity;
@@ -51,6 +52,7 @@ class PurchaseDetailsItem {
   PurchaseDetailsItem({
     required this.purchaseNo,
     required this.purchaseDate,
+    required this.productId,
     required this.supplierName,
     required this.product,
     required this.quantity,
@@ -66,6 +68,7 @@ class PurchaseDetailsItem {
       purchaseDate: json['purchase_date'] != null
           ? DateTime.tryParse(json['purchase_date'])
           : null,
+      productId: json['product_id'] ?? 0,
       supplierName: json['supplier_name'] ?? '',
       product: json['product'] ?? '',
       quantity: json['quantity'] ?? 0,
