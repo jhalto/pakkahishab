@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/urls.dart';
 import 'package:pakkahishab/core/helper/date_picker_helper.dart';
@@ -619,7 +620,6 @@ class PurchaseServices {
 
     required int accountNo,
     required String particulars,
-   
   }) async {
     final String url =
         "${Urls.baseUrl}Supplier_due_payment/?MOBILE=$phone&SCHOOL_CODE=$schoolCode&PASSWORD=$pin";
@@ -655,6 +655,80 @@ class PurchaseServices {
     } catch (e) {
       print("Make Payment Error: $e");
       return {'statusCode': 666, 'data': e.toString()};
+    }
+  }
+
+  Future<Map<String, dynamic>> updatePurchase({
+    required String purchaseId,
+    required String mobile,
+    required String password,
+    required String schoolCode,
+    List<Map<String, dynamic>>? productList,
+  }) async {
+    final url = "${Urls.baseUrl}update_purchase/"; // your update endpoint
+
+    final dio = Dio();
+
+    /// ✅ Query parameters
+    final queryParams = {
+      "SCHOOL_CODE": schoolCode,
+      "PASSWORD": password,
+      "MOBILE": mobile,
+      "PURCHASE_ID": purchaseId,
+    };
+
+    /// Remove null / empty params
+    queryParams.removeWhere(
+      (key, value) => value.toString().isEmpty,
+    );
+
+    debugPrint("🔹 Update Purchase Query: $queryParams");
+
+    /// ✅ Request body
+    final body = {"purchase_details": productList};
+
+    debugPrint("🔹 Update Purchase Body: $body");
+
+    try {
+      final response = await dio.post(
+        url,
+        queryParameters: queryParams,
+        data: body,
+      );
+
+      debugPrint("🔹 Update Response: ${response.data}");
+
+      if (response.statusCode == 200) {
+        return {
+          "success": true,
+          "statusCode": response.statusCode,
+          "data": response.data,
+        };
+      } else {
+        return {
+          "success": false,
+          "statusCode": response.statusCode,
+          "data": response.data,
+        };
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout) {
+        return {"success": false, "message": "Connection timeout"};
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        return {"success": false, "message": "Server took too long to respond"};
+      } else if (e.type == DioExceptionType.badResponse) {
+        return {
+          "success": false,
+          "message": "Server error: ${e.response?.statusCode}",
+          "data": e.response?.data,
+        };
+      } else if (e.type == DioExceptionType.connectionError) {
+        return {"success": false, "message": "No internet connection"};
+      } else {
+        return {"success": false, "message": "Unexpected error: ${e.message}"};
+      }
+    } catch (e) {
+      return {"success": false, "message": "Unknown error: $e"};
     }
   }
 }

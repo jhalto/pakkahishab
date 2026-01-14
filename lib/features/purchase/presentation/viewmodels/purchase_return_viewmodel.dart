@@ -15,19 +15,19 @@ import 'package:pakkahishab/features/purchase/data/repositories/purchase_reposit
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_edit_widgets/edit_purchase_product_details_widget.dart';
 
-final purchaseUpdateViewModel =
-    NotifierProvider<PurchaseUpdateNotifier, PurchaseUpdateState>(
-      () => PurchaseUpdateNotifier(),
+final purchaseReturnViewModel =
+    NotifierProvider<PurchaseReturnNotifier, PurchaseReturnState>(
+      () => PurchaseReturnNotifier(),
     );
 
-class PurchaseUpdateState {
+class PurchaseReturnState {
   final bool isLoading;
   final String? selectedManufacturingDate;
   final String? selectedExpiredDate;
   final String? purchaseNetAmount;
   final List<PurchaseDetailsProduct>? selectedPurchaseProducts;
 
-  PurchaseUpdateState({
+  PurchaseReturnState({
     this.isLoading = false,
     String? selectedManufacturingDate,
     String? selectedExpiredDate,
@@ -40,14 +40,14 @@ class PurchaseUpdateState {
            selectedExpiredDate ??
            DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-  PurchaseUpdateState copyWith({
+  PurchaseReturnState copyWith({
     bool? isLoading,
     String? selectedManufacturingDate,
     String? selectedExpiredDate,
     String? purchaseNetAmount,
     List<PurchaseDetailsProduct>? selectedPurchaseProducts,
   }) {
-    return PurchaseUpdateState(
+    return PurchaseReturnState(
       isLoading: isLoading ?? this.isLoading,
       selectedExpiredDate: selectedExpiredDate ?? this.selectedExpiredDate,
       selectedManufacturingDate:
@@ -59,13 +59,13 @@ class PurchaseUpdateState {
   }
 }
 
-class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
+class PurchaseReturnNotifier extends Notifier<PurchaseReturnState> {
   late final PurchaseRepository _repo;
 
   @override
   build() {
     _repo = ref.read(purchaseRepositoryProvider);
-    return PurchaseUpdateState();
+    return PurchaseReturnState();
   }
   // update supplier view model
 
@@ -431,8 +431,8 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
       builder: (context) {
         return Consumer(
           builder: (context, ref, _) {
-            final vm = ref.watch(purchaseUpdateViewModel); // <- watch here
-            final vmn = ref.watch(purchaseUpdateViewModel.notifier);
+            final vm = ref.watch(purchaseReturnViewModel); // <- watch here
+            final vmn = ref.watch(purchaseReturnViewModel.notifier);
             return Stack(
               children: [
                 Padding(

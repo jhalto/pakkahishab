@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_details_add_widget.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/purchase_product_details_add_widget.dart';
 import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_add_viewmodel.dart';
 import 'package:pakkahishab/features/sales/presentation/widgets/sale_product_details_add_widget.dart';
 

@@ -188,7 +188,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
 
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
-      final totalItem = result['data']['count'] ?? 0;
+      final totalItem = result['data']['items'][0]['total_purchase_amount'] ?? 0;
       double totalPrice = 0.0;
       if (totalItem > 0) {
         totalPrice = items.fold<double>(

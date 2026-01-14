@@ -267,4 +267,28 @@ class PurchaseRepository {
 
     return response;
   }
+
+  Future<Map<String, dynamic>> updatePurchase({
+  
+   
+    required String purchaseId,
+   
+
+   
+
+    required String mobile,
+    required String password,
+    required String schoolCode,
+    List<Map<String, dynamic>>? productList,
+  }) async {
+    final response = await _purchaseServices.updatePurchase(
+      purchaseId: purchaseId,
+
+      mobile: mobile,
+      password: password,
+      schoolCode: schoolCode,
+      productList: productList,
+    );
+    return response;
+  }
 }

@@ -15,10 +15,15 @@ import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_edit
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/puchase_supplier_widget.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/purchase_product_item_widget.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/purchase_product_widget.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_return_widgets/return_invoice_name_date_widget.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_return_widgets/return_purchase_product_item_widget.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_return_widgets/return_purchase_product_widget.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_return_widgets/return_purchase_summary.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_return_widgets/return_purchase_supplier_widget.dart';
 
-class EditPurchaseView extends StatelessWidget {
+class PurchaseReturnAddView extends StatelessWidget {
   final PurchaseItem purchaseHead;
-  const EditPurchaseView({super.key, required this.purchaseHead});
+  const PurchaseReturnAddView({super.key, required this.purchaseHead});
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +31,15 @@ class EditPurchaseView extends StatelessWidget {
       appBar: CustomAppbarBack(title: "Edit Purchase"),
       body: Column(
         children: [
-          EditInvoiceNameDateWidget(purchaseHead: purchaseHead,),
+          ReturnInvoiceNameDateWidget(purchaseHead: purchaseHead,),
           SizedBox(height: 10),
-          EditPurchaseSupplierWidget(purchaseHead: purchaseHead,),
+          ReturnPurchaseSupplierWidget(purchaseHead: purchaseHead,),
           SizedBox(height: 10),
-          EditPurchaseProductWidget(),
+          ReturnPurchaseProductWidget(),
           SizedBox(height: 10),
-          EditPurchaseProductItemWidget(),
+          ReturnPurchaseProductItemWidget(),
           SizedBox(height: 10), 
-          EditPurchaseSummury(),
+          ReturnPurchaseSummury(),
 
           SizedBox(height: 50),
 

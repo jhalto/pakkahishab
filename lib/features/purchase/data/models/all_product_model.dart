@@ -1,3 +1,5 @@
+import 'package:pakkahishab/features/purchase/data/models/purchase_detail_model.dart';
+
 class AllProductResponse {
   final List<AllProduct> items;
   final bool hasMore;
@@ -45,6 +47,7 @@ class AllProductResponse {
 class AllProduct {
   final int productId;
   final String productName;
+  int productQuantity;
   final double? purchasePrice;
   final double? sellPrice;
   final DateTime? manufacturingDate;
@@ -59,6 +62,7 @@ class AllProduct {
   AllProduct({
     required this.productId,
     required this.productName,
+    required this.productQuantity,
     this.purchasePrice,
     this.sellPrice,
     this.manufacturingDate,
@@ -84,6 +88,7 @@ class AllProduct {
       productName:
           json['product_name']?.toString() ??
           (throw Exception('product_name is required')),
+      productQuantity: 1,
       purchasePrice: json['purchase_price'] != null
           ? (json['purchase_price'] is double
                 ? json['purchase_price']
@@ -197,5 +202,16 @@ class PurchaseDetailsProduct {
       "quantity": quantity,
       "unit_price": unitPrice,
     };
+  }
+}
+
+extension PurchaseDetailsItemMapper on PurchaseDetailsItem {
+  PurchaseDetailsProduct toEditProduct() {
+    return PurchaseDetailsProduct(
+      productId: productId.toString(), // or real productId if available
+      productName: product,
+      quantity: quantity,
+      unitPrice: unitPrice.toDouble(),
+    );
   }
 }

@@ -3,11 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_details_add_widget.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/purchase_product_details_add_widget.dart';
 
-class EditPurchaseProductItemWidget extends StatelessWidget {
-  const EditPurchaseProductItemWidget({super.key});
+class PurchaseProductItemWidget extends StatelessWidget {
+  const PurchaseProductItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +15,8 @@ class EditPurchaseProductItemWidget extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, child) {
           
-          final _vm = ref.watch(purchaseUpdateViewModel);
-          final _vmn = ref.watch(purchaseUpdateViewModel.notifier);
+          final _vm = ref.watch(purchaseAddViewModelProvider);
+          final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
           final productList = _vm.selectedPurchaseProducts?.length ?? [].length;
           return productList == 0? SizedBox(): Column(
             mainAxisSize: MainAxisSize.min,
@@ -79,7 +78,7 @@ class EditPurchaseProductItemWidget extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  product!.productId.toString(),
+                                  product!.productName.toString(),
                                   textAlign: TextAlign.start,
                                 ),
                               ),
@@ -105,11 +104,11 @@ class EditPurchaseProductItemWidget extends StatelessWidget {
                               SizedBox(width: 10),
                               InkWell(
                                 onTap: () {
-                                  // _vmn.selectedPurchaseProductId = product.productId;
-                                  // _vmn.selectedPurchaseProductName = product.productName;
-                                  // _vmn.selectedPurchaseProductPrice = product.unitPrice.toString();
-                                  // _vmn.purchaseProductQuantity.text = product.quantity.toString();
-                                  // navigateWithSlide(context: context, page: PurchaseProductDetailsAddWidget(selectedPurchaseDetailProduct: product,));
+                                  _vmn.selectedPurchaseProductId = product.productId;
+                                  _vmn.selectedPurchaseProductName = product.productName;
+                                  _vmn.selectedPurchaseProductPrice = product.unitPrice.toString();
+                                  _vmn.purchaseProductQuantity.text = product.quantity.toString();
+                                  navigateWithSlide(context: context, page: PurchaseProductDetailsAddWidget(selectedPurchaseDetailProduct: product,));
                                 },
                                 child: Icon(Icons.edit, size: 20)),
                             ],
