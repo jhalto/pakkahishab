@@ -496,7 +496,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
           IconButton(
             icon: const Icon(Icons.arrow_back_ios, size: 18),
             onPressed: currentPage > 1
-                ? () => notifier.goToPage(currentPage - 1)
+                ? () => notifier.goToPageMain(currentPage - 1)
                 : null,
           ),
 
@@ -511,7 +511,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: InkWell(
-                      onTap: () => notifier.goToPage(page),
+                      onTap: () => notifier.goToPageMain(page),
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         alignment: Alignment.center,
@@ -546,7 +546,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
           IconButton(
             icon: const Icon(Icons.arrow_forward_ios, size: 18),
             onPressed: currentPage < totalPage
-                ? () => notifier.goToPage(currentPage + 1)
+                ? () => notifier.goToPageMain(currentPage + 1)
                 : null,
           ),
         ],
