@@ -168,7 +168,8 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     String? purchaseDate,
   }) async {
     final phone = await SharedPreferencesHelper.getString('phone');
-    final pin = await SharedPreferencesHelper.getString('pin');
+    // final pin = await SharedPreferencesHelper.getString('pin');
+    final pin = await SecureStorageHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
     try {
@@ -188,7 +189,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
 
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
-      final totalItem = result['data']['items'][0]['total_purchase_amount'] ?? 0;
+      final totalItem = result['data']['items'][0]['total_supplier_count'] ?? 0;
       double totalPrice = 0.0;
       if (totalItem > 0) {
         totalPrice = items.fold<double>(
@@ -227,6 +228,10 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
 
   void goToPage(int page) {
     fetchPurchases(page: page);
+  }
+
+  void goToPageMain(int page) {
+    fetchSupplierWisePurchases(page: page);
   }
 
   // void refreshPurchases() {

@@ -132,6 +132,7 @@ class LoginNotifier extends Notifier<LoginState> {
             response['School_code'].toString(),
           ),
           SharedPreferencesHelper.saveString('pin', state.password),
+           SecureStorageHelper.saveString('pin', state.password),
         ]);
         state = state.copyWith(phone: '', password: '');
         if (!context.mounted) return;

@@ -678,9 +678,7 @@ class PurchaseServices {
     };
 
     /// Remove null / empty params
-    queryParams.removeWhere(
-      (key, value) => value.toString().isEmpty,
-    );
+    queryParams.removeWhere((key, value) => value.toString().isEmpty);
 
     debugPrint("🔹 Update Purchase Query: $queryParams");
 

@@ -179,7 +179,6 @@ class SignupNotifier extends Notifier<SignupState> {
         print("in 200");
         print(result['data'].runtimeType);
         if (result['data']['status'] == 'success') {
-
           print("in success");
           await Future.wait([
             SharedPreferencesHelper.saveString('name', state.name),
@@ -187,12 +186,14 @@ class SignupNotifier extends Notifier<SignupState> {
             SharedPreferencesHelper.saveString('phone', state.phone),
             SharedPreferencesHelper.saveString('email', state.email),
             SharedPreferencesHelper.saveString('pin', state.password),
+            SecureStorageHelper.saveString('pin', state.password),
             SharedPreferencesHelper.saveString(
               'code',
               result['data']['school_code'].toString(),
             ),
             SharedPreferencesHelper.saveString('login_phone', state.phone),
           ]);
+
           print("Context mounted: ${context.mounted}");
           if (!context.mounted) return;
           showCustomSnackBar(
