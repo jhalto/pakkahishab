@@ -8,8 +8,8 @@ import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/edit_product_view.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/edit_widgets/edit_purchase_product_details_widget.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_details_add_widget.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_edit_widgets/edit_purchase_product_details_widget.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/purchase_product_details_add_widget.dart';
 
 class EditPurchaseProductWidget extends ConsumerWidget {
   const EditPurchaseProductWidget({super.key});

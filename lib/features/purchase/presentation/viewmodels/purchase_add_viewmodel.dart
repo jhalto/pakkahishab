@@ -17,7 +17,7 @@ import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dar
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_payment_view.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_product_details_add_widget.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/purchase_product_details_add_widget.dart';
 
 final purchaseAddViewModelProvider =
     NotifierProvider.autoDispose<PurchaseAddNotifier, PurchaseAddState>(
