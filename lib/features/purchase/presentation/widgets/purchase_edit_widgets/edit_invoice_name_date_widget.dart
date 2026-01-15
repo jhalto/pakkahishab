@@ -4,7 +4,7 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/date_picker_helper.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchse_update_viewmodel.dart';
 
 class EditInvoiceNameDateWidget extends StatelessWidget {
   final PurchaseItem purchaseHead;

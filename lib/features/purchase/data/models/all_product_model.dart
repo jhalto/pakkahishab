@@ -183,31 +183,30 @@ class AddProductItem {
 }
 
 class PurchaseDetailsProduct {
+  int? purchaseDetailId;
   String productName;
   String productId;
   int quantity;
   double unitPrice;
 
   PurchaseDetailsProduct({
+    this.purchaseDetailId,
     required this.productName,
     required this.productId,
     this.quantity = 1,
     required this.unitPrice,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      "product_name": productName,
-      "product_id": productId,
-      "quantity": quantity,
-      "unit_price": unitPrice,
-    };
-  }
+ 
 }
+
+
+
 
 extension PurchaseDetailsItemMapper on PurchaseDetailsItem {
   PurchaseDetailsProduct toEditProduct() {
     return PurchaseDetailsProduct(
+      purchaseDetailId: purchaseDetailId,
       productId: productId.toString(), // or real productId if available
       productName: product,
       quantity: quantity,

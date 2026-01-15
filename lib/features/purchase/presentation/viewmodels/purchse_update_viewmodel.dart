@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +12,7 @@ import 'package:pakkahishab/core/utils/show_snackbar.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_edit_widgets/edit_purchase_product_details_widget.dart';
 
 final purchaseUpdateViewModel =
@@ -22,6 +22,7 @@ final purchaseUpdateViewModel =
 
 class PurchaseUpdateState {
   final bool isLoading;
+  final bool editLoading;
   final String? selectedManufacturingDate;
   final String? selectedExpiredDate;
   final String? purchaseNetAmount;
@@ -29,6 +30,7 @@ class PurchaseUpdateState {
 
   PurchaseUpdateState({
     this.isLoading = false,
+    this.editLoading = false,
     String? selectedManufacturingDate,
     String? selectedExpiredDate,
     this.purchaseNetAmount,
@@ -42,6 +44,7 @@ class PurchaseUpdateState {
 
   PurchaseUpdateState copyWith({
     bool? isLoading,
+    bool? editLoading,
     String? selectedManufacturingDate,
     String? selectedExpiredDate,
     String? purchaseNetAmount,
@@ -49,6 +52,7 @@ class PurchaseUpdateState {
   }) {
     return PurchaseUpdateState(
       isLoading: isLoading ?? this.isLoading,
+      editLoading: editLoading ?? this.editLoading,
       selectedExpiredDate: selectedExpiredDate ?? this.selectedExpiredDate,
       selectedManufacturingDate:
           selectedManufacturingDate ?? this.selectedManufacturingDate,
@@ -255,6 +259,7 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
       final existing = existingProducts[index];
 
       final updatedItem = PurchaseDetailsProduct(
+        purchaseDetailId: existing.purchaseDetailId,
         productId: existing.productId,
         productName: existing.productName,
         unitPrice: existing.unitPrice,
@@ -349,7 +354,6 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
       print(e);
     }
   }
-  
 
   void clearProductAddController() {
     productCodeController.clear();
@@ -359,10 +363,11 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
     productStockController.clear();
   }
 
-  Future<void> updatePurchase(BuildContext context,{required String purchaseId}) async {
-    
-
-    state = state.copyWith(isLoading: true);
+  Future<void> updatePurchase(
+    BuildContext context, {
+    required String purchaseId,
+  }) async {
+    state = state.copyWith(editLoading: true);
 
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
@@ -376,6 +381,8 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
     final productList = (state.selectedPurchaseProducts ?? [])
         .map(
           (p) => {
+            if (p.purchaseDetailId != null)
+              "purchase_detail_id": p.purchaseDetailId,
             "product_id": int.tryParse(p.productId) ?? 0,
             "quantity": p.quantity,
             "unit_price": p.unitPrice,
@@ -385,7 +392,6 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
 
     // 🔥 IMPORTANT: await
     final response = await _repo.updatePurchase(
-    
       purchaseId: purchaseId,
       mobile: phone ?? "",
       password: pin ?? "",
@@ -396,18 +402,18 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
     print(response);
 
     if (response['data']['status'] == 'success') {
-      state = state.copyWith(isLoading: false);
+      state = state.copyWith(editLoading: false);
 
       if (!context.mounted) return;
+    
 
       showCustomSnackBar(
         context,
-        "Purchase Add Successfully",
+        "Purchase Updated Successfully",
         type: SnackBarType.success,
       );
-     
-
-      if (!context.mounted) return;
+      Navigator.pop(context);
+      ref.read(purchaseViewModelProvider.notifier).fetchPurchaseDetails(purchaseNo: purchaseId);
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(builder: (context) => PurchasePaymentView()),
@@ -417,12 +423,69 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
       // ref.read(purchaseViewModelProvider.notifier).fetchSupplierWisePurchases();
       // ref.read(homeProvider.notifier).fetchDashBoard('YEAR');
     } else if (response['data']['status'] == 'error') {
-      state = state.copyWith(isLoading: false);
+      state = state.copyWith(editLoading: false);
       if (!context.mounted) return;
       showCustomSnackBar(context, response['data']['message']);
     }
-  } 
+  }
 
+  Future<void> deleteProductFromPurchase(
+    BuildContext context, {
+    required String purchaseId,
+    required int index,
+  }) async {
+    final products = <PurchaseDetailsProduct>[
+      ...?state.selectedPurchaseProducts,
+    ];
+
+    final product = products[index];
+    if (products.length <= 1) {
+      showCustomSnackBar(
+        context,
+        "Please select another item first to Delete it",
+      );
+      return;
+    }
+    // ✅ CASE 1: Local product (NO purchaseDetailId) → remove locally
+    if (product.purchaseDetailId == null) {
+      products.removeAt(index);
+      
+      state = state.copyWith(selectedPurchaseProducts: products);
+      calculatePurchaseAmounts();
+      return;
+    }
+
+    // ✅ CASE 2: Server product → call API
+    state = state.copyWith(editLoading: true);
+
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
+
+    final response = await _repo.deleteProductFromPurchase(
+      phone: phone.toString(),
+      pin: pin.toString(),
+      code: code.toString(),
+      purchaseId: purchaseId,
+      productDetailId: product.purchaseDetailId!,
+    );
+
+    state = state.copyWith(editLoading: false);
+
+    if (response['status'] == 'success') {
+      products.removeAt(index);
+      
+      state = state.copyWith(selectedPurchaseProducts: products);
+      calculatePurchaseAmounts();
+      if (!context.mounted) return;
+
+      showCustomSnackBar(
+        context,
+        "Purchase updated",
+        type: SnackBarType.success,
+      );
+    }
+  }
 
   Future<void> showProductAddBottomSheet(BuildContext context) async {
     showModalBottomSheet(

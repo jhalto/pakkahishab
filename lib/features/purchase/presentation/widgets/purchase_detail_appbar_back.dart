@@ -7,7 +7,7 @@ import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart
 import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_return_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchse_update_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/edit_purchase_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_return_add_view.dart';
 

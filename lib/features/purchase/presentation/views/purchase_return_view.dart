@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
-import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchase_add.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/supplier_wise_purchase_back_with_search.dart';
 
-class SupplierPurchasesView extends StatelessWidget {
-  const SupplierPurchasesView({super.key});
+class PurchaseReturnView extends StatelessWidget {
+  const PurchaseReturnView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -283,7 +281,7 @@ class SupplierPurchasesView extends StatelessWidget {
                                       .totalPage ==
                                   1
                               ? SizedBox()
-                              : PurchaseSupplierWisePagination();
+                              : PurchaseReturnViewPagination();
                         },
                       ),
                     ],
@@ -397,7 +395,7 @@ class SupplierPurchasesView extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigator.pushNamed(context, Routes.p)
-          navigateWithSlide(context: context, page: PurchaseAdd());
+          // navigateWithSlide(context: context, page:);
         },
         backgroundColor: AppColors.primaryColor,
         shape: RoundedRectangleBorder(
@@ -409,16 +407,16 @@ class SupplierPurchasesView extends StatelessWidget {
   }
 }
 
-class PurchaseSupplierWisePagination extends ConsumerStatefulWidget {
-  const PurchaseSupplierWisePagination({super.key});
+class PurchaseReturnViewPagination extends ConsumerStatefulWidget {
+  const PurchaseReturnViewPagination({super.key});
 
   @override
-  ConsumerState<PurchaseSupplierWisePagination> createState() =>
+  ConsumerState<PurchaseReturnViewPagination> createState() =>
       _PurchasesPaginationState();
 }
 
 class _PurchasesPaginationState
-    extends ConsumerState<PurchaseSupplierWisePagination> {
+    extends ConsumerState<PurchaseReturnViewPagination> {
   final ScrollController _scrollController = ScrollController();
   int? _previousPage;
 

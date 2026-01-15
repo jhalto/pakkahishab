@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchse_update_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_edit_widgets/edit_purchase_product_details_widget.dart';
 
 class EditPurchaseProductItemWidget extends StatelessWidget {
-  const EditPurchaseProductItemWidget({super.key});
+    final PurchaseItem purchaseHead;
+  const EditPurchaseProductItemWidget({super.key, required this.purchaseHead});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +56,7 @@ class EditPurchaseProductItemWidget extends StatelessWidget {
                         textAlign: TextAlign.end,
                       ),
                     ),
-                    SizedBox(width: 30),
+                    SizedBox(width: 50),
                   ],
                 ),
               ),
@@ -109,6 +111,11 @@ class EditPurchaseProductItemWidget extends StatelessWidget {
                                 navigateWithSlide(context: context, page: EditPurchaseProductDetailsAddWidget(selectedPurchaseDetailProduct: product,));
                               },
                               child: Icon(Icons.edit, size: 20)),
+                            InkWell(
+                              onTap: () {
+                                vmn.deleteProductFromPurchase(context,index: index, purchaseId: purchaseHead.purchaseId.toString(),);
+                              },
+                              child: Icon(Icons.delete, size: 20)),
                           ],
                         ),
                       ],

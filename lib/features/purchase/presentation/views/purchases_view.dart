@@ -409,7 +409,7 @@ class PurchasesView extends StatelessWidget {
                       //         : PurchasesPagination();
                       //   },
                       // ),
-                      PurchasesPagination()
+                      PurchasesPagination(),
                     ],
                   );
                 },

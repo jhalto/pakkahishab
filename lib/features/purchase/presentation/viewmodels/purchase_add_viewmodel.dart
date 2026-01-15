@@ -15,6 +15,7 @@ import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_payment_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/purchase_product_details_add_widget.dart';
@@ -607,7 +608,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       );
       // Navigator.pop(context);
       clearPurchaseRecord();
-      ref.read(purchaseViewModelProvider.notifier).fetchSupplierWisePurchases();
+      ref.read(purchaseSupplierWiseViewModel.notifier).fetchSupplierWisePurchases();
       ref.read(homeProvider.notifier).fetchDashBoard('YEAR');
     } else if (response['data']['status'] == 'error') {
       state = state.copyWith(isLoading: false);
