@@ -52,10 +52,11 @@ class EditPurchaseView extends StatelessWidget {
                         return CustomFullwidthButton(
                           onTap: () async {
                             ref
-                                .read(purchaseUpdateViewModel.notifier)
+                                .read(purchaseUpdateViewModel.notifier) 
                                 .updatePurchase(
                                   context,
                                   purchaseId: purchaseHead.purchaseId.toString(),
+                                  purchaseNo: purchaseHead.purchaseNo.toString(),
                                 );
                           },
                           title: "Update",

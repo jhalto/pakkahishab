@@ -111,6 +111,12 @@ class PurchaseProductItemWidget extends StatelessWidget {
                                   navigateWithSlide(context: context, page: PurchaseProductDetailsAddWidget(selectedPurchaseDetailProduct: product,));
                                 },
                                 child: Icon(Icons.edit, size: 20)),
+
+                              InkWell(
+                                onTap: () {
+                                  _vmn.removeProductFromPurchaseList(productId: product.productId);
+                                },
+                                child: Icon(Icons.delete, size: 20)),
                             ],
                           ),
                         ],

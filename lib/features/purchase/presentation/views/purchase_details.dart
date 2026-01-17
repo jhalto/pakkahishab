@@ -226,7 +226,7 @@ class PurchaseDetails extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                purchase.netAmount.toString(),
+                                item.purchaseNetAmount.toString(),
                                 style: AppTextStyle.titleSmall,
                               ),
                             ),

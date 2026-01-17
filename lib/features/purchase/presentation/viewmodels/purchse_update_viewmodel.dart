@@ -12,6 +12,7 @@ import 'package:pakkahishab/core/utils/show_snackbar.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_edit_widgets/edit_purchase_product_details_widget.dart';
 
@@ -366,9 +367,10 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
   Future<void> updatePurchase(
     BuildContext context, {
     required String purchaseId,
+    required String purchaseNo,
   }) async {
     state = state.copyWith(editLoading: true);
-
+    print("Purchase id:  $purchaseId");
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
@@ -405,15 +407,89 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
       state = state.copyWith(editLoading: false);
 
       if (!context.mounted) return;
-    
 
       showCustomSnackBar(
         context,
         "Purchase Updated Successfully",
         type: SnackBarType.success,
       );
+      // Navigator.pop(context);
       Navigator.pop(context);
-      ref.read(purchaseViewModelProvider.notifier).fetchPurchaseDetails(purchaseNo: purchaseId);
+      await ref.read(purchaseViewModelProvider.notifier).fetchPurchases();
+      await ref.read(purchaseSupplierWiseViewModel.notifier).fetchSupplierWisePurchases();
+
+      // ref
+      //     .read(purchaseViewModelProvider.notifier)
+      //     .fetchPurchaseDetails(purchaseNo: purchaseNo);
+
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => PurchasePaymentView()),
+      // );
+      // Navigator.pop(context);
+      // clearPurchaseRecord();
+      // ref.read(purchaseViewModelProvider.notifier).fetchSupplierWisePurchases();
+      // ref.read(homeProvider.notifier).fetchDashBoard('YEAR');
+    } else if (response['data']['status'] == 'error') {
+      state = state.copyWith(editLoading: false);
+      if (!context.mounted) return;
+      showCustomSnackBar(context, response['data']['message']);
+    }
+  }
+
+  Future<void> updatePurchaseForDelete(
+    BuildContext context, {
+    required String purchaseId,
+    required String purchaseNo,
+  }) async {
+    state = state.copyWith(editLoading: true);
+    print("Purchase id:  $purchaseId");
+    final phone = await SharedPreferencesHelper.getString('phone');
+    final pin = await SharedPreferencesHelper.getString('pin');
+    final code = await SharedPreferencesHelper.getString('code');
+
+    // final purchaseTypeValue = int.tryParse(
+    //   state.purchaseType == 'Credit' ? "0" : "1",
+    // );
+
+    // Safe product list (empty allowed)
+    final productList = (state.selectedPurchaseProducts ?? [])
+        .map(
+          (p) => {
+            if (p.purchaseDetailId != null)
+              "purchase_detail_id": p.purchaseDetailId,
+            "product_id": int.tryParse(p.productId) ?? 0,
+            "quantity": p.quantity,
+            "unit_price": p.unitPrice,
+          },
+        )
+        .toList();
+
+    // 🔥 IMPORTANT: await
+    final response = await _repo.updatePurchase(
+      purchaseId: purchaseId,
+      mobile: phone ?? "",
+      password: pin ?? "",
+      schoolCode: code ?? "",
+      productList: productList, // works even when empty
+    );
+
+    print(response);
+
+    if (response['data']['status'] == 'success') {
+      state = state.copyWith(editLoading: false);
+
+      if (!context.mounted) return;
+
+      showCustomSnackBar(
+        context,
+        "Purchase Updated Successfully",
+        type: SnackBarType.success,
+      );
+      // Navigator.pop(context);
+      ref
+          .read(purchaseViewModelProvider.notifier)
+          .fetchPurchaseDetails(purchaseNo: purchaseNo);
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(builder: (context) => PurchasePaymentView()),
@@ -433,6 +509,7 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
     BuildContext context, {
     required String purchaseId,
     required int index,
+    required String purchaseNo,
   }) async {
     final products = <PurchaseDetailsProduct>[
       ...?state.selectedPurchaseProducts,
@@ -449,9 +526,14 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
     // ✅ CASE 1: Local product (NO purchaseDetailId) → remove locally
     if (product.purchaseDetailId == null) {
       products.removeAt(index);
-      
+
       state = state.copyWith(selectedPurchaseProducts: products);
       calculatePurchaseAmounts();
+      updatePurchaseForDelete(
+        context,
+        purchaseId: purchaseId,
+        purchaseNo: purchaseNo,
+      );
       return;
     }
 
@@ -474,11 +556,16 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
 
     if (response['status'] == 'success') {
       products.removeAt(index);
-      
+
       state = state.copyWith(selectedPurchaseProducts: products);
       calculatePurchaseAmounts();
-      if (!context.mounted) return;
 
+      if (!context.mounted) return;
+      updatePurchaseForDelete(
+        context,
+        purchaseId: purchaseId,
+        purchaseNo: purchaseNo,
+      );
       showCustomSnackBar(
         context,
         "Purchase updated",

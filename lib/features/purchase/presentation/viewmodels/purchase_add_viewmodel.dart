@@ -99,7 +99,7 @@ final class PurchaseAddState {
   PurchaseAddState({
     this.isLoading = false,
     this.isSupplierSelecting = false,
-    
+
     this.selectedSupplier,
     String? selectedManufacturingDate,
     this.followUpDate,
@@ -123,7 +123,7 @@ final class PurchaseAddState {
   PurchaseAddState copyWith({
     AllSupplier? selectedSupplier,
     bool? isLoading,
-  
+
     bool? isSupplierSelecting,
     String? selectedManufacturingDate,
     String? followUpDate,
@@ -287,6 +287,23 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     calculatePurchaseAmounts();
 
     Navigator.pop(context);
+  }
+
+  Future<void> removeProductFromPurchaseList({
+    required String productId,
+  }) async {
+    final existingProducts = state.selectedPurchaseProducts ?? [];
+
+    // Remove the product
+    final updatedProducts = existingProducts
+        .where((item) => item.productId != productId)
+        .toList();
+
+    // Update state
+    state = state.copyWith(selectedPurchaseProducts: updatedProducts);
+
+    // 🔥 Recalculate amounts after removal
+    calculatePurchaseAmounts();
   }
 
   void updatePaymentMethod(String value) {
@@ -584,7 +601,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       productList: productList, // works even when empty
     );
 
-    print(response);
+
 
     if (response['data']['status'] == 'success') {
       state = state.copyWith(isLoading: false);
@@ -602,13 +619,15 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       );
 
       if (!context.mounted) return;
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => PurchasePaymentView()),
       );
       // Navigator.pop(context);
       clearPurchaseRecord();
-      ref.read(purchaseSupplierWiseViewModel.notifier).fetchSupplierWisePurchases();
+      ref
+          .read(purchaseSupplierWiseViewModel.notifier)
+          .fetchSupplierWisePurchases();
       ref.read(homeProvider.notifier).fetchDashBoard('YEAR');
     } else if (response['data']['status'] == 'error') {
       state = state.copyWith(isLoading: false);
@@ -693,9 +712,13 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     );
 
     if (response['status'] == 'success') {
-      state = state.copyWith(isLoading: false ,);
+      state = state.copyWith(isLoading: false);
       if (!context.mounted) return;
-      showCustomSnackBar(context, "Payment Successful", type: SnackBarType.success);
+      showCustomSnackBar(
+        context,
+        "Payment Successful",
+        type: SnackBarType.success,
+      );
 
       clearPaymentController();
       state = state.copyWith(purchaseTotalAmount: "0");

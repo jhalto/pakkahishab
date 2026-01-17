@@ -43,6 +43,7 @@ class PurchaseDetailsItem {
   final DateTime? purchaseDate;
   final int productId;
   final String supplierName;
+  final int purchaseNetAmount;
   final String product;
   final int quantity;
   final int unitPrice;
@@ -56,6 +57,7 @@ class PurchaseDetailsItem {
     required this.purchaseDate,
     required this.productId,
     required this.supplierName,
+    required this.purchaseNetAmount,
     required this.product,
     required this.quantity,
     required this.unitPrice,
@@ -73,6 +75,7 @@ class PurchaseDetailsItem {
           : null,
       productId: json['product_id'] ?? 0,
       supplierName: json['supplier_name'] ?? '',
+      purchaseNetAmount: json['net_amount'] ?? 0,
       product: json['product'] ?? '',
       quantity: json['quantity'] ?? 0,
       unitPrice: (json['unit_price'] ?? 0),

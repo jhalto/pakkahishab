@@ -49,9 +49,9 @@ class PurchaseReturnAddView extends StatelessWidget {
               builder: (context, ref, child) {
                 return CustomFullwidthButton(
                   onTap: () async {
-                    ref
-                        .read(purchaseUpdateViewModel.notifier)
-                        .updatePurchase(context, purchaseId: purchaseHead.purchaseId.toString());
+                    // ref
+                    //     .read(purchaseUpdateViewModel.notifier)
+                    //     .updatePurchase(context, purchaseId: purchaseHead.purchaseId.toString());
                   },
                   title: "Update",
                 );
