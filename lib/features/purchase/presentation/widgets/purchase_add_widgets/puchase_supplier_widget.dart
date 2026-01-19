@@ -8,7 +8,7 @@ import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchse_update_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/update_supplier_view.dart';
 
 class PurchaseSupplierWidget extends ConsumerStatefulWidget {

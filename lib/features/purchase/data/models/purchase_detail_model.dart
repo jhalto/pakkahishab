@@ -38,10 +38,12 @@ class PurchaseDetailsResponse {
 }
 
 class PurchaseDetailsItem {
+  final int purchaseDetailId;
   final String purchaseNo;
   final DateTime? purchaseDate;
   final int productId;
   final String supplierName;
+  final int purchaseNetAmount;
   final String product;
   final int quantity;
   final int unitPrice;
@@ -50,10 +52,12 @@ class PurchaseDetailsItem {
   final String mobile;
 
   PurchaseDetailsItem({
+    required this.purchaseDetailId,
     required this.purchaseNo,
     required this.purchaseDate,
     required this.productId,
     required this.supplierName,
+    required this.purchaseNetAmount,
     required this.product,
     required this.quantity,
     required this.unitPrice,
@@ -64,12 +68,14 @@ class PurchaseDetailsItem {
 
   factory PurchaseDetailsItem.fromJson(Map<String, dynamic> json) {
     return PurchaseDetailsItem(
+      purchaseDetailId: json['pur_d_id']??0,
       purchaseNo: json['purchase_no'] ?? '',
       purchaseDate: json['purchase_date'] != null
           ? DateTime.tryParse(json['purchase_date'])
           : null,
       productId: json['product_id'] ?? 0,
       supplierName: json['supplier_name'] ?? '',
+      purchaseNetAmount: json['net_amount'] ?? 0,
       product: json['product'] ?? '',
       quantity: json['quantity'] ?? 0,
       unitPrice: (json['unit_price'] ?? 0),

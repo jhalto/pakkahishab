@@ -2,17 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
 import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 
-class MainPurchaseAppbarBackWithSearch extends StatelessWidget
+class SupplierWisePurchaseAppbarBackWithSearch extends StatelessWidget
     implements PreferredSizeWidget {
   final String title;
   final ValueChanged<String>? onSearchChanged;
 
-  MainPurchaseAppbarBackWithSearch({
+  SupplierWisePurchaseAppbarBackWithSearch({
     super.key,
     required this.title,
     this.onSearchChanged,
@@ -57,7 +57,7 @@ class MainPurchaseAppbarBackWithSearch extends StatelessWidget
           actions: [
             Consumer(
               builder: (context, ref, child) {
-                final vm = ref.watch(purchaseViewModelProvider);
+                final vm = ref.watch(purchaseSupplierWiseViewModel);
 
                 return InkWell(
                   borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -82,9 +82,9 @@ class MainPurchaseAppbarBackWithSearch extends StatelessWidget
                         PopupMenuItem(
                           onTap: () async {
                             final notifier = ref.read(
-                              purchaseViewModelProvider.notifier,
+                              purchaseSupplierWiseViewModel.notifier,
                             );
-                            final vm = ref.read(purchaseViewModelProvider);
+                            final vm = ref.read(purchaseSupplierWiseViewModel);
 
                             if (vm.supplier == null ||
                                 (vm.supplier?.items?.isEmpty ?? true)) {
@@ -113,7 +113,7 @@ class MainPurchaseAppbarBackWithSearch extends StatelessWidget
                                         Consumer(
                                           builder: (context, ref, child) {
                                             final vmn = ref.watch(
-                                              purchaseViewModelProvider
+                                              purchaseSupplierWiseViewModel
                                                   .notifier,
                                             );
 
@@ -188,15 +188,15 @@ class MainPurchaseAppbarBackWithSearch extends StatelessWidget
                                           child: Consumer(
                                             builder: (context, ref, child) {
                                               final notifier = ref.read(
-                                                purchaseViewModelProvider
+                                                purchaseSupplierWiseViewModel
                                                     .notifier,
                                               );
                                               final vm = ref.watch(
-                                                purchaseViewModelProvider,
+                                                purchaseSupplierWiseViewModel,
                                               );
                                               final supplierList =
                                                   vm.filteredSuppliers ?? [];
-                                              if (vm.detailLoading) {
+                                              if (vm.supplierLoading) {
                                                 return Center(
                                                   child: Padding(
                                                     padding: EdgeInsets.all(
@@ -257,8 +257,7 @@ class MainPurchaseAppbarBackWithSearch extends StatelessWidget
                                                               supplier
                                                                   .supplierId,
                                                             );
-                                                        notifier
-                                                            .fetchSupplierWisePurchases();
+
                                                         Navigator.pop(context);
                                                       },
                                                       title: Text(
@@ -284,46 +283,6 @@ class MainPurchaseAppbarBackWithSearch extends StatelessWidget
 
                           child: const Text("Supplier"),
                         ),
-
-                        // ---- Purchase Date filter ----
-                        // PopupMenuItem(
-                        //   onTap: () async {
-                        //     final selectedDate = await showDatePicker(
-                        //       context: context,
-                        //       initialDate: DateTime.now(),
-                        //       firstDate: DateTime(2025),
-                        //       lastDate: DateTime.now(),
-                        //       builder: (context, child) {
-                        //         return Theme(
-                        //           data: Theme.of(context).copyWith(
-                        //             colorScheme: ColorScheme.light(
-                        //               primary: AppColors.primaryColor,
-                        //               onPrimary: Colors.white,
-                        //               onSurface: Colors.black,
-                        //             ),
-                        //             textButtonTheme: TextButtonThemeData(
-                        //               style: TextButton.styleFrom(
-                        //                 foregroundColor: AppColors.primaryColor,
-                        //               ),
-                        //             ),
-                        //           ),
-                        //           child: child!,
-                        //         );
-                        //       },
-                        //     );
-
-                        //     if (selectedDate != null) {
-                        //       final formattedDate = DateFormat(
-                        //         'yyyy-MM-dd',
-                        //       ).format(selectedDate);
-
-                        //       ref
-                        //           .read(purchaseViewModelProvider.notifier)
-                        //           .fetchPurchases(purchaseDate: formattedDate);
-                        //     }
-                        //   },
-                        //   child: const Text("Purchase Date"),
-                        // ),
                       ],
                     );
                   },

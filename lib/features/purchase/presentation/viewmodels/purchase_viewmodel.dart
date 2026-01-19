@@ -8,6 +8,7 @@ import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/supplier_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/supplier_wise_purchase_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
 
 final purchaseViewModelProvider =
     NotifierProvider.autoDispose<PurchaseNotifier, PurchaseState>(
@@ -23,13 +24,13 @@ final class PurchaseState {
   final bool hasMore;
   final int currentPage;
   final int totalPage;
-  final int mainTotalPage;
+
   final String phone;
   final String pin;
   final String offset;
-  final String offset1;
+
   final List<PurchaseItem> purchaseList;
-  final List<SupplierPurchaseItem> supplierPurchaseList;
+
   final String? supplierId;
   final String? paymentMethod;
   final String? totalPurchase;
@@ -45,13 +46,13 @@ final class PurchaseState {
     this.hasMore = false,
     this.currentPage = 1,
     this.totalPage = 0,
-    this.mainTotalPage = 0,
+   
     this.phone = '',
     this.pin = '',
     this.offset = '0',
-    this.offset1 = '0',
+
     this.purchaseList = const [],
-    this.supplierPurchaseList = const [],
+
     this.supplierId,
     this.paymentMethod,
     this.totalPurchase,
@@ -66,11 +67,11 @@ final class PurchaseState {
     bool? hasMore,
     int? currentPage,
     int? totalPage,
-    int? mainTotalPage,
+
     String? phone,
     String? pin,
     String? offset,
-    String? offset1,
+
     List<PurchaseItem>? purchaseList,
     List<SupplierPurchaseItem>? supplierPurchaseList,
     String? supplierId,
@@ -86,13 +87,13 @@ final class PurchaseState {
       hasMore: hasMore ?? this.hasMore,
       currentPage: currentPage ?? this.currentPage,
       totalPage: totalPage ?? this.totalPage,
-      mainTotalPage: mainTotalPage ?? this.mainTotalPage,
+
       phone: phone ?? this.phone,
       pin: pin ?? this.pin,
       offset: offset ?? this.offset,
-      offset1: offset ?? this.offset1,
+
       purchaseList: purchaseList ?? this.purchaseList,
-      supplierPurchaseList: supplierPurchaseList ?? this.supplierPurchaseList,
+
       supplierId: supplierId ?? this.supplierId,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       totalPurchase: totalPurchase ?? this.totalPurchase,
@@ -106,8 +107,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
   @override
   PurchaseState build() {
     _repo = ref.read(purchaseRepositoryProvider);
-    // fetchPurchases(); // call async stuff manually
-    fetchSupplierWisePurchases();
+
     return const PurchaseState();
   }
 
@@ -123,13 +123,14 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
 
+    if (!ref.mounted) return;
     try {
       state = state.copyWith(loading: true);
 
       // if user taps a page number, use that page’s offset
       final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
       final int newOffset = (newPage - 1) * 10;
-
+      if (!ref.mounted) return;
       final result = await _repo.getPurchases(
         phone: phone ?? '',
         pin: pin ?? '',
@@ -138,7 +139,7 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
         purchaseDate: purchaseDate,
         supplierId: state.supplierId,
       );
-
+      if (!ref.mounted) return;
       final items = (result['data']['items'] ?? []) as List;
       final hasMore = result['data']['hasMore'] ?? false;
       final totalItem = result['data']['items'][0]['total_count'] ?? 0;
@@ -162,82 +163,18 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     }
   }
 
-  Future<void> fetchSupplierWisePurchases({
-    bool loadMore = false,
-    int? page,
-    String? purchaseDate,
-  }) async {
-    final phone = await SharedPreferencesHelper.getString('phone');
-    // final pin = await SharedPreferencesHelper.getString('pin');
-    final pin = await SecureStorageHelper.getString('pin');
-    final code = await SharedPreferencesHelper.getString('code');
-
-    try {
-      state = state.copyWith(loading: true);
-
-      // if user taps a page number, use that page’s offset
-      final int newPage = page ?? (loadMore ? state.currentPage + 1 : 1);
-      final int newOffset = (newPage - 1) * 10;
-
-      final result = await _repo.getSupplierWisePurchases(
-        phone: phone ?? '',
-        pin: pin ?? '',
-        code: code ?? '',
-        offset: newOffset.toString(),
-        supplierId: state.supplierId,
-      );
-
-      final items = (result['data']['items'] ?? []) as List;
-      final hasMore = result['data']['hasMore'] ?? false;
-      final totalItem = result['data']['items'][0]['total_supplier_count'] ?? 0;
-      double totalPrice = 0.0;
-      if (totalItem > 0) {
-        totalPrice = items.fold<double>(
-          0,
-          (sum, item) => sum + (item['total_purchase_amount'] ?? 0).toDouble(),
-        );
-      }
-
-      final newItems = items
-          .map<SupplierPurchaseItem>((e) => SupplierPurchaseItem.fromJson(e))
-          .toList();
-
-      state = state.copyWith(
-        supplierPurchaseList: newItems,
-        offset: newOffset.toString(),
-        currentPage: newPage,
-        hasMore: hasMore,
-        mainTotalPage: (totalItem / 10).ceil(),
-        totalPurchase: totalPrice.toString(),
-      );
-    } catch (e) {
-      debugPrint("Error fetching purchases: $e");
-    } finally {
-      state = state.copyWith(loading: false);
-    }
-  }
-
-  void updateSupplierId(String supplierId) {
+  void updateSupplierId(String supplierId) async {
     state = state.copyWith(supplierId: supplierId);
+    fetchPurchases();
   }
 
   Future<void> refreshPurchases() async {
-    state = state.copyWith(supplierId: "");
     await fetchPurchases();
   }
 
   void goToPage(int page) {
     fetchPurchases(page: page);
   }
-
-  void goToPageMain(int page) {
-    fetchSupplierWisePurchases(page: page);
-  }
-
-  // void refreshPurchases() {
-  //   state = const PurchaseState();
-  //   fetchPurchases();
-  // }
 
   Future<bool> fetchPurchaseDetails({
     bool loadMore = false,
@@ -353,7 +290,10 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
 
     if (response['status'] == 'success') {
       await fetchPurchases();
-      fetchSupplierWisePurchases();
+      if (!ref.mounted) return; //
+      ref
+          .read(purchaseSupplierWiseViewModel.notifier)
+          .fetchSupplierWisePurchases();
       ref.read(homeProvider.notifier).fetchDashBoard('All');
       state = state.copyWith(loading: false);
       if (!context.mounted) return;

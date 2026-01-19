@@ -459,7 +459,7 @@ class PurchaseServices {
     }
   }
 
-  Future<Map<String, dynamic>> getPuchaseSupplierWise({
+  Future<Map<String, dynamic>> getPurchaseSupplierWise({
     required String phone,
     required String pin,
     required String offset,
@@ -476,7 +476,7 @@ class PurchaseServices {
       'offset': offset,
       'limit': '10',
 
-      'supplier': supplierId,
+      'supplier_id': supplierId,
     };
     print(supplierId);
 
@@ -487,6 +487,51 @@ class PurchaseServices {
 
     final String url = "${Urls.baseUrl}get_supplier_wise_total_purchase/";
 
+    try {
+      final response = await dio.get(url, queryParameters: queryParams);
+
+      print("Request URL: ${response.realUri}");
+      print("Response: ${response.data}");
+
+      return {"statusCode": response.statusCode, "data": response.data};
+    } on DioException catch (e) {
+      return {
+        "statusCode": e.response?.statusCode ?? 666,
+        "data": e.response?.data ?? "Dio error: ${e.message}",
+      };
+    } catch (e) {
+      return {"statusCode": 666, "data": "Unexpected error: $e"};
+    }
+  }
+
+  Future<Map<String, dynamic>> getPuchaseReturnSupplierWise({
+    required String phone,
+    required String pin,
+    required String offset,
+    required String code,
+    String? supplierId,
+  }) async {
+    final Dio dio = Dio();
+
+    // Base query parameters
+    final Map<String, dynamic> queryParams = {
+      'school_code': code,
+      'mobile': phone,
+      'password': pin,
+      'offset': offset,
+      'limit': '10',
+
+      'supplier_id': supplierId,
+    };
+    print(supplierId);
+
+    // ✅ Remove any null or empty parameters before request
+    queryParams.removeWhere(
+      (key, value) => value == null || value.toString().isEmpty,
+    );
+
+    final String url = "${Urls.baseUrl}get_purchase_return/";
+   
     try {
       final response = await dio.get(url, queryParameters: queryParams);
 
@@ -729,4 +774,29 @@ class PurchaseServices {
       return {"success": false, "message": "Unknown error: $e"};
     }
   }
+
+   Future<Map<String, dynamic>> deleteProductFormPurchase({
+    required String phone,
+    required String pin,
+    required String code,
+    required String purchaseId,
+    required int purchaseDetailsId
+  }) async {
+    final String url =
+        "${Urls.baseUrl}delete_product_from_purchase_details/?school_code=$code&mobile=$phone&password=$pin&purchase_id=$purchaseId&purchase_details_id=$purchaseDetailsId";
+
+    final Dio dio = Dio();
+    try {
+      final response = await dio.delete(url);
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        return response.data;
+      }
+    } on DioException catch (e) {
+      return {'statusCode': 666, 'data': e.response!.data};
+    }
+  }
+
 }

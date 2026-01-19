@@ -5,7 +5,7 @@ import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/global_widgets/custom_fullwidth_button.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchse_update_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/add_purchase_payment_type_widget.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_edit_widgets/edit_invoice_name_date_widget.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_edit_widgets/edit_purchase_product_item_widget.dart';
@@ -49,9 +49,9 @@ class PurchaseReturnAddView extends StatelessWidget {
               builder: (context, ref, child) {
                 return CustomFullwidthButton(
                   onTap: () async {
-                    ref
-                        .read(purchaseUpdateViewModel.notifier)
-                        .updatePurchase(context, purchaseId: purchaseHead.purchaseId.toString());
+                    // ref
+                    //     .read(purchaseUpdateViewModel.notifier)
+                    //     .updatePurchase(context, purchaseId: purchaseHead.purchaseId.toString());
                   },
                   title: "Update",
                 );

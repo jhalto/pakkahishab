@@ -5,11 +5,10 @@ import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_return_viewmodel.dart';
+
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchse_update_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/edit_purchase_view.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchase_return_add_view.dart';
 
 class PurchaseDetailsAppbarBack extends StatelessWidget
     implements PreferredSizeWidget {
@@ -65,35 +64,35 @@ class PurchaseDetailsAppbarBack extends StatelessWidget
             );
           },
         ),
-        Consumer(
-          builder: (context, ref, child) {
-           
-            return IconButton(
-              onPressed: () {
-                final items = ref
-                    .read(purchaseViewModelProvider)
-                    .purchaseDetails!
-                    .items;
+        // Consumer(
+        //   builder: (context, ref, child) {
 
-                final returnProducts = items
-                    .map((e) => e.toEditProduct())
-                    .toList();
+        //     return IconButton(
+        //       onPressed: () {
+        //         final items = ref
+        //             .read(purchaseViewModelProvider)
+        //             .purchaseDetails!
+        //             .items;
 
-                ref
-                    .read(purchaseReturnViewModel.notifier)
-                    .loadPurchaseEditProduct(returnProducts);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        PurchaseReturnAddView(purchaseHead: purchase),
-                  ),
-                );
-              },
-              icon: Icon(Icons.rotate_left, color: AppColors.whiteColor),
-            );
-          },
-        ),
+        //         final returnProducts = items
+        //             .map((e) => e.toEditProduct())
+        //             .toList();
+
+        //         ref
+        //             .read(purchaseReturnViewModel.notifier)
+        //             .loadPurchaseEditProduct(returnProducts);
+        //         Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //             builder: (context) =>
+        //                 PurchaseReturnAddView(purchaseHead: purchase),
+        //           ),
+        //         );
+        //       },
+        //       icon: Icon(Icons.rotate_left, color: AppColors.whiteColor),
+        //     );
+        //   },
+        // ),
       ],
       flexibleSpace: Container(
         decoration: const BoxDecoration(

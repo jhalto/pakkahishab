@@ -15,6 +15,7 @@ import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_payment_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/purchase_product_details_add_widget.dart';
@@ -98,7 +99,7 @@ final class PurchaseAddState {
   PurchaseAddState({
     this.isLoading = false,
     this.isSupplierSelecting = false,
-    
+
     this.selectedSupplier,
     String? selectedManufacturingDate,
     this.followUpDate,
@@ -122,7 +123,7 @@ final class PurchaseAddState {
   PurchaseAddState copyWith({
     AllSupplier? selectedSupplier,
     bool? isLoading,
-  
+
     bool? isSupplierSelecting,
     String? selectedManufacturingDate,
     String? followUpDate,
@@ -165,10 +166,35 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   PurchaseAddState build() {
     _repo = ref.read(purchaseRepositoryProvider);
 
+    ref.onDispose(() {
+      // Supplier controllers
+      supplierNameController.dispose();
+      supplierPhoneController.dispose();
+      supplierEmailController.dispose();
+      supplierAddressController.dispose();
+      supplierOpeningBalanceController.dispose();
+
+      // Product controllers
+      productNameController.dispose();
+      productPriceController.dispose();
+      productSellPriceController.dispose();
+      productCodeController.dispose();
+      productStockController.dispose();
+
+      // Purchase product controllers
+      purchaseProductQuantity.dispose();
+
+      // Payment controllers
+      paymentAmountController.dispose();
+      paymentPerticularsController.dispose();
+      paymentBankCheckController.dispose();
+      paymentMobileTransactionController.dispose();
+    });
     return PurchaseAddState();
   }
 
   // supplier add controllers
+  final customerAddFormKey = GlobalKey<FormState>();
   TextEditingController supplierNameController = TextEditingController();
   TextEditingController supplierPhoneController = TextEditingController();
   TextEditingController supplierEmailController = TextEditingController();
@@ -206,21 +232,8 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
   TextEditingController paymentMobileTransactionController =
       TextEditingController();
 
-  void toggleSupplierDropdown() {
-    state = state.copyWith(isSupplierSelecting: !state.isSupplierSelecting);
-  }
+  // update State
 
-  void closeSupplierDropdown() {
-    state = state.copyWith(isSupplierSelecting: false);
-  }
-
-  // void selectSupplier(String supplierId) {
-  //   state = state.copyWith(
-  //     supplierId: supplierId,
-
-  //     isSupplierSelecting: false,
-  //   );
-  // }
   void selectSupplier(AllSupplier supplier) {
     state = state.copyWith(
       selectedSupplier: supplier,
@@ -228,10 +241,29 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       supplierAccountNo: supplier.supplierAccountNo.toString(),
       isSupplierSelecting: false,
     );
-
-    print(state.supplierAccountNo);
   }
 
+  void updatePaymentMethod(String value) {
+    state = state.copyWith(paymentMethod: value);
+  }
+
+  void updateTotalPurchaseAmount(String value) {
+    state = state.copyWith(purchaseTotalAmount: value);
+  }
+
+  void updateFollowUpDate({required String followUpDate}) {
+    state = state.copyWith(followUpDate: followUpDate);
+  }
+
+  void updateManufacturingDate({required String date}) {
+    state = state.copyWith(selectedManufacturingDate: date);
+  }
+
+  void updateExpireDate({required String expireDate}) {
+    state = state.copyWith(selectedExpiredDate: expireDate);
+  }
+
+  // Calculate Amount
   void calculatePurchaseAmounts() {
     final products = state.selectedPurchaseProducts ?? [];
 
@@ -288,121 +320,22 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     Navigator.pop(context);
   }
 
-  void updatePaymentMethod(String value) {
-    state = state.copyWith(paymentMethod: value);
+  Future<void> removeProductFromPurchaseList({
+    required String productId,
+  }) async {
+    final existingProducts = state.selectedPurchaseProducts ?? [];
+
+    // Remove the product
+    final updatedProducts = existingProducts
+        .where((item) => item.productId != productId)
+        .toList();
+
+    // Update state
+    state = state.copyWith(selectedPurchaseProducts: updatedProducts);
+
+    // 🔥 Recalculate amounts after removal
+    calculatePurchaseAmounts();
   }
-
-  void updateTotalPurchaseAmount(String value) {
-    state = state.copyWith(purchaseTotalAmount: value);
-  }
-
-  final customerAddFormKey = GlobalKey<FormState>();
-
-  // Future<void> addSale({
-  //   required String phone,
-  //   required String pin,
-  //   required String schoolCode,
-  //   required String customerId,
-  //   required int salesType,
-  //   required double netAmount,
-  //   required double due,
-  //   required double paidPrice,
-  //   required List<Map<String, dynamic>> salesDetails,
-  //   DateTime? date,
-  // }) async {
-  //   state = state.copyWith(isLoading: true, errorMessage: null);
-
-  //   try {
-  //     final response = await _repo.addSales(
-  //       phone: phone,
-  //       pin: pin,
-  //       schoolCode: schoolCode,
-  //       customerId: customerId,
-  //       salesType: salesType,
-  //       netAmount: netAmount,
-  //       due: due,
-  //       paidPrice: paidPrice,
-  //       date: date,
-  //     );
-
-  //     // If the API expects sales_details as part of body
-  //     // you may need to send salesDetails inside addSales method in repository
-  //   } catch (e) {
-  //     state = state.copyWith(
-  //       isLoading: false,
-  //       errorMessage: "Failed to add sale: $e",
-  //     );
-  //   }
-  // }
-
-  // Future<void> getAllSupplier() async {
-  //   state = state.copyWith(isLoading: true);
-  //   final phone = await SharedPreferencesHelper.getString('phone');
-  //   final pin = await SharedPreferencesHelper.getString('pin');
-  //   final code = await SharedPreferencesHelper.getString('code');
-
-  //   try {
-  //     final response = await _repo.getAllSupplier(
-  //       phone: phone.toString(),
-  //       pin: pin.toString(),
-  //       code: code.toString(),
-  //     );
-  //     print(response);
-  //     if (response['statusCode'] == 200) {
-  //       print(response['data']);
-  //       final responseData = AllSupplierModel.fromJson(response['data']);
-  //       state = state.copyWith(
-  //         isLoading: false, // ✅ Set loading false here
-  //         supplier: responseData,
-  //         filteredSupplier: responseData.items,
-  //       );
-  //       print("done");
-  //     } else {
-  //       print("error $response");
-  //       state = state.copyWith(isLoading: false); // ✅ Also set here
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //     state = state.copyWith(isLoading: false); // ✅ And here
-  //   }
-  //   // Remove the finally block entirely
-  // }
-
-  void updateSupplierId(String supplierId) {
-    state = state.copyWith(supplierId: supplierId);
-
-    print(state.supplierId);
-  }
-
-  void updateFollowUpDate({required String followUpDate}) {
-    state = state.copyWith(followUpDate: followUpDate);
-  }
-
-  void updateManufacturingDate({required String date}) {
-    state = state.copyWith(selectedManufacturingDate: date);
-  }
-
-  void updateExpireDate({required String expireDate}) {
-    state = state.copyWith(selectedExpiredDate: expireDate);
-  }
-
-  // void searchCustomer(String query) {
-  //   final allCustomers = state.customer?.items ?? [];
-
-  //   if (query.isEmpty) {
-  //     // if query is empty, show all suppliers
-  //     state = state.copyWith(filteredCustomer: allCustomers);
-  //   } else {
-  //     final filtered = allCustomers
-  //         .where(
-  //           (supplier) => supplier.supplierName.toLowerCase().contains(
-  //             query.toLowerCase(),
-  //           ),
-  //         )
-  //         .toList();
-  //     state = state.copyWith(filteredCustomer: filtered);
-  //   }
-  // }
 
   Future<void> addSupplier(BuildContext context) async {
     state = state.copyWith(isLoading: true);
@@ -583,8 +516,6 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       productList: productList, // works even when empty
     );
 
-    print(response);
-
     if (response['data']['status'] == 'success') {
       state = state.copyWith(isLoading: false);
 
@@ -601,26 +532,21 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       );
 
       if (!context.mounted) return;
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => PurchasePaymentView()),
       );
       // Navigator.pop(context);
       clearPurchaseRecord();
-      ref.read(purchaseViewModelProvider.notifier).fetchSupplierWisePurchases();
+      ref
+          .read(purchaseSupplierWiseViewModel.notifier)
+          .fetchSupplierWisePurchases();
       ref.read(homeProvider.notifier).fetchDashBoard('YEAR');
     } else if (response['data']['status'] == 'error') {
       state = state.copyWith(isLoading: false);
       if (!context.mounted) return;
       showCustomSnackBar(context, response['data']['message']);
     }
-  }
-
-  void clearPurchaseRecord() {
-    state = state.copyWith(
-      selectedPurchaseProducts: null,
-      purchaseNetAmount: "0",
-    );
   }
 
   Future<void> fetchPurchaseSupplierDues(
@@ -692,9 +618,13 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     );
 
     if (response['status'] == 'success') {
-      state = state.copyWith(isLoading: false ,);
+      state = state.copyWith(isLoading: false);
       if (!context.mounted) return;
-      showCustomSnackBar(context, "Payment Successful", type: SnackBarType.success);
+      showCustomSnackBar(
+        context,
+        "Payment Successful",
+        type: SnackBarType.success,
+      );
 
       clearPaymentController();
       state = state.copyWith(purchaseTotalAmount: "0");
@@ -709,12 +639,21 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     }
   }
 
+  // Clear Data
+  void clearPurchaseRecord() {
+    state = state.copyWith(
+      selectedPurchaseProducts: null,
+      purchaseNetAmount: "0",
+    );
+  }
+
   void clearPaymentController() {
     paymentAmountController.clear();
     paymentBankCheckController.clear();
     paymentMobileTransactionController.clear();
     paymentPerticularsController.clear();
   }
+  // Product Add Bottom Sheet
 
   Future<void> showProductAddBottomSheet(BuildContext context) async {
     showModalBottomSheet(
@@ -792,7 +731,9 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                                   Radius.circular(8),
                                 ),
                                 onTap: () async {
-                                  final date = await pickDate(context: context);
+                                  final date = await pickDateAsString(
+                                    context: context,
+                                  );
                                   if (date != null) {
                                     updateManufacturingDate(date: date);
                                   }
@@ -828,7 +769,9 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                                   Radius.circular(8),
                                 ),
                                 onTap: () async {
-                                  final date = await pickDate(context: context);
+                                  final date = await pickDateAsString(
+                                    context: context,
+                                  );
                                   if (date != null) {
                                     updateExpireDate(expireDate: date);
                                   }

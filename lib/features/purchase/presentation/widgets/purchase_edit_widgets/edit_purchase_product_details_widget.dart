@@ -6,7 +6,7 @@ import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/global_widgets/custom_fullwidth_button.dart';
 import 'package:pakkahishab/core/global_widgets/custom_pakka_form_field.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/update_purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchse_update_viewmodel.dart';
 
 class EditPurchaseProductDetailsAddWidget extends StatelessWidget {
   final AllProduct? selectedProductAll;

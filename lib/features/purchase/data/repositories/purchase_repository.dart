@@ -172,7 +172,7 @@ class PurchaseRepository {
 
     String? supplierId,
   }) async {
-    final purchaseData = await _purchaseServices.getPuchaseSupplierWise(
+    final purchaseData = await _purchaseServices.getPurchaseSupplierWise(
       phone: phone,
       pin: pin,
       offset: offset,
@@ -228,6 +228,23 @@ class PurchaseRepository {
       phone: phone,
       pin: pin,
       purchaseId: purchaseId,
+    );
+    return response;
+  }
+
+  Future<Map<String, dynamic>> deleteProductFromPurchase({
+    required String phone,
+    required String pin,
+    required String code,
+    required String purchaseId,
+    required int productDetailId,
+  }) async {
+    final response = await _purchaseServices.deleteProductFormPurchase(
+      code: code,
+      phone: phone,
+      pin: pin,
+      purchaseId: purchaseId,
+      purchaseDetailsId: productDetailId
     );
     return response;
   }

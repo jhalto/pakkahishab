@@ -5,10 +5,11 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_add.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/main_purchase_back_with_search.dart';
+import 'package:pakkahishab/features/purchase/presentation/widgets/supplier_wise_purchase_back_with_search.dart';
 
 class SupplierPurchasesView extends StatelessWidget {
   const SupplierPurchasesView({super.key});
@@ -16,7 +17,7 @@ class SupplierPurchasesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MainPurchaseAppbarBackWithSearch(title: "Purchase"),
+      appBar: SupplierWisePurchaseAppbarBackWithSearch(title: "Purchase"),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -24,13 +25,15 @@ class SupplierPurchasesView extends StatelessWidget {
               color: AppColors.primaryColor,
               onRefresh: () {
                 return ref
-                    .read(purchaseViewModelProvider.notifier)
-                    .refreshPurchases();
+                    .read(purchaseSupplierWiseViewModel.notifier)
+                    .refreshSupplierWisePurchases();
               },
               child: Consumer(
                 builder: (outerContext, ref, child) {
-                  final purchaseState = ref.watch(purchaseViewModelProvider);
-                  final vmn = ref.watch(purchaseViewModelProvider.notifier);
+                  final purchaseState = ref.watch(
+                    purchaseSupplierWiseViewModel,
+                  );
+                  final vmn = ref.watch(purchaseSupplierWiseViewModel.notifier);
 
                   if (purchaseState.loading) {
                     return Center(child: loader);
@@ -59,7 +62,7 @@ class SupplierPurchasesView extends StatelessWidget {
                                           ? "0"
                                           : ref
                                                 .watch(
-                                                  purchaseViewModelProvider,
+                                                  purchaseSupplierWiseViewModel,
                                                 )
                                                 .supplierPurchaseList
                                                 .length
@@ -109,8 +112,9 @@ class SupplierPurchasesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  vmn.updateSupplierId(item.supplierId);
-                                  vmn.fetchPurchases();
+                                  ref
+                                      .watch(purchaseViewModelProvider.notifier)
+                                      .updateSupplierId(item.supplierId);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -275,11 +279,11 @@ class SupplierPurchasesView extends StatelessWidget {
                       Consumer(
                         builder: (context, ref, child) {
                           return ref
-                                      .watch(purchaseViewModelProvider)
+                                      .watch(purchaseSupplierWiseViewModel)
                                       .totalPage ==
                                   1
                               ? SizedBox()
-                              : PurchasesPagination();
+                              : PurchaseSupplierWisePagination();
                         },
                       ),
                     ],
@@ -405,15 +409,16 @@ class SupplierPurchasesView extends StatelessWidget {
   }
 }
 
-class PurchasesPagination extends ConsumerStatefulWidget {
-  const PurchasesPagination({super.key});
+class PurchaseSupplierWisePagination extends ConsumerStatefulWidget {
+  const PurchaseSupplierWisePagination({super.key});
 
   @override
-  ConsumerState<PurchasesPagination> createState() =>
+  ConsumerState<PurchaseSupplierWisePagination> createState() =>
       _PurchasesPaginationState();
 }
 
-class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
+class _PurchasesPaginationState
+    extends ConsumerState<PurchaseSupplierWisePagination> {
   final ScrollController _scrollController = ScrollController();
   int? _previousPage;
 
@@ -426,7 +431,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
     super.initState();
     // Scroll to current page after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final currentPage = ref.read(purchaseViewModelProvider).currentPage;
+      final currentPage = ref.read(purchaseSupplierWiseViewModel).currentPage;
       if (currentPage > 1) {
         _scrollToPageImmediate(currentPage);
       }
@@ -471,11 +476,11 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
 
   @override
   Widget build(BuildContext context) {
-    final purchaseState = ref.watch(purchaseViewModelProvider);
-    final notifier = ref.read(purchaseViewModelProvider.notifier);
+    final purchaseState = ref.watch(purchaseSupplierWiseViewModel);
+    final notifier = ref.read(purchaseSupplierWiseViewModel.notifier);
 
     final currentPage = purchaseState.currentPage;
-    final totalPage = purchaseState.mainTotalPage;
+    final totalPage = purchaseState.totalPage;
     print("total purchase view page = $totalPage");
 
     // Detect page change and scroll to it
@@ -496,7 +501,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
           IconButton(
             icon: const Icon(Icons.arrow_back_ios, size: 18),
             onPressed: currentPage > 1
-                ? () => notifier.goToPageMain(currentPage - 1)
+                ? () => notifier.goToPage(currentPage - 1)
                 : null,
           ),
 
@@ -511,7 +516,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: InkWell(
-                      onTap: () => notifier.goToPageMain(page),
+                      onTap: () => notifier.goToPage(page),
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         alignment: Alignment.center,
@@ -546,7 +551,7 @@ class _PurchasesPaginationState extends ConsumerState<PurchasesPagination> {
           IconButton(
             icon: const Icon(Icons.arrow_forward_ios, size: 18),
             onPressed: currentPage < totalPage
-                ? () => notifier.goToPageMain(currentPage + 1)
+                ? () => notifier.goToPage(currentPage + 1)
                 : null,
           ),
         ],

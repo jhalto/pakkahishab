@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -349,7 +348,6 @@ class PurchaseReturnNotifier extends Notifier<PurchaseReturnState> {
       print(e);
     }
   }
-  
 
   void clearProductAddController() {
     productCodeController.clear();
@@ -359,9 +357,10 @@ class PurchaseReturnNotifier extends Notifier<PurchaseReturnState> {
     productStockController.clear();
   }
 
-  Future<void> updatePurchase(BuildContext context,{required String purchaseId}) async {
-    
-
+  Future<void> updatePurchase(
+    BuildContext context, {
+    required String purchaseId,
+  }) async {
     state = state.copyWith(isLoading: true);
 
     final phone = await SharedPreferencesHelper.getString('phone');
@@ -385,7 +384,6 @@ class PurchaseReturnNotifier extends Notifier<PurchaseReturnState> {
 
     // 🔥 IMPORTANT: await
     final response = await _repo.updatePurchase(
-    
       purchaseId: purchaseId,
       mobile: phone ?? "",
       password: pin ?? "",
@@ -405,7 +403,6 @@ class PurchaseReturnNotifier extends Notifier<PurchaseReturnState> {
         "Purchase Add Successfully",
         type: SnackBarType.success,
       );
-     
 
       if (!context.mounted) return;
       // Navigator.push(
@@ -421,8 +418,7 @@ class PurchaseReturnNotifier extends Notifier<PurchaseReturnState> {
       if (!context.mounted) return;
       showCustomSnackBar(context, response['data']['message']);
     }
-  } 
-
+  }
 
   Future<void> showProductAddBottomSheet(BuildContext context) async {
     showModalBottomSheet(
@@ -498,7 +494,9 @@ class PurchaseReturnNotifier extends Notifier<PurchaseReturnState> {
                                   Radius.circular(8),
                                 ),
                                 onTap: () async {
-                                  final date = await pickDate(context: context);
+                                  final date = await pickDateAsString(
+                                    context: context,
+                                  );
                                   if (date != null) {
                                     updateManufacturingDate(date: date);
                                   }
@@ -534,7 +532,9 @@ class PurchaseReturnNotifier extends Notifier<PurchaseReturnState> {
                                   Radius.circular(8),
                                 ),
                                 onTap: () async {
-                                  final date = await pickDate(context: context);
+                                  final date = await pickDateAsString(
+                                    context: context,
+                                  );
                                   if (date != null) {
                                     updateExpireDate(expireDate: date);
                                   }

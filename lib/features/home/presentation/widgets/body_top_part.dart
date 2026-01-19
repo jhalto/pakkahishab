@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
+import 'package:pakkahishab/features/home/presentation/widgets/home_shimmer.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class BodyTopPart extends StatelessWidget {
   const BodyTopPart({super.key});
@@ -51,10 +53,17 @@ class BodyTopPart extends StatelessWidget {
                           const SizedBox(height: 2),
                           Consumer(
                             builder: (context, ref, child) {
-                              return Text(
-                                ref.watch(homeProvider).cashInHand,
-                                style: AppTextStyle.titleMedium.copyWith(
-                                  color: AppColors.whiteColor,
+                              final state = ref.watch(homeProvider);
+
+                              return TextShimmer(
+                                loading: state.loading,
+                                width: 90, // adjust width for your amount
+                                height: 22, // text height
+                                child: Text(
+                                  state.cashInHand,
+                                  style: AppTextStyle.titleMedium.copyWith(
+                                    color: AppColors.whiteColor,
+                                  ),
                                 ),
                               );
                             },
@@ -81,10 +90,15 @@ class BodyTopPart extends StatelessWidget {
                           const SizedBox(height: 2),
                           Consumer(
                             builder: (context, ref, child) {
-                              return Text(
-                                ref.watch(homeProvider).cashAtBank,
-                                style: AppTextStyle.titleMedium.copyWith(
-                                  color: AppColors.whiteColor,
+                              final state = ref.watch(homeProvider);
+
+                              return TextShimmer(
+                                loading: state.loading,
+                                child: Text(
+                                  state.cashAtBank,
+                                  style: AppTextStyle.titleMedium.copyWith(
+                                    color: AppColors.whiteColor,
+                                  ),
                                 ),
                               );
                             },
@@ -120,10 +134,14 @@ class BodyTopPart extends StatelessWidget {
                             const SizedBox(height: 4),
                             Consumer(
                               builder: (context, ref, child) {
-                                return Text(
-                                  ref.watch(homeProvider).totalPurchase,
-                                  style: AppTextStyle.titleMedium.copyWith(
-                                    color: AppColors.primaryColor4,
+                               final state = ref.watch(homeProvider);
+                                return TextShimmer(
+                                  loading: state.loading,
+                                  child: Text(
+                                    ref.watch(homeProvider).totalPurchase,
+                                    style: AppTextStyle.titleMedium.copyWith(
+                                      color: AppColors.primaryColor4,
+                                    ),
                                   ),
                                 );
                               },
@@ -159,10 +177,14 @@ class BodyTopPart extends StatelessWidget {
                             const SizedBox(height: 4),
                             Consumer(
                               builder: (context, ref, child) {
-                                return Text(
-                                  ref.watch(homeProvider).totalSales,
-                                  style: AppTextStyle.titleMedium.copyWith(
-                                    color: AppColors.primaryColor4,
+                               final state = ref.watch(homeProvider);
+                                return TextShimmer(
+                                  loading: state.loading,
+                                  child: Text(
+                                    ref.watch(homeProvider).totalSales,
+                                    style: AppTextStyle.titleMedium.copyWith(
+                                      color: AppColors.primaryColor4,
+                                    ),
                                   ),
                                 );
                               },
@@ -206,10 +228,14 @@ class BodyTopPart extends StatelessWidget {
                                 const SizedBox(height: 4),
                                 Consumer(
                                   builder: (context, ref, child) {
-                                    return Text(
-                                      ref.watch(homeProvider).totalPayable,
-                                      style: AppTextStyle.titleMedium.copyWith(
-                                        color: AppColors.primaryColor4,
+                                    final state = ref.watch(homeProvider);
+                                    return TextShimmer(
+                                      loading: state.loading,
+                                      child: Text(
+                                        ref.watch(homeProvider).totalPayable,
+                                        style: AppTextStyle.titleMedium.copyWith(
+                                          color: AppColors.primaryColor4,
+                                        ),
                                       ),
                                     );
                                   },
@@ -248,10 +274,14 @@ class BodyTopPart extends StatelessWidget {
                                 const SizedBox(height: 4),
                                 Consumer(
                                   builder: (context, ref, child) {
-                                    return Text(
-                                      ref.watch(homeProvider).totalReceivable,
-                                      style: AppTextStyle.titleMedium.copyWith(
-                                        color: AppColors.primaryColor4,
+                                    final state = ref.watch(homeProvider);
+                                    return TextShimmer(
+                                      loading: state.loading,
+                                      child: Text(
+                                        ref.watch(homeProvider).totalReceivable,
+                                        style: AppTextStyle.titleMedium.copyWith(
+                                          color: AppColors.primaryColor4,
+                                        ),
                                       ),
                                     );
                                   },

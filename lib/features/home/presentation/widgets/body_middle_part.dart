@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/features/advance/presentation/views/advance_view.dart';
 import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/custom_feature_widget.dart';
+import 'package:pakkahishab/features/home/presentation/widgets/home_shimmer.dart';
 import 'package:pakkahishab/features/stock/presentation/views/stock_view.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
@@ -21,11 +22,15 @@ class BodyMiddlePart extends StatelessWidget {
               CustomFeatureWidget(
                 onTap: () {
                   Navigator.pushNamed(context, Routes.expenses);
-                },  
+                },
                 title: Text(AppLocalizations.of(context)!.expenses),
                 consumer: Consumer(
-                  builder: (context, ref, child) =>
-                      Text(ref.watch(homeProvider).expenses),
+                  builder: (context, ref, child) => TextShimmer(
+                    height: 18,
+                    loading: ref.watch(homeProvider).loading,
+
+                    child: Text(ref.watch(homeProvider).expenses),
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
@@ -35,8 +40,11 @@ class BodyMiddlePart extends StatelessWidget {
                 },
                 title: Text(AppLocalizations.of(context)!.income),
                 consumer: Consumer(
-                  builder: (context, ref, child) =>
-                      Text(ref.watch(homeProvider).income),
+                  builder: (context, ref, child) => TextShimmer(
+                    height: 18,
+                    loading: ref.watch(homeProvider).loading,
+                    child: Text(ref.watch(homeProvider).income),
+                  ),
                 ),
               ),
             ],
@@ -46,23 +54,35 @@ class BodyMiddlePart extends StatelessWidget {
             children: [
               CustomFeatureWidget(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => StockView()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => StockView()),
+                  );
                 },
                 title: Text(AppLocalizations.of(context)!.stock),
                 consumer: Consumer(
-                  builder: (context, ref, child) =>
-                      Text(ref.watch(homeProvider).stock),
+                  builder: (context, ref, child) => TextShimmer(
+                    height: 18,
+                    loading: ref.watch(homeProvider).loading,
+                    child: Text(ref.watch(homeProvider).stock),
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
               CustomFeatureWidget(
                 onTap: () {
-                   Navigator.push(context, MaterialPageRoute(builder: (context) => AdvanceView()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AdvanceView()),
+                  );
                 },
                 title: Text(AppLocalizations.of(context)!.advance),
                 consumer: Consumer(
-                  builder: (context, ref, child) =>
-                      Text(ref.watch(homeProvider).advance),
+                  builder: (context, ref, child) => TextShimmer(
+                    height: 18,
+                    loading: ref.watch(homeProvider).loading,
+                    child: Text(ref.watch(homeProvider).advance),
+                  ),
                 ),
               ),
             ],
@@ -76,8 +96,11 @@ class BodyMiddlePart extends StatelessWidget {
                 },
                 title: Text(AppLocalizations.of(context)!.loan),
                 consumer: Consumer(
-                  builder: (context, ref, child) =>
-                      Text(ref.watch(homeProvider).loan),
+                  builder: (context, ref, child) => TextShimmer(
+                    height: 18,
+                    loading: ref.watch(homeProvider).loading,
+                    child: Text(ref.watch(homeProvider).loan),
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
@@ -87,8 +110,11 @@ class BodyMiddlePart extends StatelessWidget {
                 },
                 title: Text(AppLocalizations.of(context)!.mobileBanking),
                 consumer: Consumer(
-                  builder: (context, ref, child) =>
-                      Text(ref.watch(homeProvider).mobileBanking),
+                  builder: (context, ref, child) => TextShimmer(
+                    loading: ref.watch(homeProvider).loading,
+                    height: 18,
+                    child: Text(ref.watch(homeProvider).mobileBanking),
+                  ),
                 ),
               ),
             ],
