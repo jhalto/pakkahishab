@@ -1,67 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/legacy.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/features/home/data/repositories/home_repository.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final homeProvider = StateNotifierProvider<HomeNotifier, HomeState>((ref) {
-  final repo = ref.watch(homeRepositoryProvider);
-  return HomeNotifier(repo);
-});
+final homeProvider = NotifierProvider.autoDispose<HomeNotifier, HomeState>(
+  () => HomeNotifier(),
+);
 
 class HomeState {
+  final bool loading;
   final String name;
   final String email;
   final String phone;
   final String company;
 
   final List<IconData> icons;
-  String cashInHand;
-  String cashAtBank;
-  String totalPurchase;
-  String totalSales;
-  String totalPayable;
-  String totalReceivable;
-  String expenses;
-  String income;
-  String stock;
-  String advance;
-  String loan;
-  String mobileBanking;
+
+  final String cashInHand;
+  final String cashAtBank;
+  final String totalPurchase;
+  final String totalSales;
+  final String totalPayable;
+  final String totalReceivable;
+  final String expenses;
+  final String income;
+  final String stock;
+  final String advance;
+  final String loan;
+  final String mobileBanking;
   final String filter;
 
-  HomeState({
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.company,
-
-    required this.icons,
-    required this.cashInHand,
-    required this.cashAtBank,
-    required this.totalPurchase,
-    required this.totalSales,
-    required this.totalPayable,
-    required this.totalReceivable,
-    required this.expenses,
-    required this.income,
-    required this.stock,
-    required this.advance,
-    required this.loan,
-    required this.mobileBanking,
-    required this.filter,
+  const HomeState({
+    this.loading = false,
+    this.name = '',
+    this.email = '',
+    this.phone = '',
+    this.company = '',
+    this.icons = const [],
+    this.cashInHand = '0',
+    this.cashAtBank = '0',
+    this.totalPurchase = '0',
+    this.totalSales = '0',
+    this.totalPayable = '0',
+    this.totalReceivable = '0',
+    this.expenses = '0',
+    this.income = '0',
+    this.stock = '0',
+    this.advance = '0',
+    this.loan = '0',
+    this.mobileBanking = '0',
+    this.filter = 'today',
   });
 
   HomeState copyWith({
+    bool? loading,
     String? name,
     String? email,
     String? phone,
     String? company,
-
     List<IconData>? icons,
-
     String? cashInHand,
     String? cashAtBank,
     String? totalPurchase,
@@ -77,6 +76,7 @@ class HomeState {
     String? filter,
   }) {
     return HomeState(
+      loading: loading ?? this.loading,
       name: name ?? this.name,
       email: email ?? this.email,
       phone: phone ?? this.phone,
@@ -99,37 +99,26 @@ class HomeState {
   }
 }
 
-class HomeNotifier extends StateNotifier<HomeState> {
-  final HomeRepository repository;
-  HomeNotifier(this.repository)
-    : super(
-        HomeState(
-          name: '',
-          email: '',
-          phone: '',
-          company: '',
+class HomeNotifier extends Notifier<HomeState> {
+  late final HomeRepository _repo;
 
-          icons: [],
-
-          cashInHand: '',
-          cashAtBank: '',
-          totalPurchase: '',
-          totalSales: '',
-          totalPayable: '',
-          totalReceivable: '',
-          expenses: '',
-          income: '',
-          stock: '',
-          advance: '',
-          loan: '',
-          mobileBanking: '',
-          filter: 'YEAR',
-        ),
-      ) {
-    loadUserData();
+  @override
+  HomeState build() {
+    _repo = ref.read(homeRepositoryProvider);
+    fetchDashBoard('ALL');
+    return HomeState(
+      icons: [
+        Icons.shopping_cart,
+        Icons.sell,
+        Icons.money,
+        Icons.account_balance,
+      ],
+    );
   }
+
   void updateFilter(String value) {
     state = state.copyWith(filter: value);
+    fetchDashBoard(value);
   }
 
   Future<void> loadUserData() async {
@@ -149,61 +138,26 @@ class HomeNotifier extends StateNotifier<HomeState> {
     );
 
     final schoolCode = results[4];
-
     if (schoolCode != null && schoolCode.isNotEmpty) {
       await fetchDashBoard(state.filter);
     }
   }
 
-  Future<void> logout(BuildContext context) async {
-    final sp = await SharedPreferences.getInstance();
-
-    // Save the phone before clearing
-    final savedPhone = sp.getString('phone');
-
-    // Clear all data
-    await sp.clear();
-
-    // Restore phone number
-    if (savedPhone != null) {
-      await sp.setString('phone', savedPhone);
-    }
-
-    if (!context.mounted) return;
-
-    Navigator.pushNamedAndRemoveUntil(context, Routes.login, (route) => false);
-  }
-
   Future<void> fetchDashBoard(String filter) async {
     final schoolCode = await SharedPreferencesHelper.getString('code');
-
-    // Don't hit API if schoolCode is null or empty
     if (schoolCode == null || schoolCode.isEmpty) return;
 
+    state = state.copyWith(loading: true);
     try {
-      final dashboardResponse = await repository.fetchDashBoard(
+      final response = await _repo.fetchDashBoard(
         filter,
         schoolCode: schoolCode,
       );
 
-      // Initialize all metrics to 0
-      var updatedState = state.copyWith(
-        totalPurchase: '0',
-        totalSales: '0',
-        expenses: '0',
-        income: '0',
-        cashInHand: '0',
-        stock: '0',
-        totalPayable: '0',
-        totalReceivable: '0',
-        cashAtBank: '0',
-        mobileBanking: '0',
-        advance: '0',
-        loan: '0',
-      );
+      var updatedState = const HomeState();
 
-      if (dashboardResponse != null && dashboardResponse.items.isNotEmpty) {
-        for (var item in dashboardResponse.items) {
+      if (response != null) {
+        for (final item in response.items) {
           switch (item.metric.toLowerCase()) {
             case 'purchase':
               updatedState = updatedState.copyWith(
@@ -230,21 +184,6 @@ class HomeNotifier extends StateNotifier<HomeState> {
                 cashInHand: item.amount.toString(),
               );
               break;
-            case 'stock':
-              updatedState = updatedState.copyWith(
-                stock: item.amount.toString(),
-              );
-              break;
-            case 'supplier_due':
-              updatedState = updatedState.copyWith(
-                totalPayable: item.amount.toString(),
-              );
-              break;
-            case 'customer_due':
-              updatedState = updatedState.copyWith(
-                totalReceivable: item.amount.toString(),
-              );
-              break;
             case 'bank':
               updatedState = updatedState.copyWith(
                 cashAtBank: item.amount.toString(),
@@ -255,35 +194,38 @@ class HomeNotifier extends StateNotifier<HomeState> {
                 mobileBanking: item.amount.toString(),
               );
               break;
-            case 'advance':
-              updatedState = updatedState.copyWith(
-                advance: item.amount.toString(),
-              );
-              break;
-            case 'loan':
-              updatedState = updatedState.copyWith(
-                loan: item.amount.toString(),
-              );
-              break;
           }
         }
       }
 
-      state = updatedState; // ✅ Only one rebuild
+      state = state.copyWith(
+        totalPurchase: updatedState.totalPurchase,
+        totalSales: updatedState.totalSales,
+        expenses: updatedState.expenses,
+        income: updatedState.income,
+        cashInHand: updatedState.cashInHand,
+        cashAtBank: updatedState.cashAtBank,
+        mobileBanking: updatedState.mobileBanking,
+      );
+      state = state.copyWith(loading: false);
     } catch (e) {
-      print("Error fetching dashboard: $e");
+      state = state.copyWith(loading: false);
+      debugPrint('Dashboard error: $e');
     }
   }
 
-  //   String getAmountByMetric(String metric) {
-  //   try {
-  //     final item = state.dashboardItem.firstWhere(
-  //       (element) => element.metric.toLowerCase() == metric.toLowerCase(),
-  //     );
-  //     return item.amount.toInt().toString();
-  //   } catch (e) {
-  //     // If metric not found, return 0
-  //     return '';
-  //   }
-  // }
+  Future<void> logout(BuildContext context) async {
+    final sp = await SharedPreferences.getInstance();
+    final savedPhone = sp.getString('phone');
+
+    await sp.clear();
+
+    if (savedPhone != null) {
+      await sp.setString('phone', savedPhone);
+    }
+
+    if (!context.mounted) return;
+
+    Navigator.pushNamedAndRemoveUntil(context, Routes.login, (_) => false);
+  }
 }

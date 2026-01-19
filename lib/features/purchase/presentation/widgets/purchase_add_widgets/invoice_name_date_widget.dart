@@ -71,7 +71,7 @@ class InvoiceNameDateWidget extends StatelessWidget {
                   SizedBox(width: 8),
                   InkWell(
                     onTap: () async {
-                      final pickedDate = await pickDate(context: context);
+                      final pickedDate = await pickDateAsString(context: context);
 
                       print(pickedDate);
                       if (pickedDate != null) {

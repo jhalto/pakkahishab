@@ -9,6 +9,7 @@ import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
+import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
@@ -413,10 +414,18 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
         "Purchase Updated Successfully",
         type: SnackBarType.success,
       );
-      // Navigator.pop(context);
+
+      await ref
+          .read(purchaseViewModelProvider.notifier)
+          .fetchPurchaseDetails(purchaseNo: purchaseNo);
+      if (!context.mounted) return;
       Navigator.pop(context);
-      await ref.read(purchaseViewModelProvider.notifier).fetchPurchases();
-      await ref.read(purchaseSupplierWiseViewModel.notifier).fetchSupplierWisePurchases();
+
+      ref.read(purchaseViewModelProvider.notifier).fetchPurchases();
+      ref
+          .read(purchaseSupplierWiseViewModel.notifier)
+          .fetchSupplierWisePurchases();
+      ref.read(homeProvider.notifier).fetchDashBoard('ALL');
 
       // ref
       //     .read(purchaseViewModelProvider.notifier)
@@ -487,9 +496,17 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
         type: SnackBarType.success,
       );
       // Navigator.pop(context);
-      ref
+      await ref
           .read(purchaseViewModelProvider.notifier)
           .fetchPurchaseDetails(purchaseNo: purchaseNo);
+      if (!context.mounted) return;
+
+      ref.read(purchaseViewModelProvider.notifier).fetchPurchases();
+      ref
+          .read(purchaseSupplierWiseViewModel.notifier)
+          .fetchSupplierWisePurchases();
+      ref.read(homeProvider.notifier).fetchDashBoard('ALL');
+
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(builder: (context) => PurchasePaymentView()),
@@ -648,7 +665,7 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
                                   Radius.circular(8),
                                 ),
                                 onTap: () async {
-                                  final date = await pickDate(context: context);
+                                  final date = await pickDateAsString(context: context);
                                   if (date != null) {
                                     updateManufacturingDate(date: date);
                                   }
@@ -684,7 +701,7 @@ class PurchaseUpdateNotifier extends Notifier<PurchaseUpdateState> {
                                   Radius.circular(8),
                                 ),
                                 onTap: () async {
-                                  final date = await pickDate(context: context);
+                                  final date = await pickDateAsString(context: context);
                                   if (date != null) {
                                     updateExpireDate(expireDate: date);
                                   }

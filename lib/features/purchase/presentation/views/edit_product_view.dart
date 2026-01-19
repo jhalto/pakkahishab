@@ -7,7 +7,6 @@ import 'package:pakkahishab/core/global_widgets/custom_pakka_form_field.dart';
 import 'package:pakkahishab/core/helper/date_picker_helper.dart';
 import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchse_update_viewmodel.dart';
 
 class EditProductView extends StatelessWidget {
@@ -67,7 +66,7 @@ class EditProductView extends StatelessWidget {
                                 Radius.circular(8),
                               ),
                               onTap: () async {
-                                final date = await pickDate(context: context);
+                                final date = await pickDateAsString(context: context);
                                 if (date != null) {
                                   _vmn.updateManufacturingDate(date: date);
                                 }
@@ -103,7 +102,7 @@ class EditProductView extends StatelessWidget {
                                 Radius.circular(8),
                               ),
                               onTap: () async {
-                                final date = await pickDate(context: context);
+                                final date = await pickDateAsString(context: context);
                                 if (date != null) {
                                   _vmn.updateExpireDate(expireDate: date);
                                 }

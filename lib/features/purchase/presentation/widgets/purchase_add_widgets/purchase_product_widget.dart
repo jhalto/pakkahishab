@@ -76,6 +76,7 @@ class PurchaseProductWidget extends ConsumerWidget {
                         _vmn.selectedPurchaseProductPrice = product
                             .purchasePrice
                             .toString();
+                        _vmn.purchaseProductQuantity.text = "1";  
                         Navigator.push(
                           context,
                           MaterialPageRoute(
