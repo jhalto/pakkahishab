@@ -13,6 +13,7 @@ import 'package:pakkahishab/features/purchase/presentation/views/purchase_add.da
 import 'package:pakkahishab/features/purchase/presentation/views/supplier_wise_purchase_view.dart';
 import 'package:pakkahishab/features/sales/presentation/views/customer_wise_sales.dart';
 import 'package:pakkahishab/features/sales/presentation/views/sales_add.dart';
+import 'package:pakkahishab/features/splash/presentation/views/splash_view.dart';
 import 'package:pakkahishab/features/stock/presentation/views/stock_view.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_dues_view.dart';
 import 'package:pakkahishab/features/home/presentation/views/home_view.dart';
@@ -21,6 +22,7 @@ import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.
 import 'package:pakkahishab/features/sales/presentation/views/sales_view.dart';
 
 class Routes {
+  static const String splash = '/splash';
   static const String home = '/home';
   static const String signup = '/signup';
   static const String login = '/login';
@@ -46,6 +48,9 @@ class Routes {
     Widget page;
 
     switch (settings.name) {
+      case splash:
+        page = const SplashView();
+        break;
       case home:
         page = const HomeView();
         break;

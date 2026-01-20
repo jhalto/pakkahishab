@@ -20,7 +20,7 @@ class PurchasePaymentView extends StatelessWidget {
               double.tryParse(vm.totalDueAmount ?? "0") ?? 0;
           final double purchaseAmount =
               double.tryParse(vm.purchaseTotalAmount ?? "0") ?? 0;
-          
+
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
@@ -59,12 +59,13 @@ class PurchasePaymentView extends StatelessWidget {
                   ),
                 SizedBox(height: 10),
 
-                Row(
-                  children: [
-                    Expanded(child: Text("Present purchase")),
-                    Expanded(child: Text(": ${vm.purchaseTotalAmount}")),
-                  ],
-                ),
+                if (vm.purchaseTotalAmount != "0")
+                  Row(
+                    children: [
+                      Expanded(child: Text("Present purchase")),
+                      Expanded(child: Text(": ${vm.purchaseTotalAmount}")),
+                    ],
+                  ),
                 SizedBox(height: 20),
                 AddPurchasePaymentTypeWidget(),
 

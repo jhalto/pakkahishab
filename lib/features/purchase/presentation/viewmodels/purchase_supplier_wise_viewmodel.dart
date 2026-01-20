@@ -74,13 +74,18 @@ final class PurchaseWiseSupplierNotifier
   @override
   build() {
     _repo = ref.read(purchaseRepositoryProvider);
-    fetchSupplierWisePurchases();
+    ref.onDispose(() {
+      searchSupplierController.dispose();
+    });
+     Future.microtask(fetchSupplierWisePurchases);
     return PurchaseWiseSupplierState();
   }
 
   // Supplier search controller for filter
 
   TextEditingController searchSupplierController = TextEditingController();
+
+  // Api Call
 
   Future<void> fetchSupplierWisePurchases({
     bool loadMore = false,
@@ -120,7 +125,7 @@ final class PurchaseWiseSupplierNotifier
       final newItems = items
           .map<SupplierPurchaseItem>((e) => SupplierPurchaseItem.fromJson(e))
           .toList();
-
+      if (!ref.mounted) return;
       state = state.copyWith(
         supplierPurchaseList: newItems,
         offset: newOffset,
@@ -144,7 +149,7 @@ final class PurchaseWiseSupplierNotifier
   void updateSupplierId(String supplierId) async {
     state = state.copyWith(supplierId: supplierId);
 
-      fetchSupplierWisePurchases();
+    fetchSupplierWisePurchases();
   }
 
   void goToPage(int page) async {
