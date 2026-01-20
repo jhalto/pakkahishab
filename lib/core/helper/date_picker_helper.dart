@@ -70,3 +70,21 @@ String formatApiDate(String rawDate) {
   final dateTime = DateTime.parse(rawDate).toLocal();
   return DateFormat('yyyy-MM-dd').format(dateTime);
 }
+String formatBangladeshTime(
+  String? dateTimeString, {
+  String pattern = 'hh:mma',
+}) {
+  if (dateTimeString == null || dateTimeString.isEmpty) {
+    return '';
+  }
+
+  try {
+    final dateTime = DateTime.parse(dateTimeString)
+        .toUtc()
+        .add(const Duration(hours: 6));
+
+    return DateFormat(pattern).format(dateTime);
+  } catch (e) {
+    return '';
+  }
+}

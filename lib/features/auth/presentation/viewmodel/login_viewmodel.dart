@@ -68,22 +68,10 @@ class LoginNotifier extends Notifier<LoginState> {
     state = state.copyWith(password: value, passwordError: error);
   }
 
-  Future<bool> isLogin(BuildContext context) async {
-    final phone = await SharedPreferencesHelper.getString('phone');
-    final pin = await SharedPreferencesHelper.getString('pin');
-    final code = await SharedPreferencesHelper.getString('code');
-
-    if(phone != null && pin != null && code != null){
-     
-     return true;
-      
-    }else{
-      return false;
-    }
-  }
+ 
 
   Future<bool> checkSavedNumber() async {
-    final number = await SharedPreferencesHelper.getString('phone');
+    final number = await SharedPreferencesHelper.getString('login_phone');
     print(number);
     if (number != null && number.isNotEmpty) {
       state = state.copyWith(isNumberSaved: true, phone: number);

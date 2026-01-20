@@ -5,18 +5,17 @@ import 'package:pakkahishab/features/home/data/repositories/home_repository.dart
 import 'package:pakkahishab/routes/app_routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final homeProvider = NotifierProvider.autoDispose<HomeNotifier, HomeState>(
+final homeProvider = NotifierProvider<HomeNotifier, HomeState>(
   () => HomeNotifier(),
 );
 
 class HomeState {
   final bool loading;
+  final bool loggedOut;
   final String name;
   final String email;
   final String phone;
   final String company;
-
-  final List<IconData> icons;
 
   final String cashInHand;
   final String cashAtBank;
@@ -33,12 +32,13 @@ class HomeState {
   final String filter;
 
   const HomeState({
+    this.loggedOut = false,
     this.loading = false,
     this.name = '',
     this.email = '',
     this.phone = '',
     this.company = '',
-    this.icons = const [],
+
     this.cashInHand = '0',
     this.cashAtBank = '0',
     this.totalPurchase = '0',
@@ -51,10 +51,11 @@ class HomeState {
     this.advance = '0',
     this.loan = '0',
     this.mobileBanking = '0',
-    this.filter = 'today',
+    this.filter = 'ALL',
   });
 
   HomeState copyWith({
+    bool? loggedOut,
     bool? loading,
     String? name,
     String? email,
@@ -76,12 +77,13 @@ class HomeState {
     String? filter,
   }) {
     return HomeState(
+      loggedOut: loggedOut ?? this.loggedOut,
       loading: loading ?? this.loading,
       name: name ?? this.name,
       email: email ?? this.email,
       phone: phone ?? this.phone,
       company: company ?? this.company,
-      icons: icons ?? this.icons,
+
       cashInHand: cashInHand ?? this.cashInHand,
       cashAtBank: cashAtBank ?? this.cashAtBank,
       totalPurchase: totalPurchase ?? this.totalPurchase,
@@ -105,20 +107,18 @@ class HomeNotifier extends Notifier<HomeState> {
   @override
   HomeState build() {
     _repo = ref.read(homeRepositoryProvider);
-    fetchDashBoard('ALL');
-    return HomeState(
-      icons: [
-        Icons.shopping_cart,
-        Icons.sell,
-        Icons.money,
-        Icons.account_balance,
-      ],
-    );
+    Future.microtask(() => loadInitialData());
+    return HomeState();
   }
 
   void updateFilter(String value) {
     state = state.copyWith(filter: value);
     fetchDashBoard(value);
+  }
+
+  Future<void> loadInitialData() async {
+    fetchDashBoard('ALL');
+    loadUserData();
   }
 
   Future<void> loadUserData() async {
@@ -147,50 +147,44 @@ class HomeNotifier extends Notifier<HomeState> {
     final schoolCode = await SharedPreferencesHelper.getString('code');
     if (schoolCode == null || schoolCode.isEmpty) return;
 
+    if (!ref.mounted) return;
     state = state.copyWith(loading: true);
+
     try {
       final response = await _repo.fetchDashBoard(
         filter,
         schoolCode: schoolCode,
       );
 
-      var updatedState = const HomeState();
+      if (!ref.mounted) return;
+
+      var newState = state; // ✅ START FROM CURRENT STATE
 
       if (response != null) {
         for (final item in response.items) {
           switch (item.metric.toLowerCase()) {
             case 'purchase':
-              updatedState = updatedState.copyWith(
+              newState = newState.copyWith(
                 totalPurchase: item.amount.toString(),
               );
               break;
             case 'sales':
-              updatedState = updatedState.copyWith(
-                totalSales: item.amount.toString(),
-              );
+              newState = newState.copyWith(totalSales: item.amount.toString());
               break;
             case 'expense':
-              updatedState = updatedState.copyWith(
-                expenses: item.amount.toString(),
-              );
+              newState = newState.copyWith(expenses: item.amount.toString());
               break;
             case 'income':
-              updatedState = updatedState.copyWith(
-                income: item.amount.toString(),
-              );
+              newState = newState.copyWith(income: item.amount.toString());
               break;
             case 'cash':
-              updatedState = updatedState.copyWith(
-                cashInHand: item.amount.toString(),
-              );
+              newState = newState.copyWith(cashInHand: item.amount.toString());
               break;
             case 'bank':
-              updatedState = updatedState.copyWith(
-                cashAtBank: item.amount.toString(),
-              );
+              newState = newState.copyWith(cashAtBank: item.amount.toString());
               break;
             case 'mobile_banking':
-              updatedState = updatedState.copyWith(
+              newState = newState.copyWith(
                 mobileBanking: item.amount.toString(),
               );
               break;
@@ -198,17 +192,9 @@ class HomeNotifier extends Notifier<HomeState> {
         }
       }
 
-      state = state.copyWith(
-        totalPurchase: updatedState.totalPurchase,
-        totalSales: updatedState.totalSales,
-        expenses: updatedState.expenses,
-        income: updatedState.income,
-        cashInHand: updatedState.cashInHand,
-        cashAtBank: updatedState.cashAtBank,
-        mobileBanking: updatedState.mobileBanking,
-      );
-      state = state.copyWith(loading: false);
+      state = newState.copyWith(loading: false);
     } catch (e) {
+      if (!ref.mounted) return;
       state = state.copyWith(loading: false);
       debugPrint('Dashboard error: $e');
     }
@@ -221,11 +207,11 @@ class HomeNotifier extends Notifier<HomeState> {
     await sp.clear();
 
     if (savedPhone != null) {
-      await sp.setString('phone', savedPhone);
+      await sp.setString('login_phone', savedPhone);
     }
 
     if (!context.mounted) return;
-
+    state = state.copyWith(loggedOut: true);
     Navigator.pushNamedAndRemoveUntil(context, Routes.login, (_) => false);
   }
 }

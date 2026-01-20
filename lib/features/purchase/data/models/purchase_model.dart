@@ -10,6 +10,7 @@ class PurchaseItem {
   final double paidPrice;
   final double due;
   final int schoolCode;
+  final String? created;
   final String password;
   final String mobile;
   final int totalCount;
@@ -27,6 +28,7 @@ class PurchaseItem {
     required this.paidPrice,
     required this.due,
     required this.schoolCode,
+    this.created,
     required this.password,
     required this.mobile,
     required this.totalCount,
@@ -46,6 +48,7 @@ class PurchaseItem {
       paidPrice: (json['paid_price'] as num).toDouble(),
       due: (json['due'] as num).toDouble(),
       schoolCode: json['school_code'],
+      created: json['created'],
       password: json['password'],
       mobile: json['mobile'],
       totalCount: json['total_count'],
@@ -66,6 +69,7 @@ class PurchaseItem {
       'paid_price': paidPrice,
       'due': due,
       'school_code': schoolCode,
+      'created':created,
       'password': password,
       'mobile': mobile,
       'total_count': totalCount,

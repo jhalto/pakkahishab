@@ -16,7 +16,6 @@ import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart
 import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_payment_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/purchase_product_details_add_widget.dart';
 
@@ -314,7 +313,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     // Update state
     state = state.copyWith(selectedPurchaseProducts: updatedProducts);
 
-    // 🔥 Update amounts
+    // Update amounts
     calculatePurchaseAmounts();
 
     Navigator.pop(context);
@@ -333,7 +332,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     // Update state
     state = state.copyWith(selectedPurchaseProducts: updatedProducts);
 
-    // 🔥 Recalculate amounts after removal
+    // Recalculate amounts after removal
     calculatePurchaseAmounts();
   }
 
