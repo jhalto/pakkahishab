@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
-import 'package:pakkahishab/core/helper/navigation_helper.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';
-import 'package:pakkahishab/features/sales/presentation/views/sales_view.dart';
 
 import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
@@ -20,7 +17,9 @@ class BottomBarDesign extends StatelessWidget {
       ),
       child: BottomAppBar(
         clipBehavior: Clip.antiAlias,
-        shape: const CircularNotchedRectangle(),
+        shape:  CircularNotchedRectangle(
+
+        ),
         notchMargin: 10,
         elevation: 10,
         color: AppColors.borderColor,
