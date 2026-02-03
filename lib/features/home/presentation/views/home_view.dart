@@ -9,6 +9,7 @@ import 'package:pakkahishab/features/home/presentation/widgets/app_drawer.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/body_middle_part.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/body_top_part.dart';
 import 'package:pakkahishab/features/home/presentation/widgets/bottom_bar_design.dart';
+import 'package:pakkahishab/routes/app_routes.dart';
 import 'package:unicons/unicons.dart';
 
 class HomeView extends StatelessWidget {
@@ -44,7 +45,7 @@ class HomeView extends StatelessWidget {
                         );
                       },
                     ),
-                    SizedBox(width: 10,),
+                    SizedBox(width: 10),
                     Container(
                       padding: EdgeInsets.symmetric(
                         vertical: 4,
@@ -95,7 +96,10 @@ class HomeView extends StatelessWidget {
                             return option.map((option) {
                               return PopupMenuItem(
                                 value: option.toUpperCase(),
-                                child: Text(option,style: AppTextStyle.bodyMedium,),
+                                child: Text(
+                                  option,
+                                  style: AppTextStyle.bodyMedium,
+                                ),
                               );
                             }).toList();
                           },
@@ -177,7 +181,8 @@ class HomeView extends StatelessWidget {
                               child: Text(
                                 translation.appLocale.languageCode == 'en'
                                     ? "বাং"
-                                    : "EN", style: AppTextStyle.bodyMedium,
+                                    : "EN",
+                                style: AppTextStyle.bodyMedium,
                               ),
                             ),
                           ),
@@ -294,7 +299,30 @@ class HomeView extends StatelessWidget {
           borderRadius: BorderRadiusGeometry.all(Radius.circular(50)),
         ),
         onPressed: () {
-          // handle dock button press
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.shopping_cart),
+                  title: const Text("Payment"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, Routes.payment);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.sell),
+                  title: const Text("Add Sale"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigator.pushNamed(context, Routes.customerSales);
+                  },
+                ),
+              ],
+            ),
+          );
         },
         backgroundColor: AppColors.primaryColor,
         elevation: 4,

@@ -9,6 +9,7 @@ import 'package:pakkahishab/features/expenses/presentation/views/expenses_view.d
 import 'package:pakkahishab/features/income/presentation/views/income_view.dart';
 import 'package:pakkahishab/features/loan/presentation/views/loan_view.dart';
 import 'package:pakkahishab/features/mobile_banking/presentation/views/mobile_bank_view.dart';
+import 'package:pakkahishab/features/payment/presentation/views/payment_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_add.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/supplier_wise_purchase_view.dart';
 import 'package:pakkahishab/features/sales/presentation/views/customer_wise_sales.dart';
@@ -43,6 +44,7 @@ class Routes {
   static const String advance = '/advance';
   static const String loan = '/loan';
   static const String mobileBank = '/mobileBank';
+  static const String payment = '/payment';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     Widget page;
@@ -110,6 +112,9 @@ class Routes {
         break;
       case mobileBank:
         page = const MobileBankView();
+        break;
+      case payment:
+        page = const PaymentView();
         break;
       default:
         page = const Scaffold(body: Center(child: Text("Route not found")));
