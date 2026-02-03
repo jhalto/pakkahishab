@@ -62,18 +62,18 @@ class PurchaseRepository {
     return response;
   }
 
-  Future<Map<String, dynamic>> getAllSupplier({
-    required String phone,
-    required String pin,
-    required String code,
-  }) async {
-    final response = await _purchaseServices.getAllSupplier(
-      phone: phone,
-      pin: pin,
-      code: code,
-    );
-    return response;
-  }
+  // Future<Map<String, dynamic>> getAllSupplier({
+  //   required String phone,
+  //   required String pin,
+  //   required String code,
+  // }) async {
+  //   final response = await _purchaseServices.getAllSupplier(
+  //     phone: phone,
+  //     pin: pin,
+  //     code: code,
+  //   );
+  //   return response;
+  // }
 
   Future<Map<String, dynamic>> addSupplier({
     required String code,

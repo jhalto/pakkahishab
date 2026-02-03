@@ -13,37 +13,17 @@ import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
 import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart';
-import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
+
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_payment_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/purchase_product_details_add_widget.dart';
+import 'package:pakkahishab/features/supplier/data/models/all_supplier_model.dart';
 
 final purchaseAddViewModelProvider =
     NotifierProvider.autoDispose<PurchaseAddNotifier, PurchaseAddState>(
       () => PurchaseAddNotifier(),
     );
-
-final supplierListProvider = FutureProvider<List<AllSupplier>>((ref) async {
-  final repo = ref.watch(purchaseRepositoryProvider);
-
-  final phone = await SharedPreferencesHelper.getString('phone');
-  final pin = await SharedPreferencesHelper.getString('pin');
-  final code = await SharedPreferencesHelper.getString('code');
-
-  final response = await repo.getAllSupplier(
-    phone: phone.toString(),
-    pin: pin.toString(),
-    code: code.toString(),
-  );
-
-  if (response['statusCode'] == 200) {
-    final model = AllSupplierModel.fromJson(response['data']);
-    return model.items;
-  } else {
-    throw Exception("Failed to load suppliers");
-  }
-});
 
 final productListProvider = FutureProvider<List<AllProduct>>((ref) async {
   try {
@@ -244,6 +224,10 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
 
   void updatePaymentMethod(String value) {
     state = state.copyWith(paymentMethod: value);
+  }
+
+  void updateSupplierAccount(String value) {
+    state = state.copyWith(supplierAccountNo: value);
   }
 
   void updateTotalPurchaseAmount(String value) {
@@ -525,10 +509,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
         "Purchase Add Successfully",
         type: SnackBarType.success,
       );
-      await fetchPurchaseSupplierDues(
-        context,
-        supplierAccountNo: state.supplierAccountNo!,
-      );
+      await fetchPurchaseSupplierDues(context);
 
       if (!context.mounted) return;
       Navigator.pushReplacement(
@@ -548,10 +529,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     }
   }
 
-  Future<void> fetchPurchaseSupplierDues(
-    BuildContext context, {
-    required String supplierAccountNo,
-  }) async {
+  Future<void> fetchPurchaseSupplierDues(BuildContext context) async {
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
@@ -566,7 +544,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
         pin: pin ?? '',
         code: code ?? '',
 
-        supplierAccountNo: supplierAccountNo,
+        supplierAccountNo: state.supplierAccountNo ?? '',
       );
 
       if (response['statusCode'] == 200) {
@@ -627,10 +605,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
 
       clearPaymentController();
       state = state.copyWith(purchaseTotalAmount: "0");
-      fetchPurchaseSupplierDues(
-        context,
-        supplierAccountNo: state.supplierAccountNo ?? "0",
-      );
+      fetchPurchaseSupplierDues(context);
     } else {
       state = state.copyWith(isLoading: false);
       if (!context.mounted) return;

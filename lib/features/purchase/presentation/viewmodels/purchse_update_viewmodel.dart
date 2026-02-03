@@ -16,6 +16,7 @@ import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_a
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_edit_widgets/edit_purchase_product_details_widget.dart';
+import 'package:pakkahishab/features/supplier/presentation/viewmodels/supplier_viewmodel.dart';
 
 final purchaseUpdateViewModel =
     NotifierProvider<PurchaseUpdateNotifier, PurchaseUpdateState>(

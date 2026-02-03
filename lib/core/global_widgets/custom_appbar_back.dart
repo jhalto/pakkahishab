@@ -6,7 +6,8 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 
 class CustomAppbarBack extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  const CustomAppbarBack({super.key, required this.title});
+  final List<Widget>? actions;
+  const CustomAppbarBack({super.key, required this.title, this.actions});
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
   @override
@@ -32,6 +33,9 @@ class CustomAppbarBack extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
+
+      actions: actions,
     );
+    
   }
 }

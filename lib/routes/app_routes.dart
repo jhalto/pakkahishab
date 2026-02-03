@@ -16,6 +16,7 @@ import 'package:pakkahishab/features/sales/presentation/views/customer_wise_sale
 import 'package:pakkahishab/features/sales/presentation/views/sales_add.dart';
 import 'package:pakkahishab/features/splash/presentation/views/splash_view.dart';
 import 'package:pakkahishab/features/stock/presentation/views/stock_view.dart';
+import 'package:pakkahishab/features/supplier/presentation/views/supplier_view.dart';
 import 'package:pakkahishab/features/supplier_due/presentation/views/supplier_dues_view.dart';
 import 'package:pakkahishab/features/home/presentation/views/home_view.dart';
 import 'package:pakkahishab/features/nav_bar/presentation/view/navbar_view.dart';
@@ -45,6 +46,7 @@ class Routes {
   static const String loan = '/loan';
   static const String mobileBank = '/mobileBank';
   static const String payment = '/payment';
+  static const String supplier = '/supplier';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     Widget page;
@@ -115,6 +117,9 @@ class Routes {
         break;
       case payment:
         page = const PaymentView();
+        break;
+      case supplier:
+        page = const SupplierView();
         break;
       default:
         page = const Scaffold(body: Center(child: Text("Route not found")));

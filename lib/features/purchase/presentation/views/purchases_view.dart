@@ -7,8 +7,10 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/date_picker_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_payment_view.dart';
+import 'package:pakkahishab/features/purchase/presentation/views/purchase_report_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_appbar_back_with_search.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_details.dart';
 
@@ -115,7 +117,9 @@ class PurchasesView extends StatelessWidget {
                             final formattedDate = DateFormat(
                               'dd MMM',
                             ).format(item.purchaseDate);
-                            final formattedTime = formatBangladeshTime(item.created);
+                            final formattedTime = formatBangladeshTime(
+                              item.created,
+                            );
                             return Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 2,
@@ -213,68 +217,7 @@ class PurchasesView extends StatelessWidget {
                                                   ),
                                                 ],
                                               ),
-                                              // Column(
-                                              //   mainAxisAlignment:
-                                              //       MainAxisAlignment
-                                              //           .spaceBetween,
-                                              //   crossAxisAlignment:
-                                              //       CrossAxisAlignment.end,
-                                              //   children: [
-                                              //     if (item.due == 0)
-                                              //       Text(
-                                              //         "Paid",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: const Color(
-                                              //                 0xff50AA53,
-                                              //               ),
-                                              //             ),
-                                              //       ),
 
-                                              //     if (item.due ==
-                                              //         item.netAmount)
-                                              //       Text(
-                                              //         "Unpaid",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: const Color(
-                                              //                 0xfff5a848,
-                                              //               ),
-                                              //             ),
-                                              //       ),
-                                              //     if (item.due != 0 &&
-                                              //         item.due !=
-                                              //             item.netAmount)
-                                              //       Text(
-                                              //         "Partial",
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: AppColors
-                                              //                   .primaryColor2,
-                                              //             ),
-                                              //       ),
-                                              //     if (item.due != 0)
-                                              //       Text(
-                                              //         item.due.toString(),
-                                              //         style: AppTextStyle
-                                              //             .bodyMedium
-                                              //             .copyWith(
-                                              //               color: AppColors
-                                              //                   .primaryColor2,
-                                              //             ),
-                                              //       ),
-
-                                              //     // if (item.due == item.netAmount)
-                                              //     //   Text(
-                                              //     //     item.netAmount.toString(),
-                                              //     //     style:
-                                              //     //         AppTextStyle.bodyMedium,
-                                              //     //   ),
-                                              //   ],
-                                              // ),
                                               Text(
                                                 "${item.netAmount.toString()} Tk",
                                               ),
@@ -284,110 +227,84 @@ class PurchasesView extends StatelessWidget {
                                         const SizedBox(width: 10),
                                         Align(
                                           alignment: Alignment.topRight,
-                                          child: PopupMenuButton(
-                                            menuPadding: EdgeInsets.zero,
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                            ),
-                                            icon: const Icon(
-                                              CupertinoIcons.chevron_down,
-                                              size: 20,
-                                            ),
-                                            itemBuilder: (context) {
-                                              return [
-                                                PopupMenuItem(
-                                                  onTap: () {
-                                                    purchaseNotifier
-                                                        .deletePurchase(
+                                          child: Consumer(
+                                            builder: (context, ref, child) {
+                                              return PopupMenuButton(
+                                                menuPadding: EdgeInsets.zero,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 10,
+                                                    ),
+                                                icon: const Icon(
+                                                  CupertinoIcons.chevron_down,
+                                                  size: 20,
+                                                ),
+                                                itemBuilder: (context) {
+                                                  return [
+                                                    PopupMenuItem(
+                                                      onTap: () {
+                                                        purchaseNotifier
+                                                            .deletePurchase(
+                                                              context,
+                                                              purchaseId: item
+                                                                  .purchaseId
+                                                                  .toString(),
+                                                            );
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          const Icon(
+                                                            Icons.delete,
+                                                            size: 30,
+                                                            color: AppColors
+                                                                .primaryColor, // Important: Keep white to reveal gradient
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          const Text("Delete"),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    PopupMenuItem(
+                                                      onTap: () async {
+                                                        await ref
+                                                            .read(
+                                                              purchaseViewModelProvider
+                                                                  .notifier,
+                                                            )
+                                                            .fetchPurchaseDetails(
+                                                              purchaseNo: item
+                                                                  .purchaseNo,
+                                                            );
+                                                        Navigator.push(
                                                           context,
-                                                          purchaseId: item
-                                                              .purchaseId
-                                                              .toString(),
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                PurchaseReportView(purchaseHead: item,),
+                                                          ),
                                                         );
-                                                  },
-                                                  child: Row(
-                                                    children: [
-                                                      ShaderMask(
-                                                        shaderCallback: (bounds) =>
-                                                            const LinearGradient(
-                                                              colors: [
-                                                                Color(
-                                                                  0xFF4FACFE,
-                                                                ),
-                                                                Color(
-                                                                  0xFF00F2FE,
-                                                                ),
-                                                              ],
-                                                              begin: Alignment
-                                                                  .topLeft,
-                                                              end: Alignment
-                                                                  .bottomRight,
-                                                            ).createShader(
-                                                              bounds,
-                                                            ),
-                                                        child: const Icon(
-                                                          Icons.delete,
-                                                          size: 30,
-                                                          color: Colors
-                                                              .white, // Important: Keep white to reveal gradient
-                                                        ),
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          const Icon(
+                                                            Icons.print,
+                                                            size: 30,
+                                                            color: AppColors
+                                                                .primaryColor, // Important: Keep white to reveal gradient
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          const Text(
+                                                            "Print Invoice",
+                                                          ),
+                                                        ],
                                                       ),
-                                                      const SizedBox(width: 10),
-                                                      const Text("Delete"),
-                                                    ],
-                                                  ),
-                                                ),
-                                                PopupMenuItem(
-                                                  child: Row(
-                                                    children: [
-                                                      ShaderMask(
-                                                        shaderCallback: (bounds) =>
-                                                            const LinearGradient(
-                                                              colors: [
-                                                                Color(
-                                                                  0xFF4FACFE,
-                                                                ),
-                                                                Color(
-                                                                  0xFF00F2FE,
-                                                                ),
-                                                              ],
-                                                              begin: Alignment
-                                                                  .topLeft,
-                                                              end: Alignment
-                                                                  .bottomRight,
-                                                            ).createShader(
-                                                              bounds,
-                                                            ),
-                                                        child: const Icon(
-                                                          Icons.print,
-                                                          size: 30,
-                                                          color: Colors
-                                                              .white, // Important: Keep white to reveal gradient
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      const Text(
-                                                        "Print Invoice",
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                PopupMenuItem(
-                                                  onTap: () {},
-                                                  child: const Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons
-                                                            .local_print_shop_sharp,
-                                                        color: AppColors
-                                                            .accentTextColor,
-                                                      ),
-                                                      SizedBox(width: 10),
-                                                      Text("Print Invoice"),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ];
+                                                    ),
+                                                  ];
+                                                },
+                                              );
                                             },
                                           ),
                                         ),
@@ -521,27 +438,35 @@ class PurchasesView extends StatelessWidget {
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 35),
-        child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PurchasePaymentView()),
-            );
-          },
-          child: Container(
-            padding: EdgeInsets.all(10),
+        child: Consumer(
+          builder: (context, ref, child) => InkWell(
+            onTap: () {
+              // ref
+              //     .read(purchaseAddViewModelProvider.notifier)
+              //     .fetchPurchaseSupplierDues(
+              //       context,
+              //       supplierAccountNo: ref.read(purchaseAddViewModelProvider),
+              //     );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PurchasePaymentView()),
+              );
+            },
+            child: Container(
+              padding: EdgeInsets.all(10),
 
-            decoration: BoxDecoration(
-              color: AppColors.primaryColor,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Row(
-              mainAxisSize: .min,
-              children: [
-                Icon(Icons.payment, color: AppColors.whiteColor),
-                SizedBox(width: 5),
-                Text("Make Payment", style: AppTextStyle.bodyMediumWhite),
-              ],
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              child: Row(
+                mainAxisSize: .min,
+                children: [
+                  Icon(Icons.payment, color: AppColors.whiteColor),
+                  SizedBox(width: 5),
+                  Text("Make Payment", style: AppTextStyle.bodyMediumWhite),
+                ],
+              ),
             ),
           ),
         ),
