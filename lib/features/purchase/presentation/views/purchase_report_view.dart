@@ -12,6 +12,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 
 class PurchaseReportView extends ConsumerStatefulWidget {
   final PurchaseItem purchaseHead;
@@ -53,7 +54,15 @@ class _PurchaseReportViewState extends ConsumerState<PurchaseReportView> {
 
     pdf.addPage(
       pw.Page(
-        pageFormat: PdfPageFormat.a4,
+        pageTheme: pw.PageTheme(
+          pageFormat: PdfPageFormat.a4, // ✅ moved here
+          buildBackground: (context) => pw.FullPage(
+            ignoreMargins: true,
+            child: pw.Container(
+              color: PdfColors.white, // outside/background color
+            ),
+          ),
+        ),
         build: (context) {
           return pw.Stack(
             children: [
@@ -91,7 +100,10 @@ class _PurchaseReportViewState extends ConsumerState<PurchaseReportView> {
                       ),
                       pw.Text(
                         "Print Date : ${formatDate(DateTime.now())}",
-                        style: pw.TextStyle(color: PdfColors.grey800),
+                        style: pw.TextStyle(
+                          color: PdfColors.grey800,
+                          fontSize: 14,
+                        ),
                       ),
                     ],
                   ),
@@ -233,8 +245,13 @@ class _PurchaseReportViewState extends ConsumerState<PurchaseReportView> {
         ],
       ),
       body: pdfPath == null
-          ? const Center(child: CircularProgressIndicator())
-          : SfPdfViewer.file(File(pdfPath!)),
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.primaryColor),
+            )
+          : SfPdfViewerTheme(
+              data: SfPdfViewerThemeData(backgroundColor: Colors.black),
+              child: SfPdfViewer.file(File(pdfPath!)),
+            ),
     );
   }
 }

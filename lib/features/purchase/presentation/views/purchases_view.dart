@@ -281,7 +281,10 @@ class PurchasesView extends StatelessWidget {
                                                           context,
                                                           MaterialPageRoute(
                                                             builder: (context) =>
-                                                                PurchaseReportView(purchaseHead: item,),
+                                                                PurchaseReportView(
+                                                                  purchaseHead:
+                                                                      item,
+                                                                ),
                                                           ),
                                                         );
                                                       },
@@ -327,7 +330,6 @@ class PurchasesView extends StatelessWidget {
                               : PurchasesPagination();
                         },
                       ),
-                      // PurchasesPagination(),
                     ],
                   );
                 },
@@ -443,10 +445,7 @@ class PurchasesView extends StatelessWidget {
             onTap: () {
               // ref
               //     .read(purchaseAddViewModelProvider.notifier)
-              //     .fetchPurchaseSupplierDues(
-              //       context,
-              //       supplierAccountNo: ref.read(purchaseAddViewModelProvider),
-              //     );
+              //     .fetchPurchaseSupplierDues(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => PurchasePaymentView()),

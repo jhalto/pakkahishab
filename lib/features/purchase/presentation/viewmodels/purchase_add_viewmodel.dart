@@ -529,7 +529,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     }
   }
 
-  Future<void> fetchPurchaseSupplierDues(BuildContext context) async {
+  Future<void> fetchPurchaseSupplierDues(BuildContext context ,{String? supplierAccountNo}) async {
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
@@ -544,7 +544,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
         pin: pin ?? '',
         code: code ?? '',
 
-        supplierAccountNo: state.supplierAccountNo ?? '',
+        supplierAccountNo:supplierAccountNo?? state.supplierAccountNo ?? '',
       );
 
       if (response['statusCode'] == 200) {
