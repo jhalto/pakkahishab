@@ -13,6 +13,7 @@ import 'package:pakkahishab/features/purchase/data/models/all_product_model.dart
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_edit_widgets/edit_purchase_product_details_widget.dart';
+import 'package:pakkahishab/features/supplier/presentation/viewmodels/supplier_viewmodel.dart';
 
 final purchaseReturnViewModel =
     NotifierProvider<PurchaseReturnNotifier, PurchaseReturnState>(

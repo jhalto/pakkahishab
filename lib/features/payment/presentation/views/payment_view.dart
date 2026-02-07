@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/global_widgets/custom_fullwidth_button.dart';
+import 'package:pakkahishab/features/payment/presentation/viewmodels/payment_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/add_purchase_payment_type_widget.dart';
 
@@ -14,12 +15,11 @@ class PaymentView extends StatelessWidget {
       appBar: CustomAppbarBack(title: "Payment"),
       body: Consumer(
         builder: (context, ref, child) {
-          final vm = ref.watch(purchaseAddViewModelProvider);
-          final vmn = ref.watch(purchaseAddViewModelProvider.notifier);
-          final double totalDue =
-              double.tryParse(vm.totalDueAmount ?? "0") ?? 0;
-          final double purchaseAmount =
-              double.tryParse(vm.purchaseTotalAmount ?? "0") ?? 0;
+          final vm = ref.watch(paymentProvider);
+          final vmn = ref.watch(paymentProvider.notifier);
+          final double totalDue = double.tryParse(vm.totalDueAmount) ?? 0;
+          // final double purchaseAmount =
+          //     double.tryParse(vm.purchaseTotalAmount ?? "0") ?? 0;
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -50,7 +50,7 @@ class PaymentView extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              ": ${(totalDue.abs() - purchaseAmount).abs().toStringAsFixed(0)}",
+                              ": $totalDue",
                             ),
                           ),
                         ],
@@ -59,20 +59,13 @@ class PaymentView extends StatelessWidget {
                   ),
                 SizedBox(height: 10),
 
-                if (vm.purchaseTotalAmount != "0" && vm.purchaseTotalAmount != null )
-                  Row(
-                    children: [
-                      Expanded(child: Text("Present purchase")),
-                      Expanded(child: Text(": ${vm.purchaseTotalAmount}")),
-                    ],
-                  ),
-                SizedBox(height: 20),
+               
                 AddPurchasePaymentTypeWidget(),
 
                 SizedBox(height: 20),
                 CustomFullwidthButton(
                   onTap: () async {
-                    vmn.makePayment(context);
+                    
                   },
                   title: "Pay",
                   isLoading: vm.isLoading,

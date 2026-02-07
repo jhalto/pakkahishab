@@ -1,5 +1,9 @@
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pakkahishab/core/global_widgets/file_saver.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/core/utils/show_snackbar.dart';
 import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel.dart';
@@ -9,6 +13,9 @@ import 'package:pakkahishab/features/purchase/data/models/supplier_model.dart';
 import 'package:pakkahishab/features/purchase/data/models/supplier_wise_purchase_model.dart';
 import 'package:pakkahishab/features/purchase/data/repositories/purchase_repository.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
+import 'dart:io';
+
+import 'package:permission_handler/permission_handler.dart';
 
 final purchaseViewModelProvider =
     NotifierProvider.autoDispose<PurchaseNotifier, PurchaseState>(
@@ -46,7 +53,7 @@ final class PurchaseState {
     this.hasMore = false,
     this.currentPage = 1,
     this.totalPage = 0,
-   
+
     this.phone = '',
     this.pin = '',
     this.offset = '0',
@@ -111,8 +118,51 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     return const PurchaseState();
   }
 
+  // Search Controller
   TextEditingController searchSupplierController = TextEditingController();
-  String paymentMethod = "Cash";
+
+  // Update state
+  void updateSupplierId(String supplierId) async {
+    state = state.copyWith(supplierId: supplierId);
+    fetchPurchases();
+  }
+
+  void updatePaymentMethod(String value) {
+    state = state.copyWith(paymentMethod: value);
+  }
+
+  // Refresh State
+
+  Future<void> refreshPurchases() async {
+    await fetchPurchases();
+  }
+
+  // Pagination Navigation
+  void goToPage(int page) {
+    fetchPurchases(page: page);
+  }
+
+  // Search Method
+
+  void searchSupplier(String query) {
+    final allSuppliers = state.supplier?.items ?? [];
+
+    if (query.isEmpty) {
+      // if query is empty, show all suppliers
+      state = state.copyWith(filteredSuppliers: allSuppliers);
+    } else {
+      final filtered = allSuppliers
+          .where(
+            (supplier) => supplier.supplierName.toLowerCase().contains(
+              query.toLowerCase(),
+            ),
+          )
+          .toList();
+      state = state.copyWith(filteredSuppliers: filtered);
+    }
+  }
+
+  // Api Call
 
   Future<void> fetchPurchases({
     bool loadMore = false,
@@ -163,19 +213,6 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     }
   }
 
-  void updateSupplierId(String supplierId) async {
-    state = state.copyWith(supplierId: supplierId);
-    fetchPurchases();
-  }
-
-  Future<void> refreshPurchases() async {
-    await fetchPurchases();
-  }
-
-  void goToPage(int page) {
-    fetchPurchases(page: page);
-  }
-
   Future<bool> fetchPurchaseDetails({
     bool loadMore = false,
     int? page,
@@ -212,8 +249,6 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     return false;
   }
 
-  // bool supplierLoading = false;
-
   Future<void> getSupplier() async {
     state = state.copyWith(detailLoading: true);
     final phone = await SharedPreferencesHelper.getString('phone');
@@ -243,28 +278,6 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
     } finally {
       state = state.copyWith(detailLoading: false);
     }
-  }
-
-  void searchSupplier(String query) {
-    final allSuppliers = state.supplier?.items ?? [];
-
-    if (query.isEmpty) {
-      // if query is empty, show all suppliers
-      state = state.copyWith(filteredSuppliers: allSuppliers);
-    } else {
-      final filtered = allSuppliers
-          .where(
-            (supplier) => supplier.supplierName.toLowerCase().contains(
-              query.toLowerCase(),
-            ),
-          )
-          .toList();
-      state = state.copyWith(filteredSuppliers: filtered);
-    }
-  }
-
-  void updatePaymentMethod(String value) {
-    state = state.copyWith(paymentMethod: value);
   }
 
   Future<void> deletePurchase(
@@ -307,5 +320,121 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
       if (!context.mounted) return;
       showCustomSnackBar(context, response['message']);
     }
+  }
+
+  // download Pdf
+  Future<void> downloadFile(BuildContext context, String pathOrUrl) async {
+    try {
+      if (!context.mounted) return;
+
+      // ✅ CASE 1: Local file path (your PDF case)
+      if (!pathOrUrl.startsWith('http')) {
+        final file = File(pathOrUrl);
+
+        if (!await file.exists()) {
+          if (!context.mounted) return;
+          showCustomSnackBar(context, "File not found");
+          return;
+        }
+
+        final bytes = await file.readAsBytes();
+        final fileName = pathOrUrl.split('/').last;
+
+        final saved = await FileSaver.saveToDownloads(
+          fileName,
+          bytes,
+          "application/pdf",
+        );
+
+        if (!context.mounted) return;
+
+        if (saved) {
+          showCustomSnackBar(
+            context,
+            "File saved to Downloads",
+            type: SnackBarType.success,
+          );
+        } else {
+          showCustomSnackBar(context, "Failed to save file");
+        }
+
+        return;
+      }
+
+      // ✅ CASE 2: Remote URL (future-proof)
+      final dioClient = dio.Dio();
+      final response = await dioClient.get<List<int>>(
+        pathOrUrl,
+        options: dio.Options(responseType: dio.ResponseType.bytes),
+      );
+
+      final bytes = Uint8List.fromList(response.data!);
+      final fileName = pathOrUrl.split('/').last;
+
+      final saved = await FileSaver.saveToDownloads(
+        fileName,
+        bytes,
+        "application/octet-stream",
+      );
+
+      if (!context.mounted) return;
+
+      if (saved) {
+        showCustomSnackBar(
+          context,
+          "File saved to Downloads",
+          type: SnackBarType.success,
+        );
+      } else {
+        showCustomSnackBar(context, "Failed to save file");
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+      showCustomSnackBar(context, "Download failed");
+
+      if (kDebugMode) {
+        print("❌ Download failed: $e");
+      }
+    }
+  }
+
+  Future<bool> requestStoragePermission(BuildContext context) async {
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    if (Platform.isAndroid) {
+      final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      final int sdkInt = androidInfo.version.sdkInt;
+
+      if (sdkInt <= 29) {
+        final status = await Permission.storage.status;
+        if (!status.isGranted) {
+          // Request permission if not granted
+          final newStatus = await Permission.storage.request();
+          if (newStatus.isGranted) {
+            if (kDebugMode) print("Storage permission granted");
+
+            showCustomSnackBar(
+              context,
+              "Storage permission granted",
+              type: SnackBarType.success,
+            );
+            return true;
+          } else {
+            showCustomSnackBar(
+              context,
+              "Storage permission denied, it is required to download",
+              type: SnackBarType.error,
+            );
+            if (kDebugMode) print("Storage permission denied");
+            return false;
+          }
+        } else {
+          // Permission already granted
+          return true;
+        }
+      }
+    }
+    // For Android 11+ or other platforms, assume permission not needed
+    return true;
   }
 }

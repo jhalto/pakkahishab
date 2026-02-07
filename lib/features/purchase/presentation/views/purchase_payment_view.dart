@@ -37,7 +37,7 @@ class PurchasePaymentView extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (totalDue != 0)
+                if (totalDue != 0 )
                   Column(
                     children: [
                       const SizedBox(height: 10),
@@ -59,7 +59,8 @@ class PurchasePaymentView extends StatelessWidget {
                   ),
                 SizedBox(height: 10),
 
-                if (vm.purchaseTotalAmount != "0")
+                if (vm.purchaseTotalAmount != "0" &&
+                    vm.purchaseTotalAmount != null)
                   Row(
                     children: [
                       Expanded(child: Text("Present purchase")),

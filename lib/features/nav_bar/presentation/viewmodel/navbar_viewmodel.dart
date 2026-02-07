@@ -1,21 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/legacy.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';
-import 'package:pakkahishab/features/sales/presentation/views/sales_view.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_riverpod/legacy.dart';
+// import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';
+// import 'package:pakkahishab/features/sales/presentation/views/sales_view.dart';
 
-final navbarProvider = ChangeNotifierProvider((ref) => NavbarViewmodel());
+// final navbarProvider = ChangeNotifierProvider((ref) => NavbarViewmodel());
 
-class NavbarViewmodel extends ChangeNotifier {
-  int currentIndex = 0;
+// class NavbarViewmodel extends ChangeNotifier {
+//   int currentIndex = 0;
 
-  final screens = const [
-    PurchasesView(),
-    SalesView(),
-  ];
+//   final screens = const [
+//     PurchasesView(),
+//     SalesView(),
+//   ];
   
 
-  void changeIndex(int index) {
-    currentIndex = index;
-    notifyListeners();
-  }
-}
+//   void changeIndex(int index) {
+//     currentIndex = index;
+//     notifyListeners();
+//   }
+// }

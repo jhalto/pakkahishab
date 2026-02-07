@@ -5,8 +5,9 @@ import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/global_widgets/custom_pakka_form_field.dart';
 import 'package:pakkahishab/core/helper/validation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/purchase/data/models/all_supplier_model.dart';
+
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchse_update_viewmodel.dart';
+import 'package:pakkahishab/features/supplier/data/models/all_supplier_model.dart';
 
 class UpdateSupplierView extends StatelessWidget {
   final AllSupplier supplier;

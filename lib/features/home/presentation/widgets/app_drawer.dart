@@ -85,12 +85,9 @@ class AppDrawer extends StatelessWidget {
                           leading: const Icon(FontAwesomeIcons.cartShopping),
                         ),
                         ListTile(
-                           onTap: () {
+                          onTap: () {
                             Navigator.pop(context);
-                            Navigator.pushNamed(
-                              context,
-                              Routes.addPurchase,
-                            );
+                            Navigator.pushNamed(context, Routes.addPurchase);
                           },
                           title: Text(
                             AppLocalizations.of(context)!.newPurchase,
@@ -398,7 +395,38 @@ class AppDrawer extends StatelessWidget {
                       ],
                     ),
                   ),
-
+                  Theme(
+                    data: ThemeData(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      leading: const Icon(Icons.person_2), // 📊 Reports
+                      title: Text("Supplier", style: AppTextStyle.bodyLarge),
+                      children: [
+                        ListTile(
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, Routes.supplier);
+                          },
+                          title: Text(
+                            "Supplier",
+                            style: AppTextStyle.bodyMediumSecondary,
+                          ),
+                          leading: const Icon(Icons.group),
+                        ),
+                        ListTile(
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, Routes.stock);
+                          },
+                          title: Text(
+                            "Add Supplier",
+                            style: AppTextStyle.bodyMediumSecondary,
+                          ),
+                          leading: const Icon(Icons.person_add),
+                        ),
+                        const Divider(),
+                      ],
+                    ),
+                  ),
                   Theme(
                     data: ThemeData(dividerColor: Colors.transparent),
                     child: ExpansionTile(
