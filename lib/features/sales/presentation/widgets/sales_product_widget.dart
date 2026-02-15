@@ -12,8 +12,8 @@ class SalesProductWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _vm = ref.watch(saleAddViewModelProvider);
-    final _vmn = ref.watch(saleAddViewModelProvider.notifier);
+    final vm = ref.watch(saleAddViewModelProvider);
+    final vmn = ref.watch(saleAddViewModelProvider.notifier);
 
     final productAsync = ref.watch(productListProviderSales);
 
@@ -82,9 +82,9 @@ class SalesProductWidget extends ConsumerWidget {
 
                 onChanged: (value) {
                   if (value != null) {
-                    _vmn.selectedSaleProductId = value.productId.toString();
-                    _vmn.selectedSaleProductName = value.productName;
-                    _vmn.selectedSaleProductPrice = value.purchasePrice.toString();
+                    vmn.selectedSaleProductId = value.productId.toString();
+                    vmn.selectedSaleProductName = value.productName;
+                    vmn.selectedSaleProductPrice = value.purchasePrice.toString();
                      Navigator.push(context, MaterialPageRoute(builder: (context) => SaleProductDetailsAddWidget(selectedProductAll: value),));
                   }
                 },

@@ -27,8 +27,8 @@ class PurchaseProductDetailsAddWidget extends StatelessWidget {
 
       body: Consumer(
         builder: (context, ref, child) {
-          final _vm = ref.watch(purchaseAddViewModelProvider);
-          final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+          final vm = ref.watch(purchaseAddViewModelProvider);
+          final vmn = ref.watch(purchaseAddViewModelProvider.notifier);
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -45,14 +45,14 @@ class PurchaseProductDetailsAddWidget extends StatelessWidget {
                     border: Border.all(color: Colors.grey),
                   ),
                   child: Text(
-                    "price : ${_vmn.selectedPurchaseProductName}",
+                    "price : ${vmn.selectedPurchaseProductName}",
                     style: AppTextStyle.bodyMediumSecondary,
                   ),
                 ),
                 SizedBox(height: 10),
             
                 CustomPakkaFormField(
-                  controller: _vmn.purchaseProductQuantity,
+                  controller: vmn.purchaseProductQuantity,
                   label: "Quantity",
                 ),
                 SizedBox(height: 10),
@@ -65,14 +65,14 @@ class PurchaseProductDetailsAddWidget extends StatelessWidget {
                     border: Border.all(color: Colors.grey),
                   ),
                   child: Text(
-                    "price : ${_vmn.selectedPurchaseProductPrice}",
+                    "price : ${vmn.selectedPurchaseProductPrice}",
                     style: AppTextStyle.bodyMediumSecondary,
                   ),
                 ),
                 SizedBox(height: 100,),
 
                 CustomFullwidthButton(onTap: ()async{
-                  _vmn.addProductInPurchaseList(context);
+                  vmn.addProductInPurchaseList(context);
                 }, title: "Add")
               ],
             ),

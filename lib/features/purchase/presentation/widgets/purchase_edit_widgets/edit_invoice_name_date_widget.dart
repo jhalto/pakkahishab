@@ -27,8 +27,8 @@ class EditInvoiceNameDateWidget extends StatelessWidget {
       ),
       child: Consumer(
         builder: (context, ref, child) {
-          final _vmn = ref.read(purchaseUpdateViewModel);
-          final _vm = ref.watch(purchaseUpdateViewModel.notifier);
+          final vmn = ref.read(purchaseUpdateViewModel);
+          final vm = ref.watch(purchaseUpdateViewModel.notifier);
 
 
           return Row(

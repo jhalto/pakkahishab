@@ -19,8 +19,8 @@ class EditProductView extends StatelessWidget {
       appBar: CustomAppbarBack(title: "Edit Product"),
       body: Consumer(
         builder: (context, ref, _) {
-          final _vm = ref.watch(purchaseUpdateViewModel); // <- watch here
-          final _vmn = ref.watch(purchaseUpdateViewModel.notifier);
+          final vm = ref.watch(purchaseUpdateViewModel); // <- watch here
+          final vmn = ref.watch(purchaseUpdateViewModel.notifier);
           return Stack(
             children: [
               Padding(
@@ -35,11 +35,11 @@ class EditProductView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Form(
-                        key: _vmn.productUpdateFormKey,
+                        key: vmn.productUpdateFormKey,
                         child: Column(
                           children: [
                             CustomPakkaFormField(
-                              controller: _vmn.productNameController,
+                              controller: vmn.productNameController,
                               label: "Product Name *",
                               validator: (value) =>
                                   Validation.validateName(value, context),
@@ -49,14 +49,14 @@ class EditProductView extends StatelessWidget {
                             SizedBox(height: 12),
 
                             CustomPakkaFormField(
-                              controller: _vmn.productPriceController,
+                              controller: vmn.productPriceController,
                               label: "Product Purchase Price",
                               textInputAction: TextInputAction.next,
                             ),
                             SizedBox(height: 12),
 
                             CustomPakkaFormField(
-                              controller: _vmn.productSellPriceController,
+                              controller: vmn.productSellPriceController,
                               label: "Product Sell Price",
                               textInputAction: TextInputAction.next,
                             ),
@@ -68,7 +68,7 @@ class EditProductView extends StatelessWidget {
                               onTap: () async {
                                 final date = await pickDateAsString(context: context);
                                 if (date != null) {
-                                  _vmn.updateManufacturingDate(date: date);
+                                  vmn.updateManufacturingDate(date: date);
                                 }
                               },
                               child: Ink(
@@ -88,7 +88,7 @@ class EditProductView extends StatelessWidget {
                                   mainAxisAlignment: .spaceBetween,
                                   children: [
                                     Text(
-                                      "Product Stock-In : ${_vm.selectedManufacturingDate}",
+                                      "Product Stock-In : ${vm.selectedManufacturingDate}",
                                       style: AppTextStyle.bodyMediumSecondary,
                                     ),
                                     Icon(Icons.calendar_today_outlined),
@@ -104,7 +104,7 @@ class EditProductView extends StatelessWidget {
                               onTap: () async {
                                 final date = await pickDateAsString(context: context);
                                 if (date != null) {
-                                  _vmn.updateExpireDate(expireDate: date);
+                                  vmn.updateExpireDate(expireDate: date);
                                 }
                               },
                               child: Ink(
@@ -124,7 +124,7 @@ class EditProductView extends StatelessWidget {
                                   mainAxisAlignment: .spaceBetween,
                                   children: [
                                     Text(
-                                      "Product Expire-In : ${_vm.selectedExpiredDate}",
+                                      "Product Expire-In : ${vm.selectedExpiredDate}",
                                       style: AppTextStyle.bodyMediumSecondary,
                                     ),
                                     Icon(Icons.calendar_today_outlined),
@@ -136,14 +136,14 @@ class EditProductView extends StatelessWidget {
                             SizedBox(height: 12),
 
                             CustomPakkaFormField(
-                              controller: _vmn.productStockController,
+                              controller: vmn.productStockController,
                               label: "Product Stock",
                               textInputAction: TextInputAction.done,
                               onComplete: () async {
                                 print("product is: $productId");
-                                if (_vmn.productUpdateFormKey.currentState!
+                                if (vmn.productUpdateFormKey.currentState!
                                     .validate()) {
-                                  await _vmn.updateProduct(context,productId: productId);
+                                  await vmn.updateProduct(context,productId: productId);
 
                                   /// reload supplier list
                                 }
@@ -167,9 +167,9 @@ class EditProductView extends StatelessWidget {
                             ),
                           ),
                           onPressed: () async {
-                            if (_vmn.productUpdateFormKey.currentState!
+                            if (vmn.productUpdateFormKey.currentState!
                                 .validate()) {
-                              await _vmn.updateProduct(context, productId: productId);
+                              await vmn.updateProduct(context, productId: productId);
 
                               /// reload supplier list
                             }
@@ -186,7 +186,7 @@ class EditProductView extends StatelessWidget {
                   ),
                 ),
               ),
-              if (_vm.isLoading)
+              if (vm.isLoading)
                 Positioned.fill(
                   child: Container(
                     color: Colors.black.withAlpha(25),

@@ -19,8 +19,8 @@ class UpdateSupplierView extends StatelessWidget {
       appBar: CustomAppbarBack(title: "Update Supplier"),
       body: Consumer(
         builder: (context, ref, child) {
-          final _vm = ref.watch(purchaseUpdateViewModel);
-          final _vmn = ref.watch(purchaseUpdateViewModel.notifier);
+          final vm = ref.watch(purchaseUpdateViewModel);
+          final vmn = ref.watch(purchaseUpdateViewModel.notifier);
           return Stack(
             children: [
               SingleChildScrollView(
@@ -36,7 +36,7 @@ class UpdateSupplierView extends StatelessWidget {
                         child: Column(
                           children: [
                             CustomPakkaFormField(
-                              controller: _vmn.updateSupplierName,
+                              controller: vmn.updateSupplierName,
                               label: "Supplier Name *",
                               validator: (value) =>
                                   Validation.validateName(value, context),
@@ -45,7 +45,7 @@ class UpdateSupplierView extends StatelessWidget {
                             SizedBox(height: 12),
 
                             CustomPakkaFormField(
-                              controller: _vmn.updateSupplierPhone,
+                              controller: vmn.updateSupplierPhone,
                               label: "Supplier Phone *",
                               validator: (value) =>
                                   Validation.validatePhone(value, context),
@@ -54,21 +54,21 @@ class UpdateSupplierView extends StatelessWidget {
                             SizedBox(height: 12),
 
                             CustomPakkaFormField(
-                              controller: _vmn.updateSupplierEmail,
+                              controller: vmn.updateSupplierEmail,
                               label: "Supplier Email",
                               textInputAction: TextInputAction.next,
                             ),
                             SizedBox(height: 12),
 
                             CustomPakkaFormField(
-                              controller: _vmn.updateSupplierAddress,
+                              controller: vmn.updateSupplierAddress,
                               label: "Supplier Address",
                               textInputAction: TextInputAction.next,
                             ),
                             SizedBox(height: 12),
 
                             CustomPakkaFormField(
-                              controller: _vmn.updateSupplierOpeningBalance,
+                              controller: vmn.updateSupplierOpeningBalance,
                               label: "Supplier Opening Balance",
                               textInputAction: TextInputAction.done,
                               onComplete: () async {
@@ -105,7 +105,7 @@ class UpdateSupplierView extends StatelessWidget {
                             //   ref.invalidate(supplierListProvider);
                             // }
 
-                            _vmn.updateSupplier(
+                            vmn.updateSupplier(
                               context,
                               supplierId: supplier.supplierId,
                             );
@@ -123,7 +123,7 @@ class UpdateSupplierView extends StatelessWidget {
                 ),
               ),
 
-              if (_vm.isLoading)
+              if (vm.isLoading)
                 Positioned.fill(
                   child: Container(
                     color: Colors.grey.withAlpha(10),

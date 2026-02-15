@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/date_picker_helper.dart';
-import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 
 class InvoiceNameDateWidget extends StatelessWidget {
@@ -26,8 +25,8 @@ class InvoiceNameDateWidget extends StatelessWidget {
       ),
       child: Consumer(
         builder: (context, ref, child) {
-          final _vmn = ref.read(purchaseAddViewModelProvider.notifier);
-          final _vm = ref.watch(purchaseAddViewModelProvider);
+          final vmn = ref.read(purchaseAddViewModelProvider.notifier);
+          final vm = ref.watch(purchaseAddViewModelProvider);
           return Row(
             mainAxisAlignment: .end,
             children: [
@@ -75,7 +74,7 @@ class InvoiceNameDateWidget extends StatelessWidget {
 
                       print(pickedDate);
                       if (pickedDate != null) {
-                        _vmn.updatePurchaseDate(date: pickedDate.toString());
+                        vmn.updatePurchaseDate(date: pickedDate.toString());
                       }
                     },
                     borderRadius: BorderRadius.circular(8),

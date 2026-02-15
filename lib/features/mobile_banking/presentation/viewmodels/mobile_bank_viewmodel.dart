@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
-import 'package:pakkahishab/features/bank/data/models/bank_model.dart';
-import 'package:pakkahishab/features/bank/data/repositories/bank_repository.dart';
 import 'package:pakkahishab/features/mobile_banking/data/models/mobile_bank_model.dart';
 import 'package:pakkahishab/features/mobile_banking/data/repositories/mobile_bank_repository.dart';
 

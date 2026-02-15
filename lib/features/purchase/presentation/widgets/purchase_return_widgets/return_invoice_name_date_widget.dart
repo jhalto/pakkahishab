@@ -27,8 +27,8 @@ class ReturnInvoiceNameDateWidget extends StatelessWidget {
       ),
       child: Consumer(
         builder: (context, ref, child) {
-          final _vmn = ref.read(purchaseReturnViewModel);
-          final _vm = ref.watch(purchaseReturnViewModel.notifier);
+          final vmn = ref.read(purchaseReturnViewModel);
+          final vm = ref.watch(purchaseReturnViewModel.notifier);
 
 
           return Row(

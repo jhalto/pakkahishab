@@ -15,9 +15,9 @@ class PurchaseProductItemWidget extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, child) {
           
-          final _vm = ref.watch(purchaseAddViewModelProvider);
-          final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
-          final productList = _vm.selectedPurchaseProducts?.length ?? [].length;
+          final vm = ref.watch(purchaseAddViewModelProvider);
+          final vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+          final productList = vm.selectedPurchaseProducts?.length ?? [].length;
           return productList == 0? SizedBox(): Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -67,7 +67,7 @@ class PurchaseProductItemWidget extends StatelessWidget {
                   shrinkWrap: true,
                   itemCount: productList,
                   itemBuilder: (context, index) {
-                    final product = _vm.selectedPurchaseProducts?[index];
+                    final product = vm.selectedPurchaseProducts?[index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 6 ,right: 10, left: 10),
                       child: Column(
@@ -104,17 +104,17 @@ class PurchaseProductItemWidget extends StatelessWidget {
                               SizedBox(width: 10),
                               InkWell(
                                 onTap: () {
-                                  _vmn.selectedPurchaseProductId = product.productId;
-                                  _vmn.selectedPurchaseProductName = product.productName;
-                                  _vmn.selectedPurchaseProductPrice = product.unitPrice.toString();
-                                  _vmn.purchaseProductQuantity.text = product.quantity.toString();
+                                  vmn.selectedPurchaseProductId = product.productId;
+                                  vmn.selectedPurchaseProductName = product.productName;
+                                  vmn.selectedPurchaseProductPrice = product.unitPrice.toString();
+                                  vmn.purchaseProductQuantity.text = product.quantity.toString();
                                   navigateWithSlide(context: context, page: PurchaseProductDetailsAddWidget(selectedPurchaseDetailProduct: product,));
                                 },
                                 child: Icon(Icons.edit, size: 20)),
 
                               InkWell(
                                 onTap: () {
-                                  _vmn.removeProductFromPurchaseList(productId: product.productId);
+                                  vmn.removeProductFromPurchaseList(productId: product.productId);
                                 },
                                 child: Icon(Icons.delete, size: 20)),
                             ],

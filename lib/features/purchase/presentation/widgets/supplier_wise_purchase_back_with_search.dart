@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pakkahishab/core/global_widgets/custom_back_button.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/views/all_purchase_report_view.dart';
 
 class SupplierWisePurchaseAppbarBackWithSearch extends StatelessWidget
     implements PreferredSizeWidget {
@@ -317,6 +317,9 @@ class SupplierWisePurchaseAppbarBackWithSearch extends StatelessWidget
                 isSearch.value = !value;
               },
             ),
+            IconButton(onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>  AllPurchaseReportView()));
+            }, icon: Icon(Icons.print), color: AppColors.whiteColor,),
           ],
           flexibleSpace: Container(
             decoration: const BoxDecoration(

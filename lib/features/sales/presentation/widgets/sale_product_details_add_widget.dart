@@ -27,8 +27,8 @@ class SaleProductDetailsAddWidget extends StatelessWidget {
 
       body: Consumer(
         builder: (context, ref, child) {
-          final _vm = ref.watch(saleAddViewModelProvider);
-          final _vmn = ref.watch(saleAddViewModelProvider.notifier);
+          final vm = ref.watch(saleAddViewModelProvider);
+          final vmn = ref.watch(saleAddViewModelProvider.notifier);
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -45,14 +45,14 @@ class SaleProductDetailsAddWidget extends StatelessWidget {
                     border: Border.all(color: Colors.grey),
                   ),
                   child: Text(
-                    "price : ${_vmn.selectedSaleProductName}",
+                    "price : ${vmn.selectedSaleProductName}",
                     style: AppTextStyle.bodyMediumSecondary,
                   ),
                 ),
                 SizedBox(height: 10),
             
                 CustomPakkaFormField(
-                  controller: _vmn.saleProductQuantity,
+                  controller: vmn.saleProductQuantity,
                   label: "Quantity",
                 ),
                 SizedBox(height: 10),
@@ -65,14 +65,14 @@ class SaleProductDetailsAddWidget extends StatelessWidget {
                     border: Border.all(color: Colors.grey),
                   ),
                   child: Text(
-                    "price : ${_vmn.selectedSaleProductPrice}",
+                    "price : ${vmn.selectedSaleProductPrice}",
                     style: AppTextStyle.bodyMediumSecondary,
                   ),
                 ),
                 SizedBox(height: 100,),
 
                 CustomFullwidthButton(onTap: ()async{
-                  _vmn.addProductInSaleList(context);
+                  vmn.addProductInSaleList(context);
                 }, title: "Add")
               ],
             ),

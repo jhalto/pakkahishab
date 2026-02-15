@@ -20,7 +20,8 @@ class PurchasePaymentView extends StatelessWidget {
               double.tryParse(vm.totalDueAmount ?? "0") ?? 0;
           final double purchaseAmount =
               double.tryParse(vm.purchaseTotalAmount ?? "0") ?? 0;
-
+          final double previousOrAdvance = (totalDue.abs() - purchaseAmount)
+              .abs();
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
@@ -37,7 +38,7 @@ class PurchasePaymentView extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (totalDue != 0 )
+                if (totalDue != 0 && previousOrAdvance != totalDue.abs())
                   Column(
                     children: [
                       const SizedBox(height: 10),
@@ -50,7 +51,7 @@ class PurchasePaymentView extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              ": ${(totalDue.abs() - purchaseAmount).abs().toStringAsFixed(0)}",
+                              ": ${previousOrAdvance.toStringAsFixed(0)}",
                             ),
                           ),
                         ],
@@ -73,7 +74,7 @@ class PurchasePaymentView extends StatelessWidget {
                 SizedBox(height: 20),
                 CustomFullwidthButton(
                   onTap: () async {
-                    vmn.makePayment(context);
+                    vmn.makePayment(context, );
                   },
                   title: "Pay",
                   isLoading: vm.isLoading,

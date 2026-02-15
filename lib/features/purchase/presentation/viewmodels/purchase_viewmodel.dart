@@ -189,27 +189,36 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
         purchaseDate: purchaseDate,
         supplierId: state.supplierId,
       );
-      if (!ref.mounted) return;
-      final items = (result['data']['items'] ?? []) as List;
-      final hasMore = result['data']['hasMore'] ?? false;
-      final totalItem = result['data']['items'][0]['total_count'] ?? 0;
-      print(totalItem);
-      print(state.totalPage);
-      final newItems = items
-          .map<PurchaseItem>((e) => PurchaseItem.fromJson(e))
-          .toList();
 
-      state = state.copyWith(
-        purchaseList: newItems,
-        offset: newOffset.toString(),
-        currentPage: newPage,
-        hasMore: hasMore,
-        totalPage: (totalItem / 10).ceil(),
-      );
+     
+      if (result['statusCode'] == 200) {
+        if (!ref.mounted) return;
+        final items = (result['data']['items'] ?? []) as List;
+        final hasMore = result['data']['hasMore'] ?? false;
+        final totalItem = result['data']['items'][0]['total_count'] ?? 0;
+
+        final newItems = items
+            .map<PurchaseItem>((e) => PurchaseItem.fromJson(e))
+            .toList();
+
+        state = state.copyWith(
+          loading: false,
+          purchaseList: newItems,
+          offset: newOffset.toString(),
+          currentPage: newPage,
+          hasMore: hasMore,
+          totalPage: (totalItem / 10).ceil(),
+        );
+      }else{
+        state = state.copyWith(
+          loading: false
+        );
+
+      }
     } catch (e) {
-      debugPrint("Error fetching purchases: $e");
-    } finally {
       state = state.copyWith(loading: false);
+
+      debugPrint("Error fetching purchases: $e");
     }
   }
 

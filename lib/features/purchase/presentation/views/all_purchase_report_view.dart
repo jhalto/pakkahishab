@@ -5,7 +5,7 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/helper/date_picker_helper.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
-import 'package:pakkahishab/features/purchase/data/models/purchase_model.dart';
+import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
@@ -13,22 +13,22 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
-class PurchaseReportView extends ConsumerStatefulWidget {
-  final PurchaseItem purchaseHead;
-  const PurchaseReportView({super.key, required this.purchaseHead});
+class AllPurchaseReportView extends ConsumerStatefulWidget {
+  const AllPurchaseReportView({super.key});
 
   @override
-  ConsumerState<PurchaseReportView> createState() => _PurchaseReportViewState();
+  ConsumerState<AllPurchaseReportView> createState() =>
+      _PurchaseReportViewState();
 }
 
-class _PurchaseReportViewState extends ConsumerState<PurchaseReportView> {
+class _PurchaseReportViewState extends ConsumerState<AllPurchaseReportView> {
   String? pdfPath;
 
   @override
   void initState() {
     super.initState();
     // Delay PDF generation until after first frame to ensure ref is available
-    WidgetsBinding.instance.addPostFrameCallback((_) => generatePdf());
+    // WidgetsBinding.instance.addPostFrameCallback((_) => generatePdf());
   }
 
   Future<void> generatePdf() async {
@@ -38,8 +38,9 @@ class _PurchaseReportViewState extends ConsumerState<PurchaseReportView> {
 
     final int nameLength = companyName?.length ?? 1; // avoid division by zero
     final double fontSize = (200 / nameLength) * 4;
-    final state = ref.read(purchaseViewModelProvider);
-    final items = state.purchaseDetails!.items;
+    final state = ref.watch(purchaseSupplierWiseViewModel);
+
+    final items = state.supplierPurchaseList;
 
     if (items.isEmpty) {
       // No items, nothing to generate
@@ -49,7 +50,10 @@ class _PurchaseReportViewState extends ConsumerState<PurchaseReportView> {
     final pdf = pw.Document();
 
     // Calculate grand total
-    final total = items.fold<double>(0, (sum, item) => sum + item.subTotal);
+    final total = items.fold<double>(
+      0,
+      (sum, item) => sum + item.totalPurchaseAmount,
+    );
 
     pdf.addPage(
       pw.Page(
@@ -108,7 +112,7 @@ class _PurchaseReportViewState extends ConsumerState<PurchaseReportView> {
                   ),
                   pw.SizedBox(height: 20),
                   pw.Text(
-                    'Purchase Report',
+                    'All Purchase Report',
                     style: pw.TextStyle(
                       fontSize: 20,
                       fontWeight: pw.FontWeight.normal,
@@ -124,39 +128,40 @@ class _PurchaseReportViewState extends ConsumerState<PurchaseReportView> {
 
                         children: [
                           pw.Text(
-                            "Supplier: ${widget.purchaseHead.supplierName.toString()}",
+                            "Supplier: ",
                             style: pw.TextStyle(fontSize: 18),
                           ),
                           pw.SizedBox(height: 5),
                           pw.Text(
-                            "Bill N0: ${widget.purchaseHead.purchaseNo.toString()}",
+                            "Supplier No: ",
                             style: pw.TextStyle(fontSize: 18),
                           ),
                         ],
                       ),
 
-                      pw.Text(
-                        'Date: ${formatDate(widget.purchaseHead.purchaseDate)}',
-                        style: pw.TextStyle(
-                          fontSize: 16,
-                          fontWeight: pw.FontWeight.normal,
-                        ),
-                        textAlign: pw.TextAlign.end,
-                      ),
+                      // pw.Text(
+                      //   'Date: ',
+                      //   style: pw.TextStyle(
+                      //     fontSize: 16,
+                      //     fontWeight: pw.FontWeight.normal,
+                      //   ),
+                      //   textAlign: pw.TextAlign.end,
+                      // ),
                     ],
                   ),
                   pw.SizedBox(height: 12),
 
                   // Table with purchase items
                   pw.TableHelper.fromTextArray(
-                    headers: ['Product', 'Quantity', 'Unit Price', 'Total'],
+                    headers: ['Supplier Id', 'Name', 'Net Amount'],
                     data: items
                         .map(
                           (p) => [
-                            p.product,
-                            p.quantity.toString(),
-                            p.unitPrice.toStringAsFixed(2),
-                            p.subTotal.toStringAsFixed(2),
+                            p.supplierId,
+                            p.supplierName,
+                            // formatApiDate(p.purchaseDate.toString()),
+                            p.totalPurchaseAmount,
+                            // p.purchaseNo,
                           ],
                         )
                         .toList(),
@@ -209,9 +214,7 @@ class _PurchaseReportViewState extends ConsumerState<PurchaseReportView> {
     );
 
     final dir = await getTemporaryDirectory();
-    final file = File(
-      '${dir.path}/purchase_report_${widget.purchaseHead.purchaseNo}.pdf',
-    );
+    final file = File('${dir.path}/purchase_report.pdf');
     await file.writeAsBytes(await pdf.save());
 
     setState(() {
@@ -221,12 +224,14 @@ class _PurchaseReportViewState extends ConsumerState<PurchaseReportView> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(purchaseViewModelProvider);
+    final state = ref.watch(purchaseSupplierWiseViewModel);
 
-    if (state.purchaseList.isEmpty) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    // 🔥 Generate only once after data loads
+    if (state.supplierPurchaseList.isNotEmpty && pdfPath == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        generatePdf();
+      });
     }
-
     return Scaffold(
       appBar: CustomAppbarBack(
         title: "Purchase Report",

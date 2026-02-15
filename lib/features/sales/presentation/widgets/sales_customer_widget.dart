@@ -15,7 +15,7 @@ class SalesCustomerWidget extends StatelessWidget {
     return Consumer(
       builder: (context, ref, child) {
         final addViewModel = ref.watch(saleAddViewModelProvider);
-        final _vmn = ref.watch(saleAddViewModelProvider.notifier);
+        final vmn = ref.watch(saleAddViewModelProvider.notifier);
         final allCustomers = addViewModel.customer?.items ?? [];
 
         if (allCustomers.isEmpty) {
@@ -25,7 +25,7 @@ class SalesCustomerWidget extends StatelessWidget {
 
         return Row(
           children: [
-            SizedBox(width: 10,),
+            SizedBox(width: 10),
             Expanded(
               child: DropdownSearch<AllCustomer>(
                 // REQUIRED: Return Future<List<Customer>>
@@ -77,7 +77,7 @@ class SalesCustomerWidget extends StatelessWidget {
                 ),
 
                 onChanged: (AllCustomer? value) {
-                   _vmn.updateCustomerId(value!.supplierId);
+                  vmn.updateCustomerId(value!.supplierId);
                 },
               ),
             ),
@@ -121,42 +121,60 @@ class SalesCustomerWidget extends StatelessWidget {
                             SizedBox(height: 20),
 
                             Form(
-                              key: _vmn.customerAddFormKey,
+                              key: vmn.customerAddFormKey,
                               child: Column(
                                 children: [
                                   /// NAME REQUIRED
                                   CustomPakkaFormField(
-                                    controller: _vmn.customerNameController,
+                                    controller: vmn.customerNameController,
 
-                                    label: "Customer Name *", 
-                                   
-                                    validator: (value) => Validation.validateName(value, context),
+                                    label: "Customer Name *",
+
+                                    validator: (value) =>
+                                        Validation.validateName(value, context),
+                                    textInputAction: TextInputAction.next,
                                   ),
                                   SizedBox(height: 12),
 
                                   /// PHONE REQUIRED
                                   CustomPakkaFormField(
-                                    controller: _vmn.customerPhoneController,
+                                    controller: vmn.customerPhoneController,
                                     label: "Customer Phone *",
-                                    validator: (value) => Validation.validatePhone(value, context),
+                                    validator: (value) =>
+                                        Validation.validatePhone(
+                                          value,
+                                          context,
+                                        ),
+                                    textInputAction: TextInputAction.next,
                                   ),
                                   SizedBox(height: 12),
 
                                   CustomPakkaFormField(
-                                    controller: _vmn.customerEmailController,
+                                    controller: vmn.customerEmailController,
                                     label: "Customer Email",
+                                    textInputAction: TextInputAction.next,
                                   ),
+
                                   SizedBox(height: 12),
 
                                   CustomPakkaFormField(
-                                    controller: _vmn.customerAddressController,
+                                    controller: vmn.customerAddressController,
                                     label: "Customer Address",
+                                    textInputAction: TextInputAction.next,
                                   ),
                                   SizedBox(height: 12),
 
                                   CustomPakkaFormField(
-                                    controller: _vmn.customerOpeningBalanceController,
+                                    controller:
+                                        vmn.customerOpeningBalanceController,
                                     label: "Opening Balance",
+                                    textInputAction: TextInputAction.done,
+                                    onComplete: () async {
+                                      if (vmn.customerAddFormKey.currentState!
+                                          .validate()) {
+                                        await vmn.addCustomer(context);
+                                      }
+                                    },
                                   ),
                                 ],
                               ),
@@ -176,10 +194,9 @@ class SalesCustomerWidget extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () async {
-                                  if (_vmn.customerAddFormKey.currentState!.validate()) {
-                                    await _vmn.addCustomer(context);
-
-                                  
+                                  if (vmn.customerAddFormKey.currentState!
+                                      .validate()) {
+                                    await vmn.addCustomer(context);
                                   }
                                 },
                                 child: Text(

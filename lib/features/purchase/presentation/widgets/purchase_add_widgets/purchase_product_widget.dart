@@ -15,10 +15,10 @@ class PurchaseProductWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _vm = ref.watch(purchaseAddViewModelProvider);
-    final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
-    final _updateVmn = ref.watch(purchaseUpdateViewModel.notifier);
-    final _updateVm = ref.watch(purchaseUpdateViewModel);
+    final vm = ref.watch(purchaseAddViewModelProvider);
+    final vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+    final updateVmn = ref.watch(purchaseUpdateViewModel.notifier);
+    final updateVm = ref.watch(purchaseUpdateViewModel);
 
     final productAsync = ref.watch(productListProvider);
 
@@ -70,13 +70,13 @@ class PurchaseProductWidget extends ConsumerWidget {
                     return ListTile(
                       onTap: () {
                         Navigator.pop(context);
-                        _vmn.selectedPurchaseProductId = product.productId
+                        vmn.selectedPurchaseProductId = product.productId
                             .toString();
-                        _vmn.selectedPurchaseProductName = product.productName;
-                        _vmn.selectedPurchaseProductPrice = product
+                        vmn.selectedPurchaseProductName = product.productName;
+                        vmn.selectedPurchaseProductPrice = product
                             .purchasePrice
                             .toString();
-                        _vmn.purchaseProductQuantity.text = "1";  
+                        vmn.purchaseProductQuantity.text = "1";  
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -108,26 +108,26 @@ class PurchaseProductWidget extends ConsumerWidget {
                           //     supplier.address ?? "Not given";
 
                           // if (!context.mounted) return;
-                          _updateVmn.productNameController.text =
+                          updateVmn.productNameController.text =
                               product.productName;
-                          _updateVmn.productPriceController.text = product
+                          updateVmn.productPriceController.text = product
                               .purchasePrice
                               .toString();
-                          _updateVmn.productSellPriceController.text = product
+                          updateVmn.productSellPriceController.text = product
                               .sellPrice
                               .toString();
-                          _updateVmn.updateManufacturingDate(
+                          updateVmn.updateManufacturingDate(
                             date: formatApiDate(
                               product.manufacturingDate.toString(),
                             ),
                           );
                           print(product.expiredDate);
-                          _updateVmn.updateExpireDate(
+                          updateVmn.updateExpireDate(
                             expireDate: formatApiDate(
                               product.expiredDate.toString(),
                             ),
                           );
-                          _updateVmn.productStockController.text = product
+                          updateVmn.productStockController.text = product
                               .productStock
                               .toString();
                           Navigator.of(context).push(
@@ -155,7 +155,7 @@ class PurchaseProductWidget extends ConsumerWidget {
                       trailing: CustomButton(
                         title: "Add Product",
                         onTap: () {
-                          _vmn.showProductAddBottomSheet(context);
+                          vmn.showProductAddBottomSheet(context);
                         },
                         icon: Icon(Icons.add, color: AppColors.whiteColor),
                       ),
@@ -410,7 +410,7 @@ class PurchaseProductWidget extends ConsumerWidget {
                 //     );
                 //   },
                 // );
-                _vmn.showProductAddBottomSheet(context);
+                vmn.showProductAddBottomSheet(context);
               },
               child: Container(
                 decoration: BoxDecoration(

@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/global_widgets/custom_appbar_back.dart';
 import 'package:pakkahishab/core/global_widgets/custom_fullwidth_button.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchase_payment_view.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/add_purchase_payment_type_widget.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/add_purchase_summury.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/puchase_supplier_widget.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_add_widgets/invoice_name_date_widget.dart';

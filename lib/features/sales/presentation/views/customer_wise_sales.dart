@@ -28,7 +28,7 @@ class CustomerWiseSalesView extends StatelessWidget {
               child: Consumer(
                 builder: (outerContext, ref, child) {
                   final saleState = ref.watch(salesViewModelProvider);
-                  final _vmn = ref.watch(salesViewModelProvider.notifier);
+                  final vmn = ref.watch(salesViewModelProvider.notifier);
 
                   if (saleState.loading) {
                     return Center(child: loader);
@@ -115,8 +115,8 @@ class CustomerWiseSalesView extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () async {
-                                  _vmn.updateCustomerId(item.customerId);
-                                  _vmn.fetchSales();
+                                  vmn.updateCustomerId(item.customerId);
+                                  vmn.fetchSales();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
