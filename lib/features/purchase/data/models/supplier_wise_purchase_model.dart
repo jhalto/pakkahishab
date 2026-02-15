@@ -42,6 +42,7 @@ class SupplierPurchaseItem {
   final int schoolCode;
   final String mobile;
   final String password;
+  final int accountNo;
   final int totalPurchaseCount;
   final double totalPurchaseAmount;
 
@@ -52,6 +53,7 @@ class SupplierPurchaseItem {
     required this.schoolCode,
     required this.mobile,
     required this.password,
+    required this.accountNo,
     required this.totalPurchaseCount,
     required this.totalPurchaseAmount,
   });
@@ -64,6 +66,7 @@ class SupplierPurchaseItem {
       schoolCode: json['school_code'],
       mobile: json['mobile'],
       password: json['password'],
+      accountNo: json['account_no'],
       totalPurchaseCount: json['total_purchase_count'],
       totalPurchaseAmount:
           (json['total_purchase_amount'] as num).toDouble(),

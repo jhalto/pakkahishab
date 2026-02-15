@@ -2,9 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
-import 'package:pakkahishab/features/advance/data/models/advance_model.dart';
-import 'package:pakkahishab/features/advance/data/repositories/advance_repository.dart';
-import 'package:pakkahishab/features/bank/data/models/bank_model.dart';
 import 'package:pakkahishab/features/loan/data/models/loan_model.dart';
 import 'package:pakkahishab/features/loan/data/repositories/loan_repository.dart';
 

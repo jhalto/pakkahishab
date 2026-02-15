@@ -6,7 +6,6 @@ import 'package:pakkahishab/core/helper/shared_preferences_helper.dart';
 import 'package:pakkahishab/features/income/data/models/income_catagory_model.dart';
 import 'package:pakkahishab/features/income/data/models/income_model.dart';
 import 'package:pakkahishab/features/income/data/repositories/income_repository.dart';
-import 'package:pakkahishab/features/sales/data/models/customer_model.dart';
 
 
 

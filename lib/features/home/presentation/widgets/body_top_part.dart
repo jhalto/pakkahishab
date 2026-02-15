@@ -6,7 +6,6 @@ import 'package:pakkahishab/features/home/presentation/viewmodels/home_viewmodel
 import 'package:pakkahishab/features/home/presentation/widgets/home_shimmer.dart';
 import 'package:pakkahishab/l10n/app_localizations.dart';
 import 'package:pakkahishab/routes/app_routes.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class BodyTopPart extends StatelessWidget {
   const BodyTopPart({super.key});

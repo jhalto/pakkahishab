@@ -27,6 +27,7 @@ class MyApp extends ConsumerWidget {
         return MaterialApp(
           title: 'PakkaHishab',
           debugShowCheckedModeBanner: false,
+          // showPerformanceOverlay: true,
           locale: translation.appLocale,
           localizationsDelegates: const [
             AppLocalizations.delegate,

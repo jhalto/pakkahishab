@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_colors.dart';
-import 'package:pakkahishab/core/const/app_text_style.dart';
-import 'package:pakkahishab/core/helper/date_picker_helper.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 
 class AddPurchasePaymentTypeWidget extends StatelessWidget {
@@ -20,8 +18,8 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
       ),
       child: Consumer(
         builder: (context, ref, child) {
-          final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
-          final _vm = ref.watch(purchaseAddViewModelProvider);
+          final vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+          final vm = ref.watch(purchaseAddViewModelProvider);
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +58,7 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
                               iconEnabledColor: AppColors.primaryColor,
                               isExpanded: true,
                               underline: const SizedBox(),
-                              value: _vm.paymentMethod,
+                              value: vm.paymentMethod,
 
                               items: const [
                                 DropdownMenuItem(
@@ -85,14 +83,14 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
                                 ),
                               ],
                               onChanged: (value) {
-                                _vmn.updatePaymentMethod(value!);
+                                vmn.updatePaymentMethod(value!);
                               },
                             ),
                           ),
                           SizedBox(height: 10),
 
                           TextField(
-                            controller: _vmn.paymentAmountController,
+                            controller: vmn.paymentAmountController,
                             decoration: InputDecoration(
                               hintText: "Enter your payment amount",
                               enabledBorder: OutlineInputBorder(
@@ -113,10 +111,10 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
                               ),
                             ),
                           ),
-                          if (_vm.paymentMethod == '16') SizedBox(height: 10),
-                          if (_vm.paymentMethod == '16')
+                          if (vm.paymentMethod == '16') SizedBox(height: 10),
+                          if (vm.paymentMethod == '16')
                             TextField(
-                              controller: _vmn.paymentBankCheckController,
+                              controller: vmn.paymentBankCheckController,
                               decoration: InputDecoration(
                                 hintText: "Enter Check Number",
                                 enabledBorder: OutlineInputBorder(
@@ -137,15 +135,15 @@ class AddPurchasePaymentTypeWidget extends StatelessWidget {
                                 ),
                               ),
                             ),
-                          if (_vm.paymentMethod == '17' ||
-                              _vm.paymentMethod == '18' ||
-                              _vm.paymentMethod == '19')
+                          if (vm.paymentMethod == '17' ||
+                              vm.paymentMethod == '18' ||
+                              vm.paymentMethod == '19')
                             SizedBox(height: 10),
-                          if (_vm.paymentMethod == '17' ||
-                              _vm.paymentMethod == '18' ||
-                              _vm.paymentMethod == '19')
+                          if (vm.paymentMethod == '17' ||
+                              vm.paymentMethod == '18' ||
+                              vm.paymentMethod == '19')
                             TextField(
-                              controller: _vmn.paymentBankCheckController,
+                              controller: vmn.paymentBankCheckController,
                               decoration: InputDecoration(
                                 hintText: "Enter Transaction Id",
                                 enabledBorder: OutlineInputBorder(

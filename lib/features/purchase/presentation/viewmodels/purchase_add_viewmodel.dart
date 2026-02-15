@@ -325,7 +325,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
-    await Future.delayed(Duration(seconds: 2));
+    
     final response = await _repo.addSupplier(
       code: code.toString(),
       mobile: phone.toString(),
@@ -529,7 +529,10 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     }
   }
 
-  Future<void> fetchPurchaseSupplierDues(BuildContext context ,{String? supplierAccountNo}) async {
+  Future<void> fetchPurchaseSupplierDues(
+    BuildContext context, {
+    String? supplierAccountNo,
+  }) async {
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
@@ -544,7 +547,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
         pin: pin ?? '',
         code: code ?? '',
 
-        supplierAccountNo:supplierAccountNo?? state.supplierAccountNo ?? '',
+        supplierAccountNo: supplierAccountNo ?? state.supplierAccountNo ?? '',
       );
 
       if (response['statusCode'] == 200) {
@@ -552,16 +555,18 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
             .toString();
 
         print(supplierTotalDue);
-        state = state.copyWith(totalDueAmount: supplierTotalDue);
+        state = state.copyWith(
+          totalDueAmount: supplierTotalDue,
+          isLoading: false,
+        );
       }
     } catch (e) {
-      debugPrint("Error fetching purchases: $e");
-    } finally {
       state = state.copyWith(isLoading: false);
+      debugPrint("Error fetching purchases: $e");
     }
   }
 
-  Future<void> makePayment(BuildContext context) async {
+  Future<void> makePayment(BuildContext context, {String? accountNo}) async {
     if (paymentAmountController.text.trim().isEmpty) {
       showCustomSnackBar(context, "Please Insert Payment Amount");
       return;
@@ -590,10 +595,13 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       transactionId: paymentMobileTransactionController.text.trim(),
       followUpDate: formatDate(DateTime.now()),
 
-      accountNo: int.tryParse(state.supplierAccountNo ?? '0') ?? 0,
+      accountNo:
+          int.tryParse(accountNo ?? '') ??
+          int.tryParse(state.supplierAccountNo ?? '0') ??
+          0,
       particulars: paymentPerticularsController.text.trim(),
     );
-
+    print("payment response: $response");
     if (response['status'] == 'success') {
       state = state.copyWith(isLoading: false);
       if (!context.mounted) return;

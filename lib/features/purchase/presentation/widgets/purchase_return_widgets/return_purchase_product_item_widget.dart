@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_return_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_edit_widgets/edit_purchase_product_details_widget.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_return_widgets/return_purchase_product_details_widget.dart';
 
 class ReturnPurchaseProductItemWidget extends StatelessWidget {

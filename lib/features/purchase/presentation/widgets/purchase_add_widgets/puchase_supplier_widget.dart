@@ -25,8 +25,8 @@ class _PurchaseSupplierWidgetState
     extends ConsumerState<PurchaseSupplierWidget> {
   @override
   Widget build(BuildContext context) {
-    final _vm = ref.watch(purchaseAddViewModelProvider);
-    final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+    final vm = ref.watch(purchaseAddViewModelProvider);
+    final vmn = ref.watch(purchaseAddViewModelProvider.notifier);
 
     final supplierAsync = ref.watch(supplierListProvider);
     final purchaseUpdate = ref.watch(purchaseUpdateViewModel.notifier);
@@ -42,7 +42,7 @@ class _PurchaseSupplierWidgetState
             // / ------------------ DROPDOWN ------------------
             Expanded(
               child: DropdownSearch<AllSupplier>(
-                selectedItem: _vm.selectedSupplier,
+                selectedItem: vm.selectedSupplier,
                 items: (filter, loadProps) async => allSuppliers,
 
                 filterFn: (supplier, filter) => supplier.supplierName
@@ -79,7 +79,7 @@ class _PurchaseSupplierWidgetState
                     return ListTile(
                       onTap: () {
                         Navigator.pop(context);
-                        _vmn.selectSupplier(supplier);
+                        vmn.selectSupplier(supplier);
                       },
                       title: Text(supplier.supplierName),
                       subtitle: Text(supplier.phone ?? ''),
@@ -126,7 +126,7 @@ class _PurchaseSupplierWidgetState
                       trailing: CustomButton(
                         title: "Add Supplier",
                         onTap: () {
-                          _vmn.supplierNameController.text = searchEntry;
+                          vmn.supplierNameController.text = searchEntry;
                           showModalBottomSheet(
                             isScrollControlled: true,
                             backgroundColor: Colors.white,
@@ -134,10 +134,10 @@ class _PurchaseSupplierWidgetState
                             builder: (modalContext) {
                               return Consumer(
                                 builder: (context, ref, _) {
-                                  final _vm = ref.watch(
+                                  final vm = ref.watch(
                                     purchaseAddViewModelProvider,
                                   );
-                                  final _vmn = ref.watch(
+                                  final vmn = ref.watch(
                                     purchaseAddViewModelProvider.notifier,
                                   );
 
@@ -178,11 +178,11 @@ class _PurchaseSupplierWidgetState
                                               SizedBox(height: 20),
 
                                               Form(
-                                                key: _vmn.customerAddFormKey,
+                                                key: vmn.customerAddFormKey,
                                                 child: Column(
                                                   children: [
                                                     CustomPakkaFormField(
-                                                      controller: _vmn
+                                                      controller: vmn
                                                           .supplierNameController,
                                                       label: "Supplier Name *",
                                                       validator: (value) =>
@@ -196,7 +196,7 @@ class _PurchaseSupplierWidgetState
                                                     SizedBox(height: 12),
 
                                                     CustomPakkaFormField(
-                                                      controller: _vmn
+                                                      controller: vmn
                                                           .supplierPhoneController,
                                                       label: "Supplier Phone *",
                                                       validator: (value) =>
@@ -210,7 +210,7 @@ class _PurchaseSupplierWidgetState
                                                     SizedBox(height: 12),
 
                                                     CustomPakkaFormField(
-                                                      controller: _vmn
+                                                      controller: vmn
                                                           .supplierEmailController,
                                                       label: "Supplier Email",
                                                       textInputAction:
@@ -219,7 +219,7 @@ class _PurchaseSupplierWidgetState
                                                     SizedBox(height: 12),
 
                                                     CustomPakkaFormField(
-                                                      controller: _vmn
+                                                      controller: vmn
                                                           .supplierAddressController,
                                                       label: "Supplier Address",
                                                       textInputAction:
@@ -228,18 +228,18 @@ class _PurchaseSupplierWidgetState
                                                     SizedBox(height: 12),
 
                                                     CustomPakkaFormField(
-                                                      controller: _vmn
+                                                      controller: vmn
                                                           .supplierOpeningBalanceController,
                                                       label:
                                                           "Supplier Opening Balance",
                                                       textInputAction:
                                                           TextInputAction.done,
                                                       onComplete: () async {
-                                                        if (_vmn
+                                                        if (vmn
                                                             .customerAddFormKey
                                                             .currentState!
                                                             .validate()) {
-                                                          await _vmn
+                                                          await vmn
                                                               .addSupplier(
                                                                 context,
                                                               );
@@ -275,11 +275,11 @@ class _PurchaseSupplierWidgetState
                                                     ),
                                                   ),
                                                   onPressed: () async {
-                                                    if (_vmn
+                                                    if (vmn
                                                         .customerAddFormKey
                                                         .currentState!
                                                         .validate()) {
-                                                      await _vmn.addSupplier(
+                                                      await vmn.addSupplier(
                                                         context,
                                                       );
 
@@ -304,7 +304,7 @@ class _PurchaseSupplierWidgetState
                                           ),
                                         ),
                                       ),
-                                      if (_vm.isLoading)
+                                      if (vm.isLoading)
                                         Positioned.fill(
                                           child: Container(
                                             color: Colors.black.withAlpha(25),
@@ -356,8 +356,8 @@ class _PurchaseSupplierWidgetState
                   builder: (modalContext) {
                     return Consumer(
                       builder: (context, ref, _) {
-                        final _vm = ref.watch(purchaseAddViewModelProvider);
-                        final _vmn = ref.watch(
+                        final vm = ref.watch(purchaseAddViewModelProvider);
+                        final vmn = ref.watch(
                           purchaseAddViewModelProvider.notifier,
                         );
 
@@ -397,12 +397,12 @@ class _PurchaseSupplierWidgetState
                                     SizedBox(height: 20),
 
                                     Form(
-                                      key: _vmn.customerAddFormKey,
+                                      key: vmn.customerAddFormKey,
                                       child: Column(
                                         children: [
                                           CustomPakkaFormField(
                                             controller:
-                                                _vmn.supplierNameController,
+                                                vmn.supplierNameController,
                                             label: "Supplier Name *",
                                             validator: (value) =>
                                                 Validation.validateName(
@@ -416,7 +416,7 @@ class _PurchaseSupplierWidgetState
 
                                           CustomPakkaFormField(
                                             controller:
-                                                _vmn.supplierPhoneController,
+                                                vmn.supplierPhoneController,
                                             label: "Supplier Phone *",
                                             validator: (value) =>
                                                 Validation.validatePhone(
@@ -430,7 +430,7 @@ class _PurchaseSupplierWidgetState
 
                                           CustomPakkaFormField(
                                             controller:
-                                                _vmn.supplierEmailController,
+                                                vmn.supplierEmailController,
                                             label: "Supplier Email",
                                             textInputAction:
                                                 TextInputAction.next,
@@ -439,7 +439,7 @@ class _PurchaseSupplierWidgetState
 
                                           CustomPakkaFormField(
                                             controller:
-                                                _vmn.supplierAddressController,
+                                                vmn.supplierAddressController,
                                             label: "Supplier Address",
                                             textInputAction:
                                                 TextInputAction.next,
@@ -447,17 +447,17 @@ class _PurchaseSupplierWidgetState
                                           SizedBox(height: 12),
 
                                           CustomPakkaFormField(
-                                            controller: _vmn
+                                            controller: vmn
                                                 .supplierOpeningBalanceController,
                                             label: "Supplier Opening Balance",
                                             textInputAction:
                                                 TextInputAction.done,
                                             onComplete: () async {
-                                              if (_vmn
+                                              if (vmn
                                                   .customerAddFormKey
                                                   .currentState!
                                                   .validate()) {
-                                                await _vmn.addSupplier(context);
+                                                await vmn.addSupplier(context);
 
                                                 /// refresh dropdown list
                                                 ref.invalidate(
@@ -488,11 +488,11 @@ class _PurchaseSupplierWidgetState
                                           ),
                                         ),
                                         onPressed: () async {
-                                          if (_vmn
+                                          if (vmn
                                               .customerAddFormKey
                                               .currentState!
                                               .validate()) {
-                                            await _vmn.addSupplier(context);
+                                            await vmn.addSupplier(context);
 
                                             /// reload supplier list
                                             ref.invalidate(
@@ -515,7 +515,7 @@ class _PurchaseSupplierWidgetState
                                 ),
                               ),
                             ),
-                            if (_vm.isLoading)
+                            if (vm.isLoading)
                               Positioned.fill(
                                 child: Container(
                                   color: Colors.black.withAlpha(25),

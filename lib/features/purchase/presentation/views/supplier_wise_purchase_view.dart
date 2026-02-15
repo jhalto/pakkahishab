@@ -7,6 +7,7 @@ import 'package:pakkahishab/core/helper/navigation_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_supplier_wise_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
+import 'package:pakkahishab/features/purchase/presentation/views/supplier_all_purchase_report_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_add.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchases_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/supplier_wise_purchase_back_with_search.dart';
@@ -118,7 +119,7 @@ class SupplierPurchasesView extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => PurchasesView(),
+                                      builder: (context) => PurchasesView(accountNo: item.accountNo,),
                                     ),
                                   );
                                 },
@@ -214,6 +215,23 @@ class SupplierPurchasesView extends StatelessWidget {
                                             itemBuilder: (context) {
                                               return [
                                                 PopupMenuItem(
+                                                  onTap: () {
+                                                    ref
+                                                        .watch(
+                                                          purchaseViewModelProvider
+                                                              .notifier,
+                                                        )
+                                                        .updateSupplierId(
+                                                          item.supplierId,
+                                                        );
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            SupplierAllPurchaseReportView(suplierPurchaseHead: item, ),
+                                                      ),
+                                                    );
+                                                  },
                                                   child: Row(
                                                     children: [
                                                       ShaderMask(

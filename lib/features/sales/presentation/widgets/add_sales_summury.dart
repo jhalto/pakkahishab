@@ -11,7 +11,7 @@ class AddSalesSummury extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, ref, child) {
-      final _vmn = ref.watch(saleAddViewModelProvider.notifier);
+      final vmn = ref.watch(saleAddViewModelProvider.notifier);
 
       return Container(
       decoration: BoxDecoration(
@@ -46,7 +46,7 @@ class AddSalesSummury extends StatelessWidget {
                     ),
                     child: TextField(
                       
-                      controller: _vmn.saleNetAmountController,
+                      controller: vmn.saleNetAmountController,
                       cursorColor: AppColors.primaryColor,
                       decoration: InputDecoration(
                       

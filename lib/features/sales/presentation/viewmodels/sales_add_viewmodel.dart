@@ -13,13 +13,13 @@ final saleAddViewModelProvider =
     );
 final productListProviderSales = FutureProvider<List<AllProduct>>((ref) async {
   try {
-    final _repo = ref.watch(salesRepositoryProvider);
+    final repo = ref.watch(salesRepositoryProvider);
 
     final phone = await SharedPreferencesHelper.getString('phone') ?? '';
     final pin = await SharedPreferencesHelper.getString('pin') ?? '';
     final code = await SharedPreferencesHelper.getString('code') ?? '';
 
-    final response = await _repo.getAllProduct(
+    final response = await repo.getAllProduct(
       mobile: phone,
       pin: pin,
       code: code,
@@ -145,6 +145,15 @@ class SalesAddNotifier extends Notifier<SalesAddState> {
       );
     }
   }
+  // clear controlller...
+  void customerAddTextControllerClear(){
+    customerNameController.clear();
+    customerPhoneController.clear();
+    customerEmailController.clear();
+    customerAddressController.clear();
+    customerOpeningBalanceController.clear();
+  }
+
 
   Future<void> getAllCustomer() async {
     state = state.copyWith(isLoading: true);

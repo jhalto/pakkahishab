@@ -7,15 +7,14 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/helper/date_picker_helper.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
-import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_add_viewmodel.dart';
 import 'package:pakkahishab/features/purchase/presentation/viewmodels/purchase_viewmodel.dart';
-import 'package:pakkahishab/features/purchase/presentation/views/purchase_payment_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_report_view.dart';
 import 'package:pakkahishab/features/purchase/presentation/widgets/purchase_appbar_back_with_search.dart';
 import 'package:pakkahishab/features/purchase/presentation/views/purchase_details.dart';
 
 class PurchasesView extends StatelessWidget {
-  const PurchasesView({super.key});
+  final int? accountNo;
+  const PurchasesView({super.key, this.accountNo});
 
   @override
   Widget build(BuildContext context) {
@@ -438,38 +437,38 @@ class PurchasesView extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 35),
-        child: Consumer(
-          builder: (context, ref, child) => InkWell(
-            onTap: () {
-              // ref
-              //     .read(purchaseAddViewModelProvider.notifier)
-              //     .fetchPurchaseSupplierDues(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PurchasePaymentView()),
-              );
-            },
-            child: Container(
-              padding: EdgeInsets.all(10),
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.only(bottom: 35),
+      //   child: Consumer(
+      //     builder: (context, ref, child) => InkWell(
+      //       onTap: () {
+      //         ref
+      //             .watch(purchaseAddViewModelProvider.notifier)
+      //             .fetchPurchaseSupplierDues(context,supplierAccountNo: accountNo.toString());
+      //         Navigator.push(
+      //           context,
+      //           MaterialPageRoute(builder: (context) => PurchasePaymentView()),
+      //         );
+      //       },
+      //       child: Container(
+      //         padding: EdgeInsets.all(10),
 
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              child: Row(
-                mainAxisSize: .min,
-                children: [
-                  Icon(Icons.payment, color: AppColors.whiteColor),
-                  SizedBox(width: 5),
-                  Text("Make Payment", style: AppTextStyle.bodyMediumWhite),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+      //         decoration: BoxDecoration(
+      //           color: AppColors.primaryColor,
+      //           borderRadius: BorderRadius.all(Radius.circular(10)),
+      //         ),
+      //         child: Row(
+      //           mainAxisSize: .min,
+      //           children: [
+      //             Icon(Icons.payment, color: AppColors.whiteColor),
+      //             SizedBox(width: 5),
+      //             Text("Make Payment", style: AppTextStyle.bodyMediumWhite),
+      //           ],
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // ),
     );
   }
 }

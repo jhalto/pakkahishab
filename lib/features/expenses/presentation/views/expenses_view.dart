@@ -7,10 +7,7 @@ import 'package:pakkahishab/core/const/app_colors.dart';
 import 'package:pakkahishab/core/const/app_text_style.dart';
 import 'package:pakkahishab/core/utils/loader.dart';
 import 'package:pakkahishab/features/expenses/presentation/viewmodels/expenses_viewmodel.dart';
-import 'package:pakkahishab/features/expenses/presentation/views/expenses_details.dart';
 import 'package:pakkahishab/features/expenses/presentation/widgets/expanses_appbar_back_with_search.dart';
-import 'package:pakkahishab/features/sales/presentation/viewmodels/sales_viewmodel.dart';
-import 'package:pakkahishab/features/sales/presentation/views/sale_details.dart';
 
 class ExpensesView extends StatelessWidget {
   const ExpensesView({super.key});

@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/features/bank/data/services/bank_services.dart';
-import 'package:pakkahishab/features/cash/data/services/cash_services.dart';
 
 
 final bankRepositoryProvider = Provider<BankRepository>((ref) {
