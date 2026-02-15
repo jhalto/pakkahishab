@@ -1,3 +1,4 @@
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,13 +27,13 @@ final purchaseAddViewModelProvider =
 
 final productListProvider = FutureProvider<List<AllProduct>>((ref) async {
   try {
-    final repo = ref.watch(purchaseRepositoryProvider);
+    final _repo = ref.watch(purchaseRepositoryProvider);
 
     final phone = await SharedPreferencesHelper.getString('phone') ?? '';
     final pin = await SharedPreferencesHelper.getString('pin') ?? '';
     final code = await SharedPreferencesHelper.getString('code') ?? '';
 
-    final response = await repo.getAllProduct(
+    final response = await _repo.getAllProduct(
       mobile: phone,
       pin: pin,
       code: code,
@@ -324,7 +325,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
     final phone = await SharedPreferencesHelper.getString('phone');
     final pin = await SharedPreferencesHelper.getString('pin');
     final code = await SharedPreferencesHelper.getString('code');
-    await Future.delayed(Duration(seconds: 2));
+    
     final response = await _repo.addSupplier(
       code: code.toString(),
       mobile: phone.toString(),
@@ -643,10 +644,10 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
       builder: (context) {
         return Consumer(
           builder: (context, ref, _) {
-            final vm = ref.watch(
+            final _vm = ref.watch(
               purchaseAddViewModelProvider,
             ); // <- watch here
-            final vmn = ref.watch(purchaseAddViewModelProvider.notifier);
+            final _vmn = ref.watch(purchaseAddViewModelProvider.notifier);
             return Stack(
               children: [
                 Padding(
@@ -681,11 +682,11 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                         SizedBox(height: 20),
 
                         Form(
-                          key: vmn.customerAddFormKey,
+                          key: _vmn.customerAddFormKey,
                           child: Column(
                             children: [
                               CustomPakkaFormField(
-                                controller: vmn.productNameController,
+                                controller: _vmn.productNameController,
                                 label: "Product Name *",
                                 validator: (value) =>
                                     Validation.validateName(value, context),
@@ -695,14 +696,14 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                               SizedBox(height: 12),
 
                               CustomPakkaFormField(
-                                controller: vmn.productPriceController,
+                                controller: _vmn.productPriceController,
                                 label: "Product Purchase Price",
                                 textInputAction: TextInputAction.next,
                               ),
                               SizedBox(height: 12),
 
                               CustomPakkaFormField(
-                                controller: vmn.productSellPriceController,
+                                controller: _vmn.productSellPriceController,
                                 label: "Product Sell Price",
                                 textInputAction: TextInputAction.next,
                               ),
@@ -736,7 +737,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                                     mainAxisAlignment: .spaceBetween,
                                     children: [
                                       Text(
-                                        "Product Stock-In : ${vm.selectedManufacturingDate}",
+                                        "Product Stock-In : ${_vm.selectedManufacturingDate}",
                                         style: AppTextStyle.bodyMediumSecondary,
                                       ),
                                       Icon(Icons.calendar_today_outlined),
@@ -774,7 +775,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                                     mainAxisAlignment: .spaceBetween,
                                     children: [
                                       Text(
-                                        "Product Expire-In : ${vm.selectedExpiredDate}",
+                                        "Product Expire-In : ${_vm.selectedExpiredDate}",
                                         style: AppTextStyle.bodyMediumSecondary,
                                       ),
                                       Icon(Icons.calendar_today_outlined),
@@ -786,13 +787,13 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                               SizedBox(height: 12),
 
                               CustomPakkaFormField(
-                                controller: vmn.productStockController,
+                                controller: _vmn.productStockController,
                                 label: "Product Stock",
                                 textInputAction: TextInputAction.done,
                                 onComplete: () async {
-                                  if (vmn.customerAddFormKey.currentState!
+                                  if (_vmn.customerAddFormKey.currentState!
                                       .validate()) {
-                                    await vmn.addProduct(context);
+                                    await _vmn.addProduct(context);
 
                                     /// reload supplier list
                                   }
@@ -816,9 +817,9 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                               ),
                             ),
                             onPressed: () async {
-                              if (vmn.customerAddFormKey.currentState!
+                              if (_vmn.customerAddFormKey.currentState!
                                   .validate()) {
-                                await vmn.addProduct(context);
+                                await _vmn.addProduct(context);
 
                                 /// reload supplier list
                               }
@@ -838,7 +839,7 @@ class PurchaseAddNotifier extends Notifier<PurchaseAddState> {
                     ),
                   ),
                 ),
-                if (vm.isLoading)
+                if (_vm.isLoading)
                   Positioned.fill(
                     child: Container(
                       color: Colors.black.withAlpha(25),
