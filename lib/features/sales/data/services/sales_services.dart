@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pakkahishab/core/const/urls.dart';
+import 'package:pakkahishab/core/network/api_client.dart';
+import 'package:pakkahishab/core/network/api_handler.dart';
 
 final salesServiceProvider = Provider<SalesServices>((ref) => SalesServices());
 
 class SalesServices {
-    Future<Map<String, dynamic>> getCustomerWiseSales({
+  Future<Map<String, dynamic>> getCustomerWiseSales({
     required String phone,
     required String pin,
     required String offset,
@@ -49,6 +51,7 @@ class SalesServices {
       return {"statusCode": 666, "data": "Unexpected error: $e"};
     }
   }
+
   Future<Map<String, dynamic>> getSales({
     required String phone,
     required String pin,
@@ -94,7 +97,6 @@ class SalesServices {
     }
   }
 
-
   Future<Map<String, dynamic>> getSaleDetails({
     required String phone,
     required String pin,
@@ -134,6 +136,7 @@ class SalesServices {
       return {"statusCode": 666, "data": "Catch Error $e"};
     }
   }
+
   Future<Map<String, dynamic>> getAllCustomer({
     required String phone,
     required String pin,
@@ -151,8 +154,8 @@ class SalesServices {
       return {"statusCode": 666, "data": "Catch Error $e"};
     }
   }
-  
-   Future<Map<String, dynamic>> getAllProduct({
+
+  Future<Map<String, dynamic>> getAllProduct({
     required String phone,
     required String pin,
     required String code,
@@ -236,20 +239,10 @@ class SalesServices {
     required double paidPrice,
     DateTime? date,
   }) async {
-    final String url = "${Urls.baseUrl}Insert_sales_and_sales_details/";
-
-    Dio dio = Dio(
-      BaseOptions(
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 15),
-        sendTimeout: const Duration(seconds: 10),
-      ),
-    );
-
     final DateTime finalDate = date ?? DateTime.now();
     final String formattedDate = finalDate.toIso8601String().split('T').first;
 
-    final Map<String, dynamic> queryParams = {
+    final queryParams = {
       "SCHOOL_CODE": schoolCode,
       "PASSWORD": pin,
       "MOBILE": phone,
@@ -263,78 +256,15 @@ class SalesServices {
 
     queryParams.removeWhere((key, value) => value is String && value.isEmpty);
 
-    final body = {
-      {
-        "sales_details": [
-          {"product_id": 25, "quantity": 5, "unit_price": 100},
-          {"product_id": 26, "quantity": 3, "unit_price": 150},
-          {"product_id": 24, "quantity": 10, "unit_price": 80},
-        ],
-      },
-    };
-
     try {
-      final response = await dio.get(url, queryParameters: queryParams);
+      final response = await ApiClient().dio.get(
+        "Insert_sales_and_sales_details/",
+        queryParameters: queryParams,
+      );
 
-      if (response.statusCode == 200) {
-        return {"success": true, "data": response.data};
-      } else {
-        return {
-          "success": false,
-          "statusCode": response.statusCode,
-          "message": "Unexpected status",
-        };
-      }
+      return ApiHandler.handleResponse(response);
     } on DioException catch (e) {
-      switch (e.type) {
-        case DioExceptionType.connectionTimeout:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Connection timeout. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.receiveTimeout:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Recieve timeout. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.sendTimeout:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Send timeout. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.badResponse:
-          return {
-            "success": false,
-            "statusCode": e.response?.statusCode,
-            "error": e.response?.data ?? "Bad Response",
-          };
-        case DioExceptionType.cancel:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Request cancel. Please try again.",
-            "data": e.response?.data,
-          };
-        case DioExceptionType.unknown:
-        default:
-          return {
-            "statusCode": e.response!.statusCode,
-            "success": false,
-            "message": "Unexpected network error: ${e.message}",
-          };
-      }
-    } catch (e) {
-      return {
-        "statusCode": 666,
-        "success": false,
-        "message": "Unexpected error: $e",
-      };
+      return ApiHandler.handleError(e);
     }
   }
 
