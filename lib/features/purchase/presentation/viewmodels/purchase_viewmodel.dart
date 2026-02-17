@@ -190,17 +190,20 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
         supplierId: state.supplierId,
       );
 
-     
       if (result['statusCode'] == 200) {
         if (!ref.mounted) return;
         final items = (result['data']['items'] ?? []) as List;
         final hasMore = result['data']['hasMore'] ?? false;
-        final totalItem = result['data']['items'][0]['total_count'] ?? 0;
+        print("has more");
+        final totalItem = items.isNotEmpty
+            ? items.first['total_count'] ?? 0
+            : 0;
+        print("total item");
 
         final newItems = items
             .map<PurchaseItem>((e) => PurchaseItem.fromJson(e))
             .toList();
-
+        print('item');
         state = state.copyWith(
           loading: false,
           purchaseList: newItems,
@@ -209,11 +212,8 @@ class PurchaseNotifier extends Notifier<PurchaseState> {
           hasMore: hasMore,
           totalPage: (totalItem / 10).ceil(),
         );
-      }else{
-        state = state.copyWith(
-          loading: false
-        );
-
+      } else {
+        state = state.copyWith(loading: false);
       }
     } catch (e) {
       state = state.copyWith(loading: false);
