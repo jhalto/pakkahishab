@@ -84,7 +84,7 @@ class PurchaseResponse {
   final int limit;
   final int offset;
   final int count;
-  final List<Map<String, dynamic>> links;
+
 
   PurchaseResponse({
     required this.items,
@@ -92,7 +92,7 @@ class PurchaseResponse {
     required this.limit,
     required this.offset,
     required this.count,
-    required this.links,
+  
   });
 
   factory PurchaseResponse.fromJson(Map<String, dynamic> json) {
@@ -104,7 +104,7 @@ class PurchaseResponse {
       limit: json['limit'],
       offset: json['offset'],
       count: json['count'],
-      links: List<Map<String, dynamic>>.from(json['links']),
+
     );
   }
 
@@ -115,7 +115,6 @@ class PurchaseResponse {
       'limit': limit,
       'offset': offset,
       'count': count,
-      'links': links,
     };
   }
 }
