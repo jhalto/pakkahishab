@@ -82,7 +82,7 @@ class AppDrawer extends StatelessWidget {
                             AppLocalizations.of(context)!.purchase,
                             style: AppTextStyle.bodyMediumSecondary,
                           ),
-                          leading: const Icon(FontAwesomeIcons.cartShopping),
+                          leading: const FaIcon(FontAwesomeIcons.cartShopping),
                         ),
                         ListTile(
                           onTap: () {
@@ -93,14 +93,14 @@ class AppDrawer extends StatelessWidget {
                             AppLocalizations.of(context)!.newPurchase,
                             style: AppTextStyle.bodyMediumSecondary,
                           ),
-                          leading: const Icon(FontAwesomeIcons.cartShopping),
+                          leading: const FaIcon(FontAwesomeIcons.cartShopping),
                         ),
                         ListTile(
                           title: Text(
                             AppLocalizations.of(context)!.purchaseReturn,
                             style: AppTextStyle.bodyMediumSecondary,
                           ),
-                          leading: const Icon(FontAwesomeIcons.arrowRotateLeft),
+                          leading: const FaIcon(FontAwesomeIcons.arrowRotateLeft),
                         ),
                         const Divider(),
                       ],
@@ -125,7 +125,7 @@ class AppDrawer extends StatelessWidget {
                             AppLocalizations.of(context)!.sales,
                             style: AppTextStyle.bodyMediumSecondary,
                           ),
-                          leading: const Icon(FontAwesomeIcons.cashRegister),
+                          leading: const FaIcon(FontAwesomeIcons.cashRegister),
                         ),
                         ListTile(
                           onTap: () {
@@ -136,14 +136,14 @@ class AppDrawer extends StatelessWidget {
                             AppLocalizations.of(context)!.newSales,
                             style: AppTextStyle.bodyMediumSecondary,
                           ),
-                          leading: const Icon(FontAwesomeIcons.cashRegister),
+                          leading: const FaIcon(FontAwesomeIcons.cashRegister),
                         ),
                         ListTile(
                           title: Text(
                             AppLocalizations.of(context)!.salesReturn,
                             style: AppTextStyle.bodyMediumSecondary,
                           ),
-                          leading: const Icon(FontAwesomeIcons.arrowRotateLeft),
+                          leading: const FaIcon(FontAwesomeIcons.arrowRotateLeft),
                         ),
                         const Divider(),
                       ],

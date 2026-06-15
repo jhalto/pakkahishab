@@ -210,12 +210,12 @@ class StockDetails extends StatelessWidget {
   // ------------------------
   // Single row UI for each field
   // ------------------------
-  Widget _tile(String label, String value, IconData icon) {
+  Widget _tile(String label, String value, FaIconData icon) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: AppColors.primaryColor),
+          FaIcon(icon, size: 18, color: AppColors.primaryColor),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

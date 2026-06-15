@@ -40,7 +40,7 @@ class CustomFeatureWidget extends StatelessWidget {
                       color: AppColors.primaryColor2,
                     ),
         
-                    child: const Icon(
+                    child: const FaIcon(
                       FontAwesomeIcons.bangladeshiTakaSign,
                       color: AppColors.whiteColor,
                     ),

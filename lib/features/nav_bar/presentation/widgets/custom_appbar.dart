@@ -61,7 +61,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                 vm.fetchDashBoard(value);
               },
               initialValue: ref.watch(homeProvider).filter,
-              icon: const Icon(FontAwesomeIcons.filter, color: Colors.white),
+              icon: const FaIcon(FontAwesomeIcons.filter, color: Colors.white),
               itemBuilder: (context) {
                 return option.map((option) {
                   return PopupMenuItem(
