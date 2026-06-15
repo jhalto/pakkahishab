@@ -211,7 +211,7 @@ class CustomerDueDetails extends StatelessWidget {
                                   "Net Amount",
                                   style: AppTextStyle.bodyLarge,
                                 ),
-                                Icon(
+                                FaIcon(
                                   FontAwesomeIcons.bangladeshiTakaSign,
                                   size: 16,
                                 ),
@@ -253,7 +253,7 @@ class CustomerDueDetails extends StatelessWidget {
                                   "Total Amount",
                                   style: AppTextStyle.bodyLarge,
                                 ),
-                                Icon(
+                                FaIcon(
                                   FontAwesomeIcons.bangladeshiTakaSign,
                                   size: 16,
                                 ),
@@ -295,7 +295,7 @@ class CustomerDueDetails extends StatelessWidget {
                                   "Paid Price",
                                   style: AppTextStyle.bodyLarge,
                                 ),
-                                Icon(
+                                FaIcon(
                                   FontAwesomeIcons.bangladeshiTakaSign,
                                   size: 16,
                                 ),
@@ -334,7 +334,7 @@ class CustomerDueDetails extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text("Due", style: AppTextStyle.bodyLarge),
-                                Icon(
+                                FaIcon(
                                   FontAwesomeIcons.bangladeshiTakaSign,
                                   size: 16,
                                 ),

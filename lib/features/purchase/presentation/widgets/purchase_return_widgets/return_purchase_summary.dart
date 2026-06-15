@@ -31,7 +31,7 @@ class ReturnPurchaseSummury extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Total Amount", style: AppTextStyle.bodyLarge),
-                          Icon(FontAwesomeIcons.bangladeshiTakaSign, size: 16),
+                          FaIcon(FontAwesomeIcons.bangladeshiTakaSign, size: 16),
                         ],
                       ),
                     ),

@@ -35,7 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   intl: ^0.20.2
-  shared_preferences: ^2.5.3
+  shared_preferences: ^2.5.5
   flutter_localizations:
     sdk: flutter
   riverpod: ^3.0.0
@@ -43,7 +43,7 @@ dependencies:
   flutter_svg: ^2.2.1
   http: ^1.5.0
   dio: ^5.9.0
-  font_awesome_flutter: ^10.10.0
+  font_awesome_flutter: ^11.0.0
   flutter_screenutil: ^5.9.3
   animated_bottom_navigation_bar: ^1.4.0
   circle_nav_bar: ^2.2.0
@@ -58,10 +58,9 @@ dependencies:
   skeletonizer: ^2.1.2
   pdf: ^3.11.3
   open_file: ^3.5.11
-  syncfusion_flutter_pdfviewer: ^32.1.25
-  device_info_plus: ^12.3.0
+  syncfusion_flutter_pdfviewer:
+  device_info_plus:
   permission_handler: ^12.0.1
-
   path_provider: any
   syncfusion_flutter_core: any
 dev_dependencies:

@@ -202,7 +202,7 @@ class PurchaseDetails extends StatelessWidget {
                                   "Net Amount",
                                   style: AppTextStyle.bodyLarge,
                                 ),
-                                Icon(
+                                FaIcon(
                                   FontAwesomeIcons.bangladeshiTakaSign,
                                   size: 16,
                                 ),

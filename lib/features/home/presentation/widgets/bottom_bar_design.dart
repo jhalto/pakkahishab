@@ -42,7 +42,7 @@ class BottomBarDesign extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        const FaIcon(
                           FontAwesomeIcons.moneyCheck,
                           color: AppColors.whiteColor,
                         ),
@@ -76,7 +76,7 @@ class BottomBarDesign extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        const FaIcon(
                           FontAwesomeIcons.bangladeshiTakaSign,
                           color: AppColors.whiteColor,
                         ),
